@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1059434",
+    "ThreadId": "447772",
+    "Html": "I'm tracking my own pipeline state to reduce API calls.\r<br />\nI see that there is a way to get the DrawText call to restore state after it has finished.\r<br />\nHowever, if I have, say, 20 DrawText calls to make, is there a way to save the state before the first one, issue the 20 calls, then restore the  state?\r<br />\n<br />\nThank you,\r<br />\nMichael Stone<br />\n",
+    "PostedDate": "2013-06-20T17:55:35.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059783",
+    "ThreadId": "447772",
+    "Html": "There's no public function for it in the interfaces, but if you use the source there's the CFW1StateSaver class that can save and restore the state. Combine with using the FW1_IMMEDIATECALL or the FW1_CONSTANTSPREPARED, FW1_BUFFERSPREPARED, and FW1_STATEPREPARED flags when calling DrawText to achieve that behavior.<br />\n",
+    "PostedDate": "2013-06-21T14:26:51.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1059795",
+    "ThreadId": "447772",
+    "Html": "Ooh, lovely!\r<br />\nThank you.<br />\n",
+    "PostedDate": "2013-06-21T14:43:31.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

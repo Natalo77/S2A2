@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1193553",
+    "ThreadId": "522734",
+    "Html": "Hello, I am writing an dll and I want to remove the need for additional FW1FontWrapper.dll. How can I compile your project as an static library? Currently you have these options<br />\n<pre><code>// Define if building a DLL for the font-wrapper\n#define FW1_COMPILETODLL\n\n// Define to use LoadLibrary instead of linking to DLLs\n//#define FW1_DELAYLOAD_DWRITE_DLL\n//#define FW1_DELAYLOAD_D3DCOMPILER_XX_DLL</code></pre>\n\nFW1_COMPILETODLL is only option which produces .lib(only 3kb?) file but it also produces FW1FontWrapper.dll file which I need to put in my main executable folder for my  own dll to work.<br />\n",
+    "PostedDate": "2014-01-23T13:03:52.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1194948",
+    "ThreadId": "522734",
+    "Html": "You have to change the project settings. In the project general settings, change the configuration type to Static library (.lib), instead of DLL.\r<br />\nHowever, I would recommend adding the source-files to your project that uses the wrapper instead, or at least make sure to compile the projects with the exact same settings (as they will be linked together and if both projects use the standard library those functions might potentially interfere with each other).<br />\n",
+    "PostedDate": "2014-01-23T21:21:37.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

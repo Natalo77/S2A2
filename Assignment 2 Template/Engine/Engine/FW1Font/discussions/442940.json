@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1040803",
+    "ThreadId": "442940",
+    "Html": "I use sample function from documentation drawText( , ). If fonts are rendering  rest of scene not. I drop functiun drawText after drawing objects, before directx method Present(). Only a fraction of a second i see correct scene : \r<br />\n<img src=\"http://zapodaj.net/images/3a08bf18ad1df.jpg\" alt=\"Image\" />\r<br />\nAfter this all the time i see :\r<br />\n<img src=\"http://zapodaj.net/images/3bdb4fffa6826.jpg\" alt=\"Image\" /><br />\n",
+    "PostedDate": "2013-05-08T04:15:14.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1040808",
+    "ThreadId": "442940",
+    "Html": "Hi,\r<br />\n<br />\nTry using the FW1_RESTORESTATE flag as the last parameter to DrawString. In order to draw text the wrapper replaces render-states such as blend-state and vertex-buffers. If the flag is used, then the original states are restored before DrawString returns.\r<br />\n<br />\nAnother alternative is to move any SetVertexBuffer/SetShader etc. calls that you do in your init-function into the main loop, so that they are set each frame.<br />\n",
+    "PostedDate": "2013-05-08T04:28:08.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1040810",
+    "ThreadId": "442940",
+    "Html": "Now its work, but i have only few FPS :(<br />\n",
+    "PostedDate": "2013-05-08T04:34:44.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1040813",
+    "ThreadId": "442940",
+    "Html": "Much fewer than when not rendering fonts?<br />\nHow many strings do you use?<br />\nTry downloading the samples under Downloads and run one of the simple ones to see if that also has low FPS. I've never noticed any significant impact when rendering less than hundreds of strings / characters, though of course it can depend on your graphics card and how large the characters are, if pixel fillrate is a problem.<br />\n",
+    "PostedDate": "2013-05-08T04:46:58.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1040826",
+    "ThreadId": "442940",
+    "Html": "Unnecessarily I create per frame new IFW1FontWrapper and IFW1Factory. Now work good. I have last question. How to set depth of fonts? All my objects obscure fonts.<br />\n",
+    "PostedDate": "2013-05-08T05:17:41.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1040827",
+    "ThreadId": "442940",
+    "Html": "It was enough to give drawText elsewhere. Now work fantastically. Fanks for quick answer ;)) !<br />\n",
+    "PostedDate": "2013-05-08T05:21:25.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

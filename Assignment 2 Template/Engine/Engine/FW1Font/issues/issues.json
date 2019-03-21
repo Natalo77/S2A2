@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 480,
+    "Title": "Artefacts via D3DImage in WPF"
+  },
+  {
+    "Id": 978,
+    "Title": "CreateFontWrapper fails on Windows 8 with Windows SDK DirectX"
+  },
+  {
+    "Id": 1033,
+    "Title": "Fails to create FW1CreateFactory();"
+  },
+  {
+    "Id": 1189,
+    "Title": "Random performance inside Visual Studio 2013"
+  },
+  {
+    "Id": 1301,
+    "Title": "Release build settings incorrect"
+  },
+  {
+    "Id": 1479,
+    "Title": "FW still messes up with geometry even with GEOMETRYSHADER turned off"
+  },
+  {
+    "Id": 1593,
+    "Title": "drawString skips symbols"
+  },
+  {
+    "Id": 1851,
+    "Title": "Major text offset bug"
+  }
+]

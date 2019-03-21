@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If I try to create the __IFW1FontWrapper__ using the DirectX included with the Windows SDK on Windows 8 (x64) the method fails, and return a HRESULT error code; method's signature:\n\n```\nHRESULT IFW1Factory::CreateFontWrapper(ID3D11Device *pDevice, LPCWSTR pszFontFamily, IFW1FontWrapper **ppFontWrapper)\n```\n\nThe method worked on Windows 7 (x64) with DirectX 2010 SDK.",
+    "LastUpdatedDate": "2013-03-22T09:40:59.383-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2013-03-08T08:51:24.69-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "CreateFontWrapper fails on Windows 8 with Windows SDK DirectX",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 978
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I have solved the issue by compiling the FW1FontWrapper sources with __Visual Studio 2012__ (for Desktop).",
+      "PostedDate": "2013-03-22T09:40:59.383-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

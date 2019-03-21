@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hello I debugged my program and have noticed that FW1CreateFactory(FW1_VERSION, &pFW1Factory); fails to create and returns a E_FAIL and that the pointer to pFW1Factory is 0x00000000. Not sure what to do at this point I have compiled the source from the project that came with the download then included that in my includes in my OWN project, then copy pasted all the sources into my project. Here is a picture from the debugger: I'm desperate for a solution http://prntscr.com/17dib4",
+    "LastUpdatedDate": "2013-05-30T10:37:41.863-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2013-05-30T02:13:15.863-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Fails to create FW1CreateFactory();",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1033
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\nIn your screenshot you are checking pFontWrapper, not pFW1Factory. Are you sure the factory is the one that fails?\nIf you have the code in your project then step into the function with F11 and see what part of the function fails.",
+      "PostedDate": "2013-05-30T07:32:27.203-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "It is the same for the pFontWrapper and pFW1Factory I just didn't include the picture. And alright will do",
+      "PostedDate": "2013-05-30T08:50:27.287-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "OK Update: Stepped in and figured out if(Version != FW1_VERSION) return E_FAIL; \nthe version = 4111 and FW1_VERSION = 100, and every time I debug the version is different from what the FW1_VERSION is, I commented out the version check just for debugging purposes and it returns \"S_OK\" but then after executing pFW1Factory->CreateFontWrapper() I get a unhandled exception:\n> First-chance exception at 0x56414c75 (bf3hack.dll) in derp.exe: 0xC0000005: Access violation reading location 0x00000005.\nUnhandled exception at 0x774815de in derp.exe: 0xC0000005: Access violation reading location 0x00000005.\r\n\r\nand it sends me to this line of code: \tHRESULT hResult = initBaseObject(pFW1Factory);",
+      "PostedDate": "2013-05-30T09:07:13.357-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Dang I don't know how to edit, but it sends me to different code parts every time it gives me that unhandled exception error.",
+      "PostedDate": "2013-05-30T09:09:47.693-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "That sounds like some strange corruption. Clean and rebuild everything, and make sure you only use the source and header from the same download. Since you call FW1CreateFactory and specifically pass FW1_VERSION then Version can't possibly be different from FW1_VERSION unless the font-wrapper source files use a different FW1FontWrapper.h than your calling source.\nThe reason for the version is to make sure that, when using a DLL version, the header and the library matches, since otherwise it will definitely crash.",
+      "PostedDate": "2013-05-30T10:03:32.967-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Thanks you so much it works now. I download the source, compiled, then just linked everything to that project. I appreciate it so much.",
+      "PostedDate": "2013-05-30T10:37:41.863-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

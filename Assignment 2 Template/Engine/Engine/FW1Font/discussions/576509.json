@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1337926",
+    "ThreadId": "576509",
+    "Html": "Hi :)\r<br />\nI hope you can help me. \r<br />\nI tried now some days to include your dll into my dll, so that I have only one dll file.\r<br />\nBut, I'm not sure what I have to do.\r<br />\n<br />\nHave you any ideas how to do that? Would be nice if there is an easy way :)<br />\n",
+    "PostedDate": "2014-12-30T08:35:07.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1337929",
+    "ThreadId": "576509",
+    "Html": "I think the best way is to download the FW1 source and add it to your DLL project, building them both in the same project.\r<br />\n<br />\nI think you can also set up a solution with the FW1 project building to a static library and then link that into your DLL, but it will probably be more hassle than simply adding all the sources to the same project.<br />\n",
+    "PostedDate": "2014-12-30T08:41:55.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1337930",
+    "ThreadId": "576509",
+    "Html": "But if I do this:<br />\n<blockquote>\nI think the best way is to download the FW1 source and add it to your DLL project, building them both in the same project.<br />\n</blockquote>\nI have two dll's, right?\r<br />\nBecause I want only one dll :)<br />\n",
+    "PostedDate": "2014-12-30T08:49:44.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1337933",
+    "ThreadId": "576509",
+    "Html": "It should give you only one DLL.\r<br />\nAdd the .cpp files from FW1 to a folder in the same VC++ project that you use to build your DLL, instead of using the solution/project from FW1.<br />\n",
+    "PostedDate": "2014-12-30T08:58:32.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1338101",
+    "ThreadId": "576509",
+    "Html": "ok working now :) Thx.\r<br />\nHad to fix one more problem ;)<br />\n",
+    "PostedDate": "2014-12-31T01:46:29.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

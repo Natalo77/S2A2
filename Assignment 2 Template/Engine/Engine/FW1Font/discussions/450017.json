@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1068344",
+    "ThreadId": "450017",
+    "Html": "Hi, congratulations again, this .dll is wonderful.\r<br />\n<br />\nI was wondering on how to use italic or bold variations of fonts.\r<br />\n<br />\nLet's say that i'd like to draw a string with Verdana Italic font, what should i do to do that?\r<br />\n<br />\nthanks!<br />\n",
+    "PostedDate": "2013-07-15T05:06:37.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068349",
+    "ThreadId": "450017",
+    "Html": "Thanks!\r<br />\n<br />\nTo do that, create a DirectWrite text-layout and draw it with DrawTextLayout. See the TextLayouts sample for an example. You can replace DWRITE_FONT_STYLE_NORMAL with DWRITE_FONT_STYLE_ITALIC, and use DWRITE_FONT_WEIGHT_BOLD for the weight, with CreateTextFormat.\r<br />\nIt can also be overridden in a created text-layout with IDWriteTextLayout::SetFontWeight / SetFontStyle, which can be used to make only part of a string italic / bold.\r<br />\n<br />\nYou can also use those flags in a FW1_FONTWRAPPERCREATEPARAMS structure when creating the font-wrapper object, if you want default text to be italic. See the Transforms sample for how to use that structure. It's probably not that useful though since it would make all DrawString texts be italic..\r<br />\n<br />\n<br />\nIt would good feature to have easier available... I'll add a flag for it if I make another update, but for now a text-layout has to be created.\r<br />\n<br />\n/Erik<br />\n",
+    "PostedDate": "2013-07-15T05:21:40.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068800",
+    "ThreadId": "450017",
+    "Html": "Thanks again Erik, \r<br />\nI'll try this afternoon!<br />\n",
+    "PostedDate": "2013-07-15T22:25:15.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

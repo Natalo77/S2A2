@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1494382",
+    "ThreadId": "662094",
+    "Html": "Hi! I tried to link my DirectX11 application to FW1, but if I try to draw text it crashes with the floowing output.\r<br />\n<br />\nD3D11 ERROR: ID3D11DeviceContext::DrawIndexed: Input Assembler - Vertex Shader linkage error: Signatures between stages are incompatible. The input stage requires Semantic/Index (POSITION,0) as input, but it is not provided by the output stage. [ EXECUTION ERROR #342: DEVICE_SHADER_LINKAGE_SEMANTICNAME_NOT_FOUND]\r<br />\nD3D11: <strong>BREAK</strong> enabled for the previous message, which was: [ ERROR EXECUTION #342: DEVICE_SHADER_LINKAGE_SEMANTICNAME_NOT_FOUND ]\r<br />\n<br />\nI tried rebuilding dll, and even linked all the FW sources into my project with no luck. The error stays the same.<br />\n",
+    "PostedDate": "2017-03-21T02:29:45.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1494383",
+    "ThreadId": "662094",
+    "Html": "ok. solved this by adding FW1_RESTORESTATE flag..<br />\nBut I need to draw multiple strings.. wouldn't that storing\\restoring everything each time cause lags?<br />\n<br />\nSeems like I want FW1_SAVESTATE - to save my current everything when drawing first string and then FW1_RESTORESTATE  after I've drawn last one.<br />\n<br />\nBut i can edit source for that myself, I think<br />\n",
+    "PostedDate": "2017-03-21T03:07:52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

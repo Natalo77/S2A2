@@ -1,0 +1,85 @@
+[
+  {
+    "Id": "0",
+    "Name": "FW1FontWrapper 1.0",
+    "DevelopmentStatus": "Stable",
+    "Description": "Version 1.0 of the font-wrapper library.",
+    "ReleasedDatge": "0001-01-01T00:00:00",
+    "ModifiedDate": "2011-03-26T08:16:41.083-07:00",
+    "Files": [
+      {
+        "Id": "c64a8d1c-1e73-446e-a082-0f612625a459",
+        "FileName": "FW1FontWrapper_1_0.zip",
+        "Url": "./0/c64a8d1c-1e73-446e-a082-0f612625a459",
+        "Type": "Application",
+        "UploadDate": "2011-03-21T17:14:44.46-07:00"
+      },
+      {
+        "Id": "56928ed4-1425-4759-8801-65f4d07a6228",
+        "FileName": "FW1FontWrapper_1_0_src.zip",
+        "Url": "./0/56928ed4-1425-4759-8801-65f4d07a6228",
+        "Type": "Source Code",
+        "UploadDate": "2011-03-21T17:14:44.46-07:00"
+      },
+      {
+        "Id": "d5e8aee1-a616-4631-9dd8-19e22cd0f3f0",
+        "FileName": "FW1Samples.zip",
+        "Url": "./0/d5e8aee1-a616-4631-9dd8-19e22cd0f3f0",
+        "Type": "Example",
+        "UploadDate": "2011-03-21T17:14:44.507-07:00"
+      },
+      {
+        "Id": "ce8ac18f-fa6f-4134-9891-82db30d4e788",
+        "FileName": "FW1SamplesVS2008.zip",
+        "Url": "./0/ce8ac18f-fa6f-4134-9891-82db30d4e788",
+        "Type": "Example",
+        "UploadDate": "2011-03-21T17:14:44.52-07:00"
+      },
+      {
+        "Id": "b4e87edd-4288-47ed-8118-9e5d8303bd75",
+        "FileName": "FW1FontWrapper_1_0_x64.zip",
+        "Url": "./0/b4e87edd-4288-47ed-8118-9e5d8303bd75",
+        "Type": "Application",
+        "UploadDate": "2011-03-26T08:16:40.913-07:00"
+      }
+    ]
+  },
+  {
+    "Id": "1",
+    "Name": "FW1FontWrapper 1.1",
+    "DevelopmentStatus": "Stable",
+    "Description": "Version 1.1 of the font-wrapper library.\n\nChanges from version 1.0:\n- Added a MeasureString function that returns the bounding rectangle of a string.\n- Tweaked glyph positioning when a string is drawn at fractional coordinates.\n- Correctly set up render states when drawing an empty string, so that subsequent draws can rely on the correct render states to be set up even if the previous string was empty.\n- Added functions to easier convert text to geometry, and batching multiple strings in the same geometry to reduce draw and update calls when drawing many strings.",
+    "ReleasedDatge": "0001-01-01T00:00:00",
+    "ModifiedDate": "2011-10-26T12:56:32.263-07:00",
+    "Files": [
+      {
+        "Id": "03fefae1-a287-479b-9ae8-d781656164b6",
+        "FileName": "FW1FontWrapper_1_1.zip",
+        "Url": "./1/03fefae1-a287-479b-9ae8-d781656164b6",
+        "Type": "Application",
+        "UploadDate": "2011-10-26T12:54:14.96-07:00"
+      },
+      {
+        "Id": "5c4f5080-4fc1-4343-a64c-5df46b95bfc3",
+        "FileName": "FW1FontWrapper_1_1_src.zip",
+        "Url": "./1/5c4f5080-4fc1-4343-a64c-5df46b95bfc3",
+        "Type": "Source Code",
+        "UploadDate": "2011-10-26T12:54:14.977-07:00"
+      },
+      {
+        "Id": "ebc62cbf-dce1-4cd9-9db1-e2f8142fa765",
+        "FileName": "FW1Samples.zip",
+        "Url": "./1/ebc62cbf-dce1-4cd9-9db1-e2f8142fa765",
+        "Type": "Example",
+        "UploadDate": "2011-10-26T12:54:14.993-07:00"
+      },
+      {
+        "Id": "b61c9026-c54f-4805-b31c-5966bc11a4a0",
+        "FileName": "FW1SamplesVS2008.zip",
+        "Url": "./1/b61c9026-c54f-4805-b31c-5966bc11a4a0",
+        "Type": "Example",
+        "UploadDate": "2011-10-26T12:54:15.007-07:00"
+      }
+    ]
+  }
+]

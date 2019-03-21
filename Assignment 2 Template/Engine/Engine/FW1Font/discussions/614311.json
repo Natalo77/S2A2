@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1396596",
+    "ThreadId": "614311",
+    "Html": "Hey guys!  I am currently working on a game using DirectX and FW1 for font rendering.  For some reason, on some computers all whitespace characters are showing up as boxes.<br />\n<br />\nHere is what it should look like:<br />\n<img src=\"http://i.imgur.com/QM7wrYP.jpg\" alt=\"Image\" /><br />\n<br />\nHere is what it looks like with the error:<br />\n<img src=\"http://i.imgur.com/MPgB62X.png\" alt=\"Image\" /><br />\n<br />\nNote &quot;Play Game&quot; and &quot;How To Play&quot; have odd blocks in them.  It seems to still show the right kerning for spaces, so I am a little confused.<br />\n<br />\nAny help would be MUCH appreciated! <br />\n<br />\n<strong>Edit:</strong>  It turns out this only happens with spaces.  When I replace all of my spaces with &quot;\\t&quot;, it seems to work as intended.  Any help would still be greatly appreciated! <br />\n",
+    "PostedDate": "2015-03-25T14:13:04.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hello.\n\nI'm using FW1FontWrapper for a project, and when drawing text, I've noticed that it's not exactly where I position it, but rather a few pixels below and to the right.\n\nIt turns out that it increases exponentially with font size. Eg. at font size 256f, it's drawn 98 pixels below where I specify on the Y axis, making it hard to eg. draw rectangles on top of it, or just position it correctly.\n\nAs a test, I tried to draw a rectangle at screen position 0,0 with the size of the text, and then draw the text at the exact same coordinates. The rectangle is the expected size, exactly where specified, but the text is outside the rectangle\n\n![Image](http://i.imgur.com/tUI3DUv.png)\n\nDrawing the text like\n```\nfontWrapper->DrawString(deviceContext, wideText, fontSize, 0.0F, 0.0F, D3DCOLOR_ABGR(a, r, g, b), FW1_RESTORESTATE);\n```\n\nI've tried all flags.",
+    "LastUpdatedDate": "2017-04-23T10:19:05.81-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2017-04-23T10:19:05.81-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Major text offset bug",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1851
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "If I use fw1FontWrapper library in regular window text is drawing fine. But when I draw text in WPF window via D3DImage text has white edge. Please see attached image.",
+    "LastUpdatedDate": "2015-12-09T08:26:15.707-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2012-03-25T10:00:25.193-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Artefacts via D3DImage in WPF",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 480
+  },
+  "FileAttachments": [
+    {
+      "FileId": 155,
+      "FileName": "artefacts.png",
+      "DownloadUrl": ".\\155"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Those artifacts look like an issue with the sampling.  Do you know what type of filter is being used to sample the glyph texture?",
+      "PostedDate": "2013-02-27T07:24:53.407-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I'm seeing this in a WPF window also.  When I set the number of MIP levels to 1 this issue goes away, but then I of course have lower-quality text.",
+      "PostedDate": "2014-01-02T02:44:57.71-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "",
+      "PostedDate": "2014-01-02T02:45:07.593-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "WPF and D3DImage use premultiplied alpha. That could be the reason.",
+      "PostedDate": "2015-12-09T08:26:15.707-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

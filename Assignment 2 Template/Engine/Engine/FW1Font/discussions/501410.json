@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1170419",
+    "ThreadId": "501410",
+    "Html": "I'm writing a framework but using FW1CreateFactory function is making my .dll not a .NET valid DLL, how can I solve?<br />\n",
+    "PostedDate": "2014-01-16T03:46:48.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1170421",
+    "ThreadId": "501410",
+    "Html": "I think you need to change the source to use STL/CLR instead of the C++ standard library used now (not that many places)... and maybe also change how memory allocations are done, I haven't really used C++/CLI so I can't say exactly the steps required. I tried to compile the lib like that a couple of years ago but abandoned it as it (at that time) wasn't as easy as relinking.<br />\n",
+    "PostedDate": "2014-01-16T03:52:03.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1170429",
+    "ThreadId": "501410",
+    "Html": "Thank you, I'll download the source and I'll try to make modification! :D<br />\n",
+    "PostedDate": "2014-01-16T04:41:02.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

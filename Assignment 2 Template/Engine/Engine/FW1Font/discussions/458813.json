@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1098092",
+    "ThreadId": "458813",
+    "Html": "Hello and thanks for this awesome API !\r<br />\n<br />\nI have one question. Is there any way to access the description of a certain DrawString after it has been called ? I am creating a class that dynamically renders the strings and want to write a function that updates the values of a certain string.<br />\n",
+    "PostedDate": "2013-09-23T09:40:20.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098098",
+    "ThreadId": "458813",
+    "Html": "I'm not quite clear on what you are trying to do. With &quot;updates the values&quot;, do you mean move a string to a different position from one frame to the next?\r<br />\nFor that, just call DrawString again with different x, y coordinates.\r<br />\nIf you wish to change the actual text, again call DrawString with a different string.\r<br />\nThe font-wrapper only renders text, and strings are not remembered after having been drawn. If you want to keep them around as objects you have to implement that in your application.\r<br />\n<br />\nIf you have many strings that only change position or transform while having static text, you can optimize performance by creating DirectWrite text-layouts instead. If you wish to treat strings as objects I recommend creating a wrapper class around a text-layout and render them with DrawTextLayout.\r<br />\n<br />\nThe samples on the Downloads page contain a few examples of text-layouts and some of them have strings that are moved around between frames.<br />\n",
+    "PostedDate": "2013-09-23T09:48:39.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098106",
+    "ThreadId": "458813",
+    "Html": "Thanks for the quick reply. What I am trying to do is to change the position and text of strings. Maybe I am doing this wrong but I am calling the DrawString function from my render loop. Then when I call it again with a different position or text it just creates another text on the screen. I will post the code for clearification. The Update Sentence function is the one I want to change the position with.\r<br />\n<br />\nbool FW1Font::Initialize()\r<br />\n{<br />\n<pre><code>bool result;\n\n// Initialize the graphics objects from the graphics class\nm_hwnd = ServiceLocator::GetGraphicService()-&gt;GetHWND();\nm_D3D = ServiceLocator::GetGraphicService()-&gt;GetDirectXDevice();\n\n// Create the font wrapper and factory\nHRESULT hResult = FW1CreateFactory(FW1_VERSION, &amp;m_FW1Factory);\nhResult = m_FW1Factory-&gt;CreateFontWrapper(m_D3D-&gt;GetDevice(), L&quot;Calibri&quot;, &amp;m_FontWrapper);\nif(!SUCCEEDED(hResult))\n{\n    MessageBox(m_hwnd, L&quot;The FW1Font object could not be initialized !&quot;, L&quot;Error&quot;, MB_OK);\n    return false;\n}\n\nm_FontWrapper-&gt;DrawString(\n    m_D3D-&gt;GetDeviceContext(),\n    L&quot;Text&quot;,// String\n    128.0f,// Font size\n    100.0f,// X position\n    50.0f,// Y position\n    0xff0099ff,// Text color, 0xAaBbGgRr\n    0// Flags (for example FW1_RESTORESTATE to keep context states unchanged)\n);\n\nreturn true;</code></pre>\n\n}\r<br />\n<br />\n<br />\nvoid FW1Font::Shutdown()\r<br />\n{<br />\n<pre><code>m_FontWrapper-&gt;Release();\nm_FW1Factory-&gt;Release();</code></pre>\n\n}\r<br />\n<br />\n<br />\nbool FW1Font::NewSentence(std::string name, FontDesc fontDesc)\r<br />\n{<br />\n<pre><code>// Add the sentence to the map\nm_Sentences.insert(std::pair&lt;std::string, FontDesc&gt;(name, fontDesc));\n\nreturn true;</code></pre>\n\n}\r<br />\n<br />\n<br />\nbool FW1Font::RenderSentence(std::string name)\r<br />\n{<br />\n<pre><code>// Find the sentence object\nstd::map&lt;std::string, FontDesc&gt;::const_iterator sentenceObject = m_Sentences.find(name);\n\nif(sentenceObject == m_Sentences.end())\n{\n    MessageBox(m_hwnd, L&quot;Cannot Render Sentence name not found !&quot;, L&quot;Error&quot;, MB_OK);\n    return false;\n}\n\nm_FontWrapper-&gt;DrawString(\n    m_D3D-&gt;GetDeviceContext(),\n    StringConverter::StringToWCHAR(sentenceObject-&gt;second.Text), // String\n    StringConverter::StringToWCHAR(sentenceObject-&gt;second.FontFamily),\n    sentenceObject-&gt;second.Size, // Font size\n    sentenceObject-&gt;second.Position.x, // X position\n    sentenceObject-&gt;second.Position.y, // Y position\n    sentenceObject-&gt;second.Color, // Text color, 0xAaBbGgRr\n    sentenceObject-&gt;second.Flags // Flags (for example FW1_RESTORESTATE to keep context states unchanged)\n);\n\nreturn true;</code></pre>\n\n}\r<br />\n<br />\nbool FW1Font::UpdatePosition(std::string name)\r<br />\n{<br />\n<pre><code>// Find the sentence object\nstd::map&lt;std::string, FontDesc&gt;::const_iterator sentenceObject = m_Sentences.find(name);\n\n//Update position\n</code></pre>\n\n}<br />\n",
+    "PostedDate": "2013-09-23T10:10:26.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098113",
+    "ThreadId": "458813",
+    "Html": "If I understand correctly it should work by using 'iterator' instead of 'const_iterator' in UpdatePosition and then do sentenceObject-&gt;second.Position.x = new_position, and same for sentenceObject-&gt;Text.<br />\n",
+    "PostedDate": "2013-09-23T10:17:30.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098120",
+    "ThreadId": "458813",
+    "Html": "The map is actually just holding the font descriptions for now. Say I scrap the vector part then the update function would looks like this:<br />\n<br />\nbool FW1Font::UpdatePosition(int newPositionX, int newPositionY, WCHAR* newText)<br />\n{<br />\n<pre><code>//Update position\nm_FontWrapper-&gt;DrawString(\n    m_D3D-&gt;GetDeviceContext(),\n    newText, // String\n    &quot;Arial&quot;,\n    100.0f, // Font size\n    newPositionX, // X position\n    newPositionY, // Y position\n    0xff0099ff, // Text color, 0xAaBbGgRr\n    FW1_RESTORESTATE // Flags (for example FW1_RESTORESTATE to keep context states unchanged)\n);</code></pre>\n\n}<br />\n<br />\nI then call it in my update loop and it will create a new text on the screen instead of updating the existing one created by the RenderSentence function.<br />\nSo I am am trying to figure out how to change the existing text instead of creating a new one.<br />\n",
+    "PostedDate": "2013-09-23T10:28:31.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098123",
+    "ThreadId": "458813",
+    "Html": "DrawString basically &quot;draws pixels on the screen&quot;, though through submitting vertices to D3D11.\r<br />\nMoving those pixels afterwards is not possible, so you need to only call DrawString once for each string <strong>per frame</strong>, with a D3D Clear between frames, the common double-buffered flow of redrawing everything and then presenting everything at once.\r<br />\nI think you should keep the vector and draw all strings when their final positions for the current frame is determined.\r<br />\n<br />\nIf you're not working with frames with clear in between, but rather rely on old pixels to still be there in the next frame, then you would have to erase the previous text before drawing the new one..<br />\n",
+    "PostedDate": "2013-09-23T10:37:25.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098153",
+    "ThreadId": "458813",
+    "Html": "I got it ! Had to think about it for a moment :) You were right about adding the new position to the map it was all I had to do. The RenderSentence function then uses the updated values.<br />\n<br />\nThank you very much for the help and the API ! It's so much easier than writing your own font system or accessing DirectWrite over GDI manually :)<br />\n",
+    "PostedDate": "2013-09-23T11:22:09.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1098154",
+    "ThreadId": "458813",
+    "Html": "Great!  Thanks! Glad it is useful :)<br />\n",
+    "PostedDate": "2013-09-23T11:25:22.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

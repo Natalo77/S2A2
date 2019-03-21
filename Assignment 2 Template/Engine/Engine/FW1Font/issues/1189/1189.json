@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I made a test project in which I have an animation and FPS textbox using FW1FontWrapper. I have noticed that sometimes the FPS drops randomly to between 100 - 900 FPS instead of the usual 3000 FPS inside Visual Studio. This problem does not occur when I run the executable outside Visual Studio. The only call I make during my rendering loop is FW1FontWrapper DrawString() and the issue is resolved if I comment out this call:\n\n```\n\t\tfontWrapper->DrawString(\n\t\t\tthis->immediateContext,\n\t\t\ttext.c_str(),\n\t\t\tfamily.c_str(), // Family\n\t\t\tsize,\n\t\t\tposX,\n\t\t\tposY,\n\t\t\tcolor,\n\t\t\tFW1_ALIASED | FW1_RESTORESTATE\n\t\t\t);\n```\n\nAny idea what causes this problem? Using Visual Studio 2013 on Windows 8.1.",
+    "LastUpdatedDate": "2013-11-11T12:28:20.733-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2013-11-09T02:54:07.677-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Random performance inside Visual Studio 2013",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1189
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Probably because of DirectWrite memory allocations, as they are replaced with debug versions when the debugger is attached. Try profiling it with the debugger running, which should if so show most time inside DirectWrite.",
+      "PostedDate": "2013-11-09T03:11:28.397-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Thanks for the fast reply! I ran the profiler from VS on my program and indeed, it seems I'm most of the time in DWriteTextLayout::Draw. However, frame rate was again normal when running with the profiler. Is this because VS doesn't attach a debugger when profiling?",
+      "PostedDate": "2013-11-10T14:51:07.827-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "It probably skips the debugger if you use the Visual Studio profiler.\r\n\r\nSomeone else had this issue a while ago and he linked to this: http://preshing.com/20110717/the-windows-heap-is-slow-when-launched-from-the-debugger/\nGo into Visual Studio property pages, and Debugging, and there's an Environment field where you can add _NO_DEBUG_HEAP=1 and the issue goes away.\n(It might make it harder for the debugger to catch memory errors in a debugged app).",
+      "PostedDate": "2013-11-10T15:25:09.267-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Thanks! You were right; this solved the problem.",
+      "PostedDate": "2013-11-11T12:28:20.733-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

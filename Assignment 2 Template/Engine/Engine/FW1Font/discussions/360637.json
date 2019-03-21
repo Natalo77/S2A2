@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "852730",
+    "ThreadId": "360637",
+    "Html": "\r\n<p>Hi,<br>\r\n<br>\r\nFirst of, thanks again for this stellar work.</p>\r\n<p>I just have small question, regarding the &quot;ManyStrings&quot; sample application.</p>\r\n<p>I found that the FPS can double in rate after a window focus change (minimize / restore application window), when the &quot;Text Layouts&quot; setting is enabled.</p>\r\n<p>On my computer, for instance, the FPS can go from an avg. of 70 to 130 after a window focus change.</p>\r\n<p>Another odd thing I have noticed also, is that this improvement in rate will happen a few seconds after the &quot;window restore&quot; if Batch Draws is disabled, but will happen instantaneously if Batch Draws is enabled.</p>\r\n<p>Note that this 2x gain is independent of the 10x gain from setting TextLayouts Disable-&gt;Enable, which happens instantaneously.</p>\r\n<p>I'm no expert in DirectX, but I just wonder if somebody out there would know the cause of this behavior. I'm just curious if it's there's a state or something that triggers this behavior. If it's controllable or not. Maybe there's some Voodoo Magic, I don't\r\n know about :)</p>\r\n<p>I've noticed the same behavior in my application also.</p>\r\n<p>Thanks again!</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-06-22T12:19:47.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "857089",
+    "ThreadId": "360637",
+    "Html": "<p>That sounds very strange. Could be a driver issue or have something to do with Aero or overlapping windows. Does it happen both when you start from Visual Studio and when double-clicking the .exe ?</p>\r\n<p>Does it happen only with the font-wrapper or in other apps too?</p>\r\n<p>Does it happen in that sample if you turn on static geometry?</p>\r\n<p>Does it happen in debug and release?</p>\r\n<p>Do you have multiple monitors?</p>\r\n<p>Try creating a device with D3D11_CREATE_DEVICE_DEBUG flag and run with the debugger, and see if you get debug output.</p>\r\n<p>Since you say that it happens when text-layouts are enabled it could be a small constant slowdown that is more noticeable when FPS is higher. I doubt DirectWrite would care about the window-focus.. but threading issues might cause strangeness.. and focus change might reset thread timings. You can try using the D3D11_CREATE_DEVICE_SINGLETHREADED and D3D11_CREATE_DEVICE_PREVENT_INTERNAL_THREADING_OPTIMIZATIONS flags when creating the D3D11 device to avoid additional threads in your application (don't use this in a finished app unless you know why). I have previously noticed fairly random performance differences with multi-threading, where threads block each other. I'd be surprised if this happens after the first few frames in an example with constant strings though..</p>\r\n<p>Glad to hear you like the font-wrapper!</p>",
+    "PostedDate": "2012-07-03T16:02:54.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

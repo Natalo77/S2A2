@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1476011",
+    "ThreadId": "655483",
+    "Html": "Hello Community,<br />\n<br />\nI have a Project with D3D11 and FW1Fontwrapper. The dll should inject into any game with D3D11 and without FW1Fontwrapper initialized it works very well. But when I include FW1Fontwrapper the DLL doesn't get Injected anymore. Everytime when I press the Inject button the Injector crashs instantly. The Error Code is like in the Description. <br />\n<br />\nMy OS is Windows 10 x64, and I'm using VS2015<br />\n<br />\nI hope you can help me.<br />\n",
+    "PostedDate": "2016-06-13T06:29:05.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1476014",
+    "ThreadId": "655483",
+    "Html": "Did you rebuild FW1 or did you use a prebuilt DLL?<br />\nYou probably need to rebuild it on VS 2015 at least..<br />\n<br />\nMake sure FW1 works correctly on that system by building one of the sample projects.. not sure if Win10 might have changed some things, but I think it should still work, but not necessarily if using an old binary that tries to load an older version of some D3D/DirectWrite component. (Could also be the other way around, if you try to inject the DLL into something using older versions it may cause conflicts).<br />\n<br />\nEither way that type of usage is prone to errors and it could just as well be something completely different... it's not a use-case that was ever tested during development.<br />\n<br />\nSearching for 0x00000135 as a HRESULT says ERROR_NOTIFICATION_GUID_ALREADY_DEFINED, perhaps some conflict of the same thing registered or loaded twice or something..<br />\n",
+    "PostedDate": "2016-06-13T06:41:54.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1476072",
+    "ThreadId": "655483",
+    "Html": "Thanks for your Answer.<br />\n<br />\nYes I'm using eveything of the prebuild DLL and Lib. <br />\nWhen I try to Rebuild FW1 with the Source Code from your page it doesn't work.<br />\nIt always tells me when I change my Settings to VS2015 that I must have installied Windows 7.1 SDK ?!...<br />\n<br />\n<br />\nEdit1: So i tried a bit. I installied VS2012 Rebuild the whole FW1 Project. The error happens again.<br />\nSo I started Injecting the FW1.dll first and then my DLL then it works perfectly. But why happens this error? <br />\n",
+    "PostedDate": "2016-06-13T14:47:21.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1476114",
+    "ThreadId": "655483",
+    "Html": "If you right-click the project and go into the Properties view you should be able to change the Windows 7.1 SDK to the Windows 10 SDK, or alternatively there is sometimes an option that something like &quot;upgrade platform&quot; or similar when right-clicking. (I haven't actually tested building with Win10 SDK though..)\r<br />\n<br />\nDifficult to say what the error might be.. somehow feels like it's probably about dependencies between DLLs.. not sure how that works.<br />\n",
+    "PostedDate": "2016-06-14T01:32:38.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1476265",
+    "ThreadId": "655483",
+    "Html": "Thank you for your answer.\r<br />\n<br />\nI tried that already with a Visual Studio (V140) but that didn't work and I cant choose Windows 10 SDK.\r<br />\nI can only use FW1 when I first inject the Fw1 dll and then my own dll, but that sucks in my opinion...\r<br />\nMaybe it's a problem on my side, but it's very curious..<br />\n",
+    "PostedDate": "2016-06-14T15:21:14.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1476284",
+    "ThreadId": "655483",
+    "Html": "Strange, when I open the solution in VS 2015 I see 'Windows 7.1 SDK (not installed)' in Platform Toolset but if I click it I can select 'Visual Studio 2015 (v140)' instead...\r<br />\n<br />\nYou can also create a new project in VS, select Win32 Project, then select DLL and check Empty project. Add all the files from the Source directory in the FW1 code to that new project and it should build correctly.<br />\n",
+    "PostedDate": "2016-06-14T22:12:59.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1476502",
+    "ThreadId": "655483",
+    "Html": "So I tried this once and it worked. I could compile it with a new Project. \r<br />\nBut the Inject problem still exists.<br />\n",
+    "PostedDate": "2016-06-16T10:47:27.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

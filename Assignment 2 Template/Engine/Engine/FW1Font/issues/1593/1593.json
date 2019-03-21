@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Greetings,\n\nI'm a game development student, trying to implement FontWrapper into a WIP game engine.\n\nI'm having issues with drawString using the example code in documentation. It seems to only stream every third symbol in the string.\n\nHere I've tried writing \"123456789\" as an example:\n\n![Image](http://i.imgur.com/V9714sQ.png)\n\nIt never matters where I call function.\n\nI'd appreciate your assistance.",
+    "LastUpdatedDate": "2015-01-15T07:23:03.2-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2015-01-14T06:54:54.703-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "drawString skips symbols",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1593
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAre you using wchar_t strings, usually written as L\"123456789\"?\nIf you cast a char string to wide char it could cause such problems.\r\n\r\n/Erik",
+      "PostedDate": "2015-01-14T07:55:23.753-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Yes, I'm writing L\"123456789\" as the example instructs me to do. I'm not casting to wchar_t, I haven't done any change to the original code.",
+      "PostedDate": "2015-01-14T10:12:26.72-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "I see, strange. Have you tried running the sample projects from the download page?\nAlso, do you use the DLL or compile the source?\nIf the sample projects work, try doing ClearState and reset render target before drawing the string in your project. If the samples display the same problems, try adding the FW1 source files to the project instead of using the library, could be that later D3D/Windows/driver updates have some incompatibility.",
+      "PostedDate": "2015-01-14T11:05:35.303-08:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Turns out the problem lied my game's render system overall. The example worked fine on a clean version of the game engine.\r\n\r\nEither way, thank you so much for your time.",
+      "PostedDate": "2015-01-15T07:23:03.2-08:00",
+      "Id": -2147483648
+    }
+  ]
+}

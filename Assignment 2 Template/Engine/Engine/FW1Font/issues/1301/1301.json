@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "I had problems running a release build of a project using FW1FontWrapper as a static library. In the FW1 project properties->configuration properties->c/c++->code generation->runtime library, the setting was \"Multi-threaded (/MT)\". I believe it should be \"Multi-threaded DLL (/MD)\". I hope this saves someone the time it took me to figure out.\n\nThanks for the project! Having fun with it, and will possibly be using in college instruction.",
+    "LastUpdatedDate": "2014-04-30T03:46:42.25-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2014-04-30T02:47:09.383-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Release build settings incorrect",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1301
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks!",
+      "PostedDate": "2014-04-30T03:46:42.25-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

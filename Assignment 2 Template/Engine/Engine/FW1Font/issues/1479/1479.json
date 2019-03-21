@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Here's a sample picture : \n![Image](http://i.imgur.com/qZ8HFb9.png) , Oh , and i'm using an NVIDIA 600 Series GPU with the latest drivers installed (344.11) , and DX11",
+    "LastUpdatedDate": "2014-10-09T11:29:33.897-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "fw1",
+    "ReportedDate": "2014-10-09T00:23:40.223-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "FW still messes up with geometry even with GEOMETRYSHADER turned off",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 1479
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Whats wrong with the picture?",
+      "PostedDate": "2014-10-09T01:10:51.953-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "See the top face of the cube , also , the left face is not rendering",
+      "PostedDate": "2014-10-09T08:26:52.86-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Try using the FW1_RESTORESTATE flag when drawing text.",
+      "PostedDate": "2014-10-09T09:38:32.913-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Thanks alot , IT WORKS :D\nbtw , is there anyway to convert a float to an LPCWSTR?",
+      "PostedDate": "2014-10-09T11:09:20.813-07:00",
+      "Id": -2147483648
+    },
+    {
+      "Message": "Great :)\r\n\r\n#include <sstream>\nstd::stringstream ss;\nss << 3.14f;\nDrawString(..., ss.str().c_str(), ... ...);",
+      "PostedDate": "2014-10-09T11:29:33.897-07:00",
+      "Id": -2147483648
+    }
+  ]
+}

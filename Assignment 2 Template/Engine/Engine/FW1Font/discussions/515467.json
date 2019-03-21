@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1185494",
+    "ThreadId": "515467",
+    "Html": "Thanks for the great code!\r<br />\nI'm having one issue though.\r<br />\n<br />\nMeasureString doesn't seem to return correct values, which flags am I supposed to use?\r<br />\n<br />\nThis is my current code, rect has some impossible high values for .Bottom and .Right<br />\n<pre><code>    FW1_RECTF layoutRect;\n    layoutRect.Left = rect.Top = 0;\n    layoutRect.Bottom = 1080;\n    layoutRect.Right = 1920;\n\n    FW1_RECTF rect = pFontWrapper-&gt;MeasureString(L&quot;test test test&quot;, L&quot;Arial&quot;, 14.0f, &amp;layoutRect, FW1_ANALYZEONLY);</code></pre>\n\n",
+    "PostedDate": "2014-01-20T15:39:15.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1187305",
+    "ThreadId": "515467",
+    "Html": "I put another function together, I'm just wondering about the performance of this.<br />\nAt least it's working ;)<br />\n<pre><code>const Drawing::Size Font::MeasureText(const std::string &amp;text)\n{\n    IDWriteFactory *pDWriteFactory;\n    pFontWrapper-&gt;GetDWriteFactory(&amp;pDWriteFactory);\n\n    IDWriteTextFormat *pTextFormat;\n    pDWriteFactory-&gt;CreateTextFormat(fontFamily, NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_OBLIQUE, DWRITE_FONT_STRETCH_NORMAL, FontSize, L&quot;&quot;, &amp;pTextFormat);\n\n    IDWriteTextLayout *pTextLayout;\n    pDWriteFactory-&gt;CreateTextLayout(StringToWCHAR(text), text.length(), pTextFormat, 0.0f, 0.0f, &amp;pTextLayout);\n    pTextLayout-&gt;SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);\n\n    pDWriteFactory-&gt;Release();\n\n    DWRITE_OVERHANG_METRICS overhangMetrics;\n    pTextLayout-&gt;GetOverhangMetrics(&amp;overhangMetrics);\n\n    return Drawing::Size(overhangMetrics.right - overhangMetrics.left, overhangMetrics.bottom - overhangMetrics.top);\n}</code></pre>\n\n",
+    "PostedDate": "2014-01-21T05:15:52.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1187474",
+    "ThreadId": "515467",
+    "Html": "Thanks for reporting, I will investigate what might cause it.\r<br />\n<br />\nThe library does exactly the same calls as you do, but doesn't recreate the text-format each time (but still recreates the text-layout). It also attempts to place the rect so it covers exactly the pixels drawn if drawing the string (with left and right coordinates instead of width). Performance is reasonable, but it's ofcourse best to cache the size and update when the string changes.<br />\n",
+    "PostedDate": "2014-01-21T06:28:17.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-21T07:27:11.613-08:00"
+  },
+  {
+    "Id": "1187509",
+    "ThreadId": "515467",
+    "Html": "The bug was that the library ignores the layout-rect and assumes the text is drawn with FW1_NOWORDWRAP, so it only works if the text is drawn at X, Y and not when it's drawn with a box..\r<br />\nI'll update it when I have time, thanks again :)<br />\n",
+    "PostedDate": "2014-01-21T06:39:42.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-21T07:27:14.33-08:00"
+  },
+  {
+    "Id": "1187525",
+    "ThreadId": "515467",
+    "Html": "Also, for exact coordinates you want to add overhangMetrics.right + overhangMetrics.left, and not subtract them, though usually there's no overhang so it won't matter. If you would want to measure strings with a layout-box (not 0.0f for width/height in CreateTextLayout) then also add the width/height to the size.<br />\n",
+    "PostedDate": "2014-01-21T06:45:39.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-21T07:27:15.81-08:00"
+  },
+  {
+    "Id": "1188148",
+    "ThreadId": "515467",
+    "Html": "But when only looking for the exact Width and Height of a string, then subtraction is the way to go (if there would ever be an overhang), isn't it?<br />\n<br />\nOr is it<br />\nleft &amp; top = X &amp; Y position<br />\nright &amp; bottom = width &amp; height<br />\n",
+    "PostedDate": "2014-01-21T10:43:23.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1188172",
+    "ThreadId": "515467",
+    "Html": "Overhang coordinates always extend away from the character, even on the left side, so addition yields the correct result.\r<br />\n<br />\nFrom <a href=\"http://msdn.microsoft.com/en-us/library/windows/desktop/dd368109%28v=vs.85%29.aspx\" rel=\"nofollow\">http://msdn.microsoft.com/en-us/library/windows/desktop/dd368109%28v=vs.85%29.aspx</a><br />\n<blockquote>\nPositive overhangs indicate that the visible area extends outside the layout box or inline object, while negative values mean there is whitespace inside.<br />\n</blockquote>\n",
+    "PostedDate": "2014-01-21T10:52:39.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

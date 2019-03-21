@@ -1,0 +1,24 @@
+<div class="wikidoc"><b>Documentation</b><br />API documentation is currently available in HTML at <a href="http://www.rufelt.com/fw1fontwrapper/">http://www.rufelt.com/fw1fontwrapper/</a>.<br /><br /><b>Minimal C++ code example</b><br />Drawing strings on the screen is easily achieved in a few lines of code. See the downloadable samples for additional feature examples.<br /><br /><div style="color:Black;background-color:White;"><pre>
+#include <span style="color:#A31515;">&quot;FW1FontWrapper.h&quot;</span>
+
+<span style="color:Blue;">void</span> drawText(ID3D11Device *pDevice, ID3D11DeviceContext *pContext) {
+	IFW1Factory *pFW1Factory;
+	HRESULT hResult = FW1CreateFactory(FW1_VERSION, &amp;pFW1Factory);
+	
+	IFW1FontWrapper *pFontWrapper;
+	hResult = pFW1Factory-&gt;CreateFontWrapper(pDevice, L<span style="color:#A31515;">&quot;Arial&quot;</span>, &amp;pFontWrapper);
+	
+	pFontWrapper-&gt;DrawString(
+		pContext,
+		L<span style="color:#A31515;">&quot;Text&quot;</span>,<span style="color:Green;">// String</span>
+		128.0f,<span style="color:Green;">// Font size</span>
+		100.0f,<span style="color:Green;">// X position</span>
+		50.0f,<span style="color:Green;">// Y position</span>
+		0xff0099ff,<span style="color:Green;">// Text color, 0xAaBbGgRr</span>
+		0<span style="color:Green;">// Flags (for example FW1_RESTORESTATE to keep context states unchanged)</span>
+	);
+	
+	pFontWrapper-&gt;Release();
+	pFW1Factory-&gt;Release();
+}
+</pre></div></div><div class="ClearBoth"></div>

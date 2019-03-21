@@ -1,0 +1,5 @@
+﻿  graphicsclass.cpp
+c:\users\u1661665\downloads\week_8\week8\assignment 2 template\engine\engine\graphicsclass.cpp(61): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+c:\users\u1661665\downloads\week_8\week8\assignment 2 template\engine\engine\graphicsclass.cpp(117): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+c:\users\u1661665\downloads\week_8\week8\assignment 2 template\engine\engine\graphicsclass.cpp(220): warning C4316: 'TextClassA': object allocated on the heap may not be aligned 16
+  Engine.vcxproj -> C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Debug\Engine.exe

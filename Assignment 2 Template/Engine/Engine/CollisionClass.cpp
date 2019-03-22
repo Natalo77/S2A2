@@ -179,6 +179,22 @@ bool CollisionClass::TestIntersection(int mouseX, int mouseY)
 	return intersect;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		RaySphereIntersect
+
+Summary:	Tests whether the ray defined by vrayOrigin and vrayDirection intersects
+			a sphere described by its radius.
+
+Args:		FXMVECTOR vrayOrigin.
+				an XMVECTOR/XMFLOAT3 describing the origin point of the raycast.
+			FXMVECTOR vrayDirection.
+				an XMVECTOR/XMFLOAT3 describing the direction vector of the raycast.
+			float radius.
+				describing the radius of the sphere to test the intersection against.
+
+Returns:	bool
+				Whether or not the raycast intersected the sphere.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool CollisionClass::RaySphereIntersect(FXMVECTOR vrayOrigin, FXMVECTOR vrayDirection, float radius)
 {
 	float a, b, c, discriminant;
@@ -204,7 +220,76 @@ bool CollisionClass::RaySphereIntersect(FXMVECTOR vrayOrigin, FXMVECTOR vrayDire
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		rayAABBIntersect
+
+Summary:	Tests whether a ray described by rayOrigin and rayDirection intersects
+			the boundingBox AABB
+
+Args:		FXMVECTOR rayOrigin
+				an XMVECTOR/XMFLOAT3 describing the origin point of the raycast.
+			FXMVECTOR rayDirection
+				an XMVECTOR/XMFLOAT3 describing the direction vector of the raycast.
+			BoundingBox AABB
+				a DirectXCollision::BoundingBox describing the bounding box to check
+				intersection against.
+
+Returns:	bool
+				whether the raycast(rayOrigin, rayDirection) intersects AABB.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool CollisionClass::rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox AABB)
 {
-	return false;
+	//The two intersection points on the AABB
+	XMFLOAT3 intersections[2];
+
+	//XMFLOAT 3 representations of the passed in XMVECTORS.
+	XMFLOAT3 f_rayOrigin, f_rayDirection;
+	{
+		XMStoreFloat3(&f_rayOrigin, rayOrigin);
+		XMStoreFloat3(&f_rayDirection, rayDirection);
+	}
+
+	//XMFLOAT3 representations constructed from the center and extents of the BoundingBox.
+	XMFLOAT3 min, max;
+	{
+		min.x = AABB.Center.x - AABB.Extents.x;
+		min.y = AABB.Center.y - AABB.Extents.y;
+		min.z = AABB.Center.z - AABB.Extents.z;
+		max.x = AABB.Center.x + AABB.Extents.x;
+		max.y = AABB.Center.y + AABB.Extents.y;
+		max.z = AABB.Center.z + AABB.Extents.z;
+	}
+
+	//Calculations of the intersection points.
+	{
+		intersections[0].x = (min.x - f_rayOrigin.x) / f_rayDirection.x;
+		intersections[0].y = (min.y - f_rayOrigin.y) / f_rayDirection.y;
+		intersections[0].z = (min.z - f_rayOrigin.z) / f_rayDirection.z;
+
+		intersections[1].x = (max.x - f_rayOrigin.x) / f_rayDirection.x;
+		intersections[1].y = (max.y - f_rayOrigin.y) / f_rayDirection.y;
+		intersections[1].z = (max.z - f_rayOrigin.z) / f_rayDirection.z;
+	}
+
+	//logic depends on intersections[0] < intersections[1].
+	if (intersections[0].x > intersections[1].x)
+		Swap<float>(intersections[0].x, intersections[1].x);
+	if (intersections[0].y > intersections[1].y)
+		Swap<float>(intersections[0].y, intersections[1].y);
+	if (intersections[0].z > intersections[1].z)
+		Swap<float>(intersections[0].z, intersections[1].z);
+
+	//Test for missing the 2d box
+	if (intersections[0].x > intersections[1].y || intersections[0].y > intersections[1].x)
+		return false;
+
+	//Test for missing the cube.
+	if (intersections[0].x > intersections[1].z || intersections[0].z > intersections[1].x)
+		return false;
+
+	//If this point is reached then the intersection must be true.
+	return true;
 }
+
+
+

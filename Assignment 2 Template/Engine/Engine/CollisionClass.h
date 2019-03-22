@@ -23,7 +23,8 @@ Class:		CollisionClass
 Summary:	A Class designed to provide various method for testing the
 				intersection between geometries.
 
-Methods:	CollisionClass();
+Methods:	==================== PUBLIC ====================
+			CollisionClass();
 				Default Constructor.
 			CollisionClass(const CollisionClass&);
 				Reference Constructor.
@@ -44,6 +45,10 @@ Methods:	CollisionClass();
 				sphere with given radius.
 			RayAABBIntersect(rayOrigin, rayDirection, AABB)
 				Checks if the specified ray intersects with AABB.
+
+			==================== INLINE ====================
+			Swap<T>(T&, T&)
+				Swaps the two objects of type T around in memory.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class CollisionClass
 {
@@ -55,14 +60,23 @@ public:
 	bool Initialize(D3DClass*, CameraClass*);
 	void Shutdown();
 
-	//void TestIntersection(int mouseX, int mouseY);
 	bool TestIntersection(int mouseX, int mouseY);
 
 	bool RaySphereIntersect(FXMVECTOR vrayOrigin, FXMVECTOR vrayDirection, float radius);
 	bool rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox AABB);
 
 private:
+	template<typename T> void Swap(T&, T&);
+
+private:
 	D3DClass * m_D3D;
 	CameraClass* m_Camera;
 };
 
+template<typename T>
+inline void CollisionClass::Swap(T & a, T & b)
+{
+	T temp(a);
+	a = b;
+	b = temp;
+}

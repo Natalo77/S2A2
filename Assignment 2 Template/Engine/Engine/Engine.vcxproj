@@ -110,7 +110,7 @@
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>

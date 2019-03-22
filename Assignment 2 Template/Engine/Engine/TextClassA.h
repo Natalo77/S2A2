@@ -48,7 +48,8 @@ private:
 	bool InitializeSentence(SentenceType**, int, ID3D11Device*);
 	bool UpdateSentence(SentenceType*, char*, int, int, float, float, float, ID3D11DeviceContext*);
 	void ReleaseSentence(SentenceType**);
-	bool RenderSentence(ID3D11DeviceContext*, SentenceType*, XMMATRIX, XMMATRIX);
+	bool RenderSentence(ID3D11DeviceContext*, SentenceType*);
+	UINT32 getColour(SentenceType* sentence);
 
 private:
 	FontClassA * m_Font;

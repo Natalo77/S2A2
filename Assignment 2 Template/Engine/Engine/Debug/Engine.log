@@ -1,5 +1,5 @@
-﻿  graphicsclass.cpp
-c:\users\u1661665\downloads\week_8\week8\assignment 2 template\engine\engine\graphicsclass.cpp(61): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
-c:\users\u1661665\downloads\week_8\week8\assignment 2 template\engine\engine\graphicsclass.cpp(117): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-c:\users\u1661665\downloads\week_8\week8\assignment 2 template\engine\engine\graphicsclass.cpp(220): warning C4316: 'TextClassA': object allocated on the heap may not be aligned 16
-  Engine.vcxproj -> C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Debug\Engine.exe
+﻿  TextClassA.cpp
+e:\_programming\s2a2\assignment 2 template\engine\engine\textclassa.cpp(407): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+e:\_programming\s2a2\assignment 2 template\engine\engine\textclassa.cpp(408): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+e:\_programming\s2a2\assignment 2 template\engine\engine\textclassa.cpp(409): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

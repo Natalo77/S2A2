@@ -148,7 +148,7 @@ bool TextClassA::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix
 
 
 	// Draw the first sentence.
-	result = RenderSentence(deviceContext, m_sentence1, worldMatrix, orthoMatrix);
+	result = RenderSentence(deviceContext, m_sentence1);
 	if (!result)
 	{
 		return false;
@@ -366,53 +366,68 @@ void TextClassA::ReleaseSentence(SentenceType** sentence)
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		RenderSentence
 
-bool TextClassA::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType* sentence, XMMATRIX worldMatrix,
-	XMMATRIX orthoMatrix)
+Summary:	Renders the sentence stored in param 'sentence' to the top left of the screen.
+
+Args:		ID3D11DeviceContext deviceContext
+				A pointer to the current DeviceContext being used.
+			SentenceType* sentence.
+				A pointer to a sentence struct containing the text to be written.
+
+Modifies:	[None.].
+
+Returns:	bool
+				representing whether or not the sentence was rendered successfully.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool TextClassA::RenderSentence(ID3D11DeviceContext* deviceContext, SentenceType* sentence)
 {
-	unsigned int stride, offset;
-	XMFLOAT4 pixelColor;
-	bool result = true;
-
+	UINT32 colour;
 	
-	// Set vertex buffer stride and offset.
-	stride = sizeof(VertexType);
-	offset = 0;
-
-	// Set the vertex buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetVertexBuffers(0, 1, &sentence->vertexBuffer, &stride, &offset);
-
-	// Set the index buffer to active in the input assembler so it can be rendered.
-	deviceContext->IASetIndexBuffer(sentence->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Create a pixel color vector with the input sentence color.
-	pixelColor = XMFLOAT4(sentence->red, sentence->green, sentence->blue, 1.0f);
-
-	// Render the text using the font shader.
-	//result = m_FontShader->Render(deviceContext, sentence->indexCount, worldMatrix, m_baseViewMatrix, orthoMatrix, m_Font->GetTexture(),
-	//	XMLoadFloat4(&pixelColor));
-
-	UINT32 colour, red, blue, green;
-	red = sentence->red;
-	blue = sentence->blue;
-	green = sentence->green;
-	
-	colour = 0xFF0000FF;
+	//color = 0xAABBGGRR
+	//colour = 0xFF0000FF;
 	//colour = 0xFF + (blue << 6) + (green << 4) + (blue << 2);
+	
+
+	colour = getColour(sentence);
 
 	
 
 	m_pFontWrapper->DrawString(deviceContext, (WCHAR*)sentence->sentence, 50.0f, 10.0f, 10.0f, colour, FW1_TOP | FW1_LEFT | FW1_RESTORESTATE);
 
-	if (!result)
-	{
-		false;
-	}
+	
 
 	return true;
+}
+
+UINT32 TextClassA::getColour(SentenceType* sentence)
+{
+	//Convert each float value to its percentage of 255
+	int colorb = 255 * sentence->blue;
+	int colorg = 255 * sentence->green;
+	int colorr = 255 * sentence->red;
+
+	//convert each int to 8 bit Hex
+	UINT8 ucolorb = 0x00 + colorb;
+	UINT8 ucolorg = 0x00 + colorg;
+	UINT8 ucolorr = 0x00 + colorr;
+
+	//Convert each UINT8 to a UINT32
+	UINT32 u32colorb = ucolorb;
+	UINT32 u32colorg = ucolorg;
+	UINT32 u32colorr = ucolorr;
+
+	//Create final UINT32s and push the converted UINT8s back onto each.
+	UINT32 u32finalcolorb = 0x00000000 | (u32colorb << 16);
+	UINT32 u32finalcolorg = 0x00000000 | (u32colorg << 8);
+	UINT32 u32finalcolorr = 0x00000000 | (u32colorr);
+
+	//0xAaBbGgRr
+	//Push each hex back onto a UNIT32
+	UINT32 color = 0xFF000000 | u32finalcolorb | u32finalcolorg | u32finalcolorr;
+
+	return color;
 }
 
 

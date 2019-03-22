@@ -224,7 +224,7 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 	}
 
 	// Initialize the text object.
-	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd, screenWidth, screenHeight, baseViewMatrix);
+	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the text object.", L"Error", MB_OK);
@@ -693,7 +693,7 @@ bool GraphicsClass::Render()
 	result = m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), XMMatrixIdentity() /*worldMatrix*/, XMMatrixIdentity() /*viewMatrix*/, orthoMatrix, m_Bitmap->GetTexture());
 
 	// Render the text strings.
-	result = m_Text->Render(m_D3D->GetDeviceContext(), XMMatrixIdentity() /*worldMatrix*/, orthoMatrix);
+	result = m_Text->Render(m_D3D->GetDeviceContext());
 	if (!result)
 	{
 		return false;

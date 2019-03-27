@@ -59,6 +59,8 @@ Methods:	==================== PUBLIC ====================
 			GetTexture()
 				A utility function to return the Texture used for this resource
 				as a resource.
+			GetAABB()
+				a utility function to return the Bounding box used for this model.
 
 			==================== PRIVATE ====================
 			InitializeBuffers(ID3D11Device*)
@@ -144,6 +146,7 @@ public:
 
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();
+	BoundingBox* GetAABB();
 
 
 private:

@@ -95,7 +95,7 @@ bool TextClassA::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 	}
 
 	// Now update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence1, "Intersection: No", 20, 20, 1.0f, deviceContext);
+	result = UpdateSentence(m_sentence1, "Intersection: No", 1.0f, 0.0f, 0.0f, deviceContext);
 	if (!result)
 	{
 		return false;
@@ -320,8 +320,8 @@ UINT32 TextClassA::getColour(SentenceType* sentence)
 	UINT32 u32colorr = ucolorr;
 
 	//Create final UINT32s and push the converted UINT8s back onto each.
-	UINT32 u32finalcolorb = 0x00000000 | (u32colorb << 16);
-	UINT32 u32finalcolorg = 0x00000000 | (u32colorg << 8);
+	UINT32 u32finalcolorb = 0x00000000 | (u32colorb << 24);
+	UINT32 u32finalcolorg = 0x00000000 | (u32colorg << 12);
 	UINT32 u32finalcolorr = 0x00000000 | (u32colorr);
 
 	//0xAaBbGgRr
@@ -358,12 +358,12 @@ bool TextClassA::SetIntersection(bool intersection, ID3D11DeviceContext* deviceC
 	if (intersection)
 	{
 		strcpy_s(intersectionString, "Intersection: Yes");
-		result = UpdateSentence(m_sentence1, intersectionString, 20, 20, 0.0f, deviceContext);
+		result = UpdateSentence(m_sentence1, intersectionString, 0.0f, 1.0f, 0.0f, deviceContext);
 	}
 	else
 	{
 		strcpy_s(intersectionString, "Intersection: No");
-		result = UpdateSentence(m_sentence1, intersectionString, 20, 20, 1.0f, deviceContext);
+		result = UpdateSentence(m_sentence1, intersectionString, 1.0f, 0.0f, 0.0f, deviceContext);
 	}
 
 	return result;

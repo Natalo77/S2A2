@@ -590,7 +590,12 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 		{
 			m_beginCheck = true;
 			m_Input->GetMouseLocation(mouseX, mouseY);
-			if (m_CollisionObject->TestIntersection(mouseX, mouseY))
+			//if (m_CollisionObject->TestIntersection(mouseX, mouseY))
+			//	SetIntersectionText(true);
+			//else 
+				
+			
+			if(m_CollisionObject->TestCubeIntersect(mouseX, mouseY, m_IntersectTestCube->GetAABB()))
 				SetIntersectionText(true);
 			else
 				SetIntersectionText(false);
@@ -685,6 +690,23 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
+
+	//Reset the world Matrix
+	m_D3D->GetWorldMatrix(worldMatrix);
+	
+	//Translate to the cube location.
+	translateMatrix = XMMatrixTranslation(-5.0f, 1.0f, 5.0f);
+	worldMatrix = XMMatrixMultiply(worldMatrix, translateMatrix);
+
+	//Render the intersection cube using the light shader.
+	m_IntersectTestCube->Render(m_D3D->GetDeviceContext());
+	result = m_ShaderManager->RenderLightShader(m_D3D->GetDeviceContext(), m_IntersectTestCube->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_IntersectTestCube->GetTexture(),
+		m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+
+	//Break if failed.
+	if (!result)
+		return false;
 
 	// Reset the world matrix.
 	m_D3D->GetWorldMatrix(worldMatrix);

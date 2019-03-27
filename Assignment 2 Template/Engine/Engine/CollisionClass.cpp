@@ -119,63 +119,52 @@ Returns:	bool
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool CollisionClass::TestIntersection(int mouseX, int mouseY)
 {
-	float pointX, pointY;
-	XMMATRIX mprojectionMatrix, mviewMatrix, minverseViewMatrix, mworldMatrix, mtranslateMatrix, minverseWorldMatrix;
-	XMFLOAT4X4 projectionMatrix, viewMatrix, inverseViewMatrix, worldMatrix, translateMatrix, inverseWorldMatrix;
-	XMFLOAT3 direction, origin, rayOrigin, rayDirection;
-	bool intersect, result;
+	XMFLOAT3 rayOrigin, rayDirection;
+	bool intersect;
 
-
-	// Move the mouse cursor coordinates into the -1 to +1 range.
-	pointX = ((2.0f * (float)mouseX) / (float)m_D3D->m_screenWidth) - 1.0f;
-	pointY = (((2.0f * (float)mouseY) / (float)m_D3D->m_screenHeight) - 1.0f) * -1.0f;
-
-	// Adjust the points using the projection matrix to account for the aspect ratio of the viewport.
-	m_D3D->GetProjectionMatrix(mprojectionMatrix);
-	XMStoreFloat4x4(&projectionMatrix, mprojectionMatrix);
-	pointX = pointX / projectionMatrix._11;
-	pointY = pointY / projectionMatrix._22;
-
-	// Get the inverse of the view matrix.
-	m_Camera->GetViewMatrix(mviewMatrix);
-	XMVECTOR viewDeterminant = XMMatrixDeterminant(mviewMatrix);
-	minverseViewMatrix = XMMatrixInverse(&viewDeterminant, mviewMatrix);
-
-	XMStoreFloat4x4(&inverseViewMatrix, minverseViewMatrix);
-
-	// Calculate the direction of the picking ray in view space.
-	direction.x = (pointX * inverseViewMatrix._11) + (pointY * inverseViewMatrix._21) + inverseViewMatrix._31;
-	direction.y = (pointX * inverseViewMatrix._12) + (pointY * inverseViewMatrix._22) + inverseViewMatrix._32;
-	direction.z = (pointX * inverseViewMatrix._13) + (pointY * inverseViewMatrix._23) + inverseViewMatrix._33;
-
-	// Get the origin of the picking ray which is the position of the camera.
-	origin = m_Camera->GetPosition();
-
-	// Get the world matrix and translate to the location of the sphere.
-	m_D3D->GetWorldMatrix(mworldMatrix);
-	mtranslateMatrix = XMMatrixTranslation(-5.0f, 1.0f, 5.0f);
-	mworldMatrix = XMMatrixMultiply(mworldMatrix, mtranslateMatrix);
-
-	// Now get the inverse of the translated world matrix.
-	XMVECTOR worldDeterminant = XMMatrixDeterminant(mworldMatrix);
-	minverseWorldMatrix = XMMatrixInverse(&worldDeterminant, mworldMatrix);
-
-
-	// Now transform the ray origin and the ray direction from view space to world space.
-	//D3DXVec3TransformCoord(&rayOrigin, &origin, &inverseWorldMatrix);
-
-	XMStoreFloat3(&rayOrigin, XMVector3TransformCoord(XMLoadFloat3(&origin), minverseWorldMatrix));
-	//D3DXVec3TransformNormal(&rayDirection, &direction, &inverseWorldMatrix);
-	XMStoreFloat3(&rayDirection, XMVector3TransformNormal(XMLoadFloat3(&direction), minverseWorldMatrix));
-
-	// Normalize the ray direction.
-	//D3DXVec3Normalize(&rayDirection, &rayDirection);
-	XMStoreFloat3(&rayDirection, XMVector3Normalize(XMLoadFloat3(&rayDirection)));
+	//Get the ray data with the mouse co-ordinates.
+	GetRay(rayOrigin, rayDirection, mouseX, mouseY);
 
 	// Now perform the ray-sphere intersection test.
 	intersect = RaySphereIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), 1.0f);
 
 	//return this result.
+	return intersect;
+}
+
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		TestIntersection
+
+Summary:	Begins the process of testing whether or not a ray at mousex
+				and mouseY intersects with the specified BoundingBox
+
+Args:		int mouseX
+				the x co-ordinate on the screen that the ray is shot into.
+			int mouseY
+				the y co-ordinate on the screen that the ray is shot into.
+			BoundingBox* AABB
+				the Bounding box to check for collision against.
+
+Returns:	bool
+				represents whether or not the ray collided with the bounding box
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool CollisionClass::TestCubeIntersect(int mouseX, int mouseY, BoundingBox* AABB)
+{
+	XMFLOAT3 rayOrigin, rayDirection;
+	bool intersect;
+
+	//Get the ray data with the mouse co-ordinates.
+	GetRay(rayOrigin, rayDirection, mouseX, mouseY);
+
+	//Translate the AABB.
+	AABB->Center.x = -5.0f;
+	AABB->Center.y = 1.0f;
+	AABB->Center.z = 5.0f;
+
+	//Perform the ray AABB intersection test.
+	intersect = rayAABBIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), AABB);
+
 	return intersect;
 }
 
@@ -237,7 +226,7 @@ Args:		FXMVECTOR rayOrigin
 Returns:	bool
 				whether the raycast(rayOrigin, rayDirection) intersects AABB.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool CollisionClass::rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox AABB)
+bool CollisionClass::rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox* AABB)
 {
 	/*
 	//The two intersection points on the AABB
@@ -288,12 +277,83 @@ bool CollisionClass::rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirectio
 	if (intersections[0].x > intersections[1].z || intersections[0].z > intersections[1].x)
 		return false;*/
 
-	float* infinity;
-	*infinity = INFINITY;
-	return AABB.Intersects(rayOrigin, rayDirection, *infinity);
+	float* infinity = new float;
+	*infinity = (float)INFINITY;
+	return AABB->Intersects(rayOrigin, rayDirection, *infinity);
 
 	//If this point is reached then the intersection must be true.
 	return true;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		getRay
+
+Summary:	Calculates a 'into-screen' ray at mouseX,mouseY and stores
+			the results in originOut and directionOut.
+
+Args:		XMFLOAT3 &originOut
+				a reference to an XMFLOAT3 object to store the rayOrigin data in
+			XMFLOAT3 &directionOut
+				a reference to an XMFLOAT3 object to store the rayDirection data in.
+			int mouseX
+				the x co-ordinate on the screen that the ray is shot into.
+			int mouseY
+				the y co-ordinate on the screen that the ray is shot into.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void CollisionClass::GetRay(XMFLOAT3 &originOut, XMFLOAT3 &directionOut, int mouseX, int mouseY)
+{
+	float pointX, pointY;
+	XMMATRIX mprojectionMatrix, mviewMatrix, minverseViewMatrix, mworldMatrix, mtranslateMatrix, minverseWorldMatrix;
+	XMFLOAT4X4 projectionMatrix, viewMatrix, inverseViewMatrix, worldMatrix, translateMatrix, inverseWorldMatrix;
+	XMFLOAT3 direction, origin;
+
+	// Move the mouse cursor coordinates into the -1 to +1 range.
+	pointX = ((2.0f * (float)mouseX) / (float)m_D3D->m_screenWidth) - 1.0f;
+	pointY = (((2.0f * (float)mouseY) / (float)m_D3D->m_screenHeight) - 1.0f) * -1.0f;
+
+	// Adjust the points using the projection matrix to account for the aspect ratio of the viewport.
+	m_D3D->GetProjectionMatrix(mprojectionMatrix);
+	XMStoreFloat4x4(&projectionMatrix, mprojectionMatrix);
+	pointX = pointX / projectionMatrix._11;
+	pointY = pointY / projectionMatrix._22;
+
+	// Get the inverse of the view matrix.
+	m_Camera->GetViewMatrix(mviewMatrix);
+	XMVECTOR viewDeterminant = XMMatrixDeterminant(mviewMatrix);
+	minverseViewMatrix = XMMatrixInverse(&viewDeterminant, mviewMatrix);
+
+	XMStoreFloat4x4(&inverseViewMatrix, minverseViewMatrix);
+
+	// Calculate the direction of the picking ray in view space.
+	direction.x = (pointX * inverseViewMatrix._11) + (pointY * inverseViewMatrix._21) + inverseViewMatrix._31;
+	direction.y = (pointX * inverseViewMatrix._12) + (pointY * inverseViewMatrix._22) + inverseViewMatrix._32;
+	direction.z = (pointX * inverseViewMatrix._13) + (pointY * inverseViewMatrix._23) + inverseViewMatrix._33;
+
+	// Get the origin of the picking ray which is the position of the camera.
+	origin = m_Camera->GetPosition();
+
+	// Get the world matrix and translate to the location of the sphere.
+	m_D3D->GetWorldMatrix(mworldMatrix);
+	//mtranslateMatrix = XMMatrixTranslation(-5.0f, 1.0f, 5.0f);
+	//mworldMatrix = XMMatrixMultiply(mworldMatrix, mtranslateMatrix);
+
+	// Now get the inverse of the translated world matrix.
+	XMVECTOR worldDeterminant = XMMatrixDeterminant(mworldMatrix);
+	minverseWorldMatrix = XMMatrixInverse(&worldDeterminant, mworldMatrix);
+
+
+	// Now transform the ray origin and the ray direction from view space to world space.
+	//D3DXVec3TransformCoord(&rayOrigin, &origin, &inverseWorldMatrix);
+
+	XMStoreFloat3(&originOut, XMVector3TransformCoord(XMLoadFloat3(&origin), minverseWorldMatrix));
+	//D3DXVec3TransformNormal(&rayDirection, &direction, &inverseWorldMatrix);
+	XMStoreFloat3(&directionOut, XMVector3TransformNormal(XMLoadFloat3(&direction), minverseWorldMatrix));
+
+	// Normalize the ray direction.
+	//D3DXVec3Normalize(&rayDirection, &rayDirection);
+	XMStoreFloat3(&directionOut, XMVector3Normalize(XMLoadFloat3(&directionOut)));
+
+	return;
 }
 
 

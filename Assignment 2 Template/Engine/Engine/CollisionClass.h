@@ -37,14 +37,24 @@ Methods:	==================== PUBLIC ====================
 				Call when finished using to tear down the object.
 
 			TestIntersection(int mouseX, int mouseY);
-				returns whether or not an intersection occured with a ray specified
-				by mouseX and mouseY
+				returns whether or not an intersection occured with the 
+				test sphere with a ray specified by mouseX and mouseY
+			TestCubeIntersect(int mouseX, int mouseY, BoundingBox* AABB)
+				Returns whether or not an intersection occured with the
+				specified bounding box at the ray specified by mouseX
+				and mouseY
 
 			RaySphereIntersect(rayOrigin, rayDirection, radius);
 				Checks if the ray specified by param 1 & 2 intersects with a
 				sphere with given radius.
 			RayAABBIntersect(rayOrigin, rayDirection, AABB)
 				Checks if the specified ray intersects with AABB.
+
+			==================== PRIVATE ====================
+			getRay(XMFLOAT3 &originOut, XMFLOAT3 &directionOut, int mouseX, int mouseY)
+				Called by both TestIntersection functions
+				Gets and stores information to specify a ray at mouseX and mouseY
+				and stores then in the Out parameters.
 
 			==================== INLINE ====================
 			Swap<T>(T&, T&)
@@ -61,11 +71,14 @@ public:
 	void Shutdown();
 
 	bool TestIntersection(int mouseX, int mouseY);
+	bool TestCubeIntersect(int mouseX, int mouseY, BoundingBox* AABB);
 
 	bool RaySphereIntersect(FXMVECTOR vrayOrigin, FXMVECTOR vrayDirection, float radius);
-	bool rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox AABB);
+	bool rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox* AABB);
 
 private:
+	void GetRay(XMFLOAT3 &originOut, XMFLOAT3 &directionOut, int mouseX, int mouseY);
+
 	template<typename T> void Swap(T&, T&);
 
 private:

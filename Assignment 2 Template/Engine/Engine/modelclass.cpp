@@ -194,6 +194,19 @@ ID3D11ShaderResourceView* ModelClass::GetTexture()
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetAABB
+
+Summary:	Returns the bounding box used for this model.
+
+Returns:	BoundingBox*
+				A pointer to the bounding box object used for this model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+BoundingBox* ModelClass::GetAABB()
+{
+	return this->m_AABB;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
 Method:		InitializeBuffers
 
 Summary:	Uses the ModelType data stored by this class to setup and

@@ -1,30 +1,101 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: modelclass.h
-////////////////////////////////////////////////////////////////////////////////
+//===========================================
+//	      Filename: modelclass.h
+//===========================================
 #ifndef _MODELCLASS_H_
 #define _MODELCLASS_H_
 
 
-//////////////
-// INCLUDES //
-//////////////
+//===========================================
+//				Library headers. 
+//===========================================
 #include <d3d11_1.h>
 #include <DirectXMath.h> 
-using namespace DirectX;
-
 #include <fstream>
-using namespace std;
 
 
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
+//===========================================
+//				User defined headers.
+//===========================================
 #include "textureclass.h"
 
+//===========================================
+//					Namespaces.
+//===========================================
+using namespace std;
+using namespace DirectX;
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: ModelClass
-////////////////////////////////////////////////////////////////////////////////
+
+/*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
+Class:		ModelClass
+
+Summary:	A class to represent a unique model and provide methods for
+			its creation, management, and drawing.
+
+Structs:	VertexType
+				A struct to represent 3 values of each vertex on a mesh:
+					position, texture and normal.
+			ModelType
+				A struct to represent co-ordinates for each vertexType value.
+
+Methods:	==================== PUBLIC ====================
+			ModelClass();
+				Default Constructor.
+			ModelClass(const ModelClass&);
+				Reference Constructor.
+			~ModelClass();
+				Deconstructor.
+
+			Initialize(ID3D11Device*, char*, WCHAR*);
+				Call after creating to setup Model Class for use.
+			Shutdown();
+				Call when finished using to tear down the object.
+
+			Render(ID3D11DeviceContext*)
+				Call during the rendering loop to draw this model to the screen.
+
+			GetIndexCount();
+				A utility function to return the number of vertices in the mesh.
+			GetTexture()
+				A utility function to return the Texture used for this resource
+				as a resource.
+
+			==================== PRIVATE ====================
+			InitializeBuffers(ID3D11Device*)
+				Called by Initialize() to initialize the index and vertex buffer in memory.
+			ShutdownBuffers()
+				Called by Shutdown() to clear the vertex and index buffers from memory.
+			RenderBuffers(ID3D11DeviceContext)
+				Called by Render to activate the vertex and index buffer for rendering.
+
+			LoadTexture(ID3D11Device*, WCHAR*)
+				Called by Initialize() to create and initialize a texture object for this
+				model with the specified texture.
+			ReleaseTexture()
+				Called on Shutdown() to release the texture object from memory.
+
+			LoadModel(char*)
+				Called by Initialize() to create and initialize a ModelType array for
+				the vertex data of the specified model.
+			ReleaseModel()
+				Called by Shutdown() to release the ModelType data from memory.
+
+Members:	==================== PRIVATE ====================
+			ID3D11Buffer *m_vertexBuffer
+				a Buffer object to store the vertices of the model in memory.
+			ID3D11Buffer *m_indexBuffer
+				a Buffer object to store the indices of the model in memory.
+
+			int m_vertexCount
+				an integer to represent the number of vertices of this model.
+			int m_indexCount
+				an integer to represent the number of indices of this model.
+
+			TextureClass* m_Texture
+				a Texture object to hold the texture of this model.
+
+			ModelType* m_model
+				an Array of ModelType structs to store the vertex data about this model.
+C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class ModelClass
 {
 private:
@@ -49,6 +120,7 @@ public:
 
 	bool Initialize(ID3D11Device*, char*, WCHAR*);
 	void Shutdown();
+
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();

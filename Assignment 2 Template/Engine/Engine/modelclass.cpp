@@ -1,9 +1,23 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: modelclass.cpp
-////////////////////////////////////////////////////////////////////////////////
+//===========================================
+//			Filename: modelclass.cpp
+//===========================================
+
+
+//===========================================
+//			 User Defined Headers.
+//===========================================
 #include "modelclass.h"
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ModelClass
 
+Summary:	The default constructor for a ModelClass object.
+
+Modifies:	[m_vertexBuffer, m_indexBuffer, m_Texture, m_model].
+
+Returns:	ModelClass
+				The constructed ModelClass object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 ModelClass::ModelClass()
 {
 	m_vertexBuffer = 0;
@@ -12,17 +26,56 @@ ModelClass::ModelClass()
 	m_model = 0;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ModelClass
 
+Summary:	The reference constructor for a ModelClass object.
+
+Args:		const ModelClass& other
+				a reference to the ModelClass object to create this one
+				in the image of.
+
+Modifies:	[none].
+
+Returns:	ModelClass
+				The constructed ModelClass object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 ModelClass::ModelClass(const ModelClass& other)
 {
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		~ModelClass
 
+Summary:	The default deconstructor for the ModelClass object.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 ModelClass::~ModelClass()
 {
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Initialize
 
+Summary:	================= CALL AFTER CREATION =================
+			Performs all the required setup on a newly created ModelClass
+			object.
+
+Args:		ID3D11Device*  device.
+				the device that this ModelClass is being created for.
+			char* modelFilename
+				a filepath to the .txt file containing the vertex data
+				for this model.
+			WCHAR* textureFilename
+				a filepath to the ARGB8 .dds file used for the texture
+				of this model.
+
+Modifies:	[none].
+
+Returns:	MYRETURNTYPE
+				Short description of meaning of the return type values.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
 {
 	bool result;
@@ -52,7 +105,18 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Shutdown()
 
+Summary:	================= CALL BEFORE DELETION =================
+			Performs all the necessary memory cleaning/releasing on
+			this ModelClass object.
+
+Modifies:	[none].
+
+Returns:	MYRETURNTYPE
+				Short description of meaning of the return type values.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::Shutdown()
 {
 	// Release the model texture.
@@ -67,7 +131,17 @@ void ModelClass::Shutdown()
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Render
 
+Summary:	Puts the stored vertex and index buffers on the graphics
+			pipeline to draw them
+
+Args:		ID3D11DeviceContext* deviceContext
+				the device context that the model should be rendered to, 
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 {
 	// Put the vertex and index buffers on the graphics pipeline to prepare them for drawing.
@@ -76,19 +150,52 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetIndexCount
 
+Summary:	returns the number of indices in this model.
+
+Modifies:	[none].
+
+Returns:	int
+				The number of indices in the model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 int ModelClass::GetIndexCount()
 {
 	return m_indexCount;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetTexture
 
+Summary:	Gets a reference to the resource view containing the texture
+			used for this Model.
+
+Returns:	ID3D11ShaderResourceView*
+				A pointer to a resource view containing the texture being
+				used by the model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 ID3D11ShaderResourceView* ModelClass::GetTexture()
 {
 	return m_Texture->GetTexture();
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		InitializeBuffers
 
+Summary:	Uses the ModelType data stored by this class to setup and
+			create vertex & index buffers for this model.
+
+Args:		ID3D11Device* device
+				A pointer to the Device object to create the buffers
+				with.
+	
+Modifies:	[m_vertexBuffer, m_indexBuffer].
+
+Returns:	bool
+				whether or not the initialization of the buffers
+				with the ModelData was successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
@@ -173,7 +280,14 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ShutdownBuffers
 
+Summary:	releases and de-points both the index and vertex buffer to
+			free them from memory.
+
+Modifies:	[m_vertexBuffer, m_indexBuffer].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::ShutdownBuffers()
 {
 	// Release the index buffer.
@@ -193,7 +307,17 @@ void ModelClass::ShutdownBuffers()
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		RenderBuffers
 
+Summary:	Used to activate the index and vertex buffers so that they
+			will be rendered by the deviceContext.
+
+Args:		ID3D11DeviceContext* deviceContext
+				The device context to prepare the buffers for rendering on.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
 	unsigned int stride;
@@ -216,7 +340,24 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		LoadTexture
 
+Summary:	Creates and initializes a textureclass object for the model
+			using the specified data.
+
+Args:		ID3D11Device* device.
+				a pointer to the device object to be used for the texture
+				initialization.
+			WCHAR* filename
+				the filepath to the ARGB8 .dds file to be used for the
+				creation of the texture for the textureClass.
+
+Modifies:	[m_Texture].
+
+Returns:	bool
+				was the texture loading successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename)
 {
 	bool result;
@@ -239,7 +380,14 @@ bool ModelClass::LoadTexture(ID3D11Device* device, WCHAR* filename)
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ReleaseTexture
 
+Summary:	Properly de-points and releases the textureClass object
+			used by this Model.
+
+Modifies:	[m_Texture].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::ReleaseTexture()
 {
 	// Release the texture object.
@@ -253,7 +401,21 @@ void ModelClass::ReleaseTexture()
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		LoadModel
 
+Summary:	Loads the Model data from a .txt file containing the vertex
+			data of the model.
+
+Args:		char* filename
+				a filepath to the .txt file containing the model's
+				vertex data.
+
+Modifies:	[m_vertexCount, m_indexCount, m_model].
+
+Returns:	bool
+				was the loading of the ModelType data succesful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool ModelClass::LoadModel(char* filename)
 {
 	ifstream fin;
@@ -313,7 +475,14 @@ bool ModelClass::LoadModel(char* filename)
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ReleaseModel
 
+Summary:	Properly releases and de-points the ModelType data used by
+			this model.
+
+Modifies:	[m_model].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::ReleaseModel()
 {
 	if(m_model)

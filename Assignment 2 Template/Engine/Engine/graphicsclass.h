@@ -46,9 +46,6 @@ public:
 	void Shutdown();
 	bool Frame();
 
-	bool RaySphereIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, float radius);
-	bool RayAABBInterect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox);
-
 private:
 	//bool Render(float);
 	//Xu
@@ -77,6 +74,8 @@ private:
 	TextClassA* m_Text;
 	BitmapClassA* m_Bitmap;
 	bool m_beginCheck;
+
+	ModelClass* m_IntersectTestCube;
 
 	
 

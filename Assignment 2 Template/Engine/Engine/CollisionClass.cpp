@@ -239,6 +239,7 @@ Returns:	bool
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool CollisionClass::rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirection, BoundingBox AABB)
 {
+	/*
 	//The two intersection points on the AABB
 	XMFLOAT3 intersections[2];
 
@@ -285,7 +286,11 @@ bool CollisionClass::rayAABBIntersect(FXMVECTOR rayOrigin, FXMVECTOR rayDirectio
 
 	//Test for missing the cube.
 	if (intersections[0].x > intersections[1].z || intersections[0].z > intersections[1].x)
-		return false;
+		return false;*/
+
+	float* infinity;
+	*infinity = INFINITY;
+	return AABB.Intersects(rayOrigin, rayDirection, *infinity);
 
 	//If this point is reached then the intersection must be true.
 	return true;

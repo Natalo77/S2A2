@@ -24,6 +24,8 @@ GraphicsClass::GraphicsClass()
 	m_Bitmap = 0;
 
 	m_CollisionObject = 0;
+
+	m_IntersectTestCube = 0;
 }
 
 
@@ -215,6 +217,14 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
+
+	//Create the test intersection cube.
+	m_IntersectTestCube = new ModelClass();
+
+	//Initialize the cube.
+	result = m_IntersectTestCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/blue.dds");
+	if (!m_IntersectTestCube)
+		return false;
 
 	// Create the text object.
 	m_Text = new TextClassA;
@@ -415,31 +425,6 @@ bool GraphicsClass::Frame()
 	// Render the graphics.
 	result = Render();
 	if (!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool GraphicsClass::RaySphereIntersect(FXMVECTOR vrayOrigin, FXMVECTOR vrayDirection, float radius)
-{
-	float a, b, c, discriminant;
-
-	XMFLOAT3 rayOrigin, rayDirection;
-	XMStoreFloat3(&rayOrigin, vrayOrigin);
-	XMStoreFloat3(&rayDirection, vrayDirection);
-
-	// Calculate the a, b, and c coefficients.
-	a = (rayDirection.x * rayDirection.x) + (rayDirection.y * rayDirection.y) + (rayDirection.z * rayDirection.z);
-	b = ((rayDirection.x * rayOrigin.x) + (rayDirection.y * rayOrigin.y) + (rayDirection.z * rayOrigin.z)) * 2.0f;
-	c = ((rayOrigin.x * rayOrigin.x) + (rayOrigin.y * rayOrigin.y) + (rayOrigin.z * rayOrigin.z)) - (radius * radius);
-
-	// Find the discriminant.
-	discriminant = (b * b) - (4 * a * c);
-
-	// if discriminant is negative the picking ray missed the sphere, otherwise it intersected the sphere.
-	if (discriminant < 0.0f)
 	{
 		return false;
 	}

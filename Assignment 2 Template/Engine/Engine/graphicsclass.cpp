@@ -1,10 +1,26 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: graphicsclass.cpp
-////////////////////////////////////////////////////////////////////////////////
+//==============================================
+//		 Filename: graphicsclass.cpp
+//==============================================
+
+
+//==============================================
+//			   User Defined Headers
+//==============================================
 #include "graphicsclass.h"
 
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GraphicsClass
 
+Summary:	Default constructor for a GraphicsClass object.
+
+Modifies:	[m_Input, m_D3D, m_Timer, m_ShaderManager, m_Light, m_Position,
+			 m_Camera, m_Model1, m_Model2, m_Model3, m_model4, m_Model,
+			 m_Text, m_Bitmap, m_CollisionObject, m_IntersectTestCube].
+
+Returns:	GraphicsClass
+				the new GraphicsClass object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GraphicsClass::GraphicsClass()
 {
 	m_Input = 0;
@@ -28,17 +44,57 @@ GraphicsClass::GraphicsClass()
 	m_IntersectTestCube = 0;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GraphicsClass
 
+Summary:	The reference constructor for a GraphicsClass object.
+
+Args:		const GraphicsClass& other
+				the GraphicsClass object to create this one in the image of.
+
+Modifies:	[none].
+
+Returns:	GraphicsClass
+				the new GraphicsClass object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GraphicsClass::GraphicsClass(const GraphicsClass& other)
 {
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		~GraphicsClass
 
+Summary:	The default deconstructor for a GraphicsClass object.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GraphicsClass::~GraphicsClass()
 {
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Initialize
 
+Summary:	Initializes and sets up all member variables of the
+			GraphicsClass object.
+
+Args:		HINSTANCE hinstance
+				the screen instance being used.
+			HWND hwnd
+				a handle to the window being used.
+			int screenWidth
+				the screenWidth in pixels.
+			int screenHeight
+				the screenHeight in pixels.
+
+Modifies:	[m_Input, m_D3D, m_ShaderManager, m_Timer, m_Position,
+			 m_Camera, m_Light, m_Model1, m_Model2, m_Model3, m_Model4,
+			 m_Model, m_Text, m_Bitmap, m_IntersectTestCube,
+			 m_CollisionObject, m_beginCheck].
+
+Returns:	bool
+				was the initialization of all member variables successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight)
 {
 	bool result;
@@ -283,7 +339,17 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Shutdown
 
+Summary:	Releases and depoints all member variables of the
+			GraphicsClass object.
+
+Modifies:	[m_Model1, m_Model2, m_Model3, m_Model4, m_Light, m_Camera,
+			 m_Position, m_ShaderManager, m_Timer, m_D3D,
+			 m_Input, m_Bitmap, m_Text, m_Model, m_CollisionObject
+			 m_IntersectTestCube].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GraphicsClass::Shutdown()
 {
 	// Release the model objects.
@@ -391,10 +457,38 @@ void GraphicsClass::Shutdown()
 		m_Model = 0;
 	}
 
+	//release the collision object.
+	if (m_CollisionObject)
+	{
+		m_CollisionObject->Shutdown();
+		delete m_CollisionObject;
+		m_CollisionObject = 0;
+	}
+
+	//release the intersection test cube.
+	if (m_IntersectTestCube)
+	{
+		m_IntersectTestCube->Shutdown();
+		delete m_IntersectTestCube;
+		m_IntersectTestCube = 0;
+	}
+
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Frame
 
+Summary:	Performs the actions required every frame:
+				Timer update.
+				Input handling.
+				Rendering.
+
+Modifies:	[none].
+
+Returns:	bool
+				did the frame execute successfully.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool GraphicsClass::Frame()
 {
 	bool result;
@@ -432,6 +526,20 @@ bool GraphicsClass::Frame()
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		HandleMovementInput
+
+Summary:	Handles all inputs appropriately.
+
+Args:		float frameTime
+				the amount of time that has passed between the last frame
+				and this one.
+
+Modifies:	[m_Position, m_beginCheck].
+
+Returns:	bool
+				was all movement handled succesfully.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool GraphicsClass::HandleMovementInput(float frameTime)
 {
 	bool keyDown;
@@ -498,6 +606,16 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Render
+
+Summary:	Translates and renders each model.
+
+Modifies:	[m_D3D].
+
+Returns:	bool
+				was the frame rendered succesfully.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool GraphicsClass::Render()
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix, orthoMatrix;
@@ -697,6 +815,17 @@ bool GraphicsClass::Render()
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		SetIntersectionText
+
+Summary:	Used to set the intersection test of the sphere-ray
+			collision text in the top left corner.
+
+Args:		bool intersection
+				was there an intersection or not?
+
+Modifies:	[m_Text].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GraphicsClass::SetIntersectionText(bool intersection)
 {
 	m_Text->SetIntersection(intersection, m_D3D->GetDeviceContext());

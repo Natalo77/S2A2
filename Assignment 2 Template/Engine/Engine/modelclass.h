@@ -10,6 +10,7 @@
 //===========================================
 #include <d3d11_1.h>
 #include <DirectXMath.h> 
+#include <DirectXCollision.h>
 #include <fstream>
 
 
@@ -75,9 +76,17 @@ Methods:	==================== PUBLIC ====================
 
 			LoadModel(char*)
 				Called by Initialize() to create and initialize a ModelType array for
-				the vertex data of the specified model.
+				the vertex data of the specified model. Also calculates the min and max
+				points of the model.
 			ReleaseModel()
-				Called by Shutdown() to release the ModelType data from memory.
+				Called by Shutdown() to release the ModelType data and the min and max
+				points from memory.
+
+			SetupBoundingBox()
+				Called by Initialize() to create a bounding box structure from the
+				precalculated min and max points of the model.
+			ReleaseBoundingBox()
+				Called by Shutdown() to release the bounding box from memory.
 
 Members:	==================== PRIVATE ====================
 			ID3D11Buffer *m_vertexBuffer
@@ -95,6 +104,16 @@ Members:	==================== PRIVATE ====================
 
 			ModelType* m_model
 				an Array of ModelType structs to store the vertex data about this model.
+
+			BoundingBox* m_AABB
+				a BoundingBox object representing the collision data of this model.
+
+			XMFLOAT3* m_min
+				a pointer to an XMFLOAT3 object to be used to store the minimum
+				point of the model.
+			XMFLOAT3* m_max
+				a pointer to an XMFLOAT3 object to be used to store the maximum
+				point of the model.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class ModelClass
 {
@@ -138,11 +157,24 @@ private:
 	bool LoadModel(char*);
 	void ReleaseModel();
 
+	bool SetupBoundingBox();
+	void ReleaseBoundingBox();
+
+
+
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
+
 	int m_vertexCount, m_indexCount;
+
 	TextureClass* m_Texture;
+
 	ModelType* m_model;
+
+	BoundingBox* m_AABB;
+
+	XMFLOAT3* m_min;
+	XMFLOAT3* m_max;
 };
 
 #endif

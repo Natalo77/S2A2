@@ -13,7 +13,7 @@ Method:		ModelClass
 
 Summary:	The default constructor for a ModelClass object.
 
-Modifies:	[m_vertexBuffer, m_indexBuffer, m_Texture, m_model].
+Modifies:	[m_vertexBuffer, m_indexBuffer, m_Texture, m_model, m_AABB, m_min, m_max].
 
 Returns:	ModelClass
 				The constructed ModelClass object.
@@ -24,6 +24,9 @@ ModelClass::ModelClass()
 	m_indexBuffer = 0;
 	m_Texture = 0;
 	m_model = 0;
+	m_AABB = 0;
+	m_min = 0;
+	m_max = 0;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -88,6 +91,13 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 		return false;
 	}
 
+	//Setup the bounding box.
+	result = SetupBoundingBox();
+	if (!result)
+	{
+		return false;
+	}
+
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
 	if(!result)
@@ -127,6 +137,9 @@ void ModelClass::Shutdown()
 
 	// Release the model data.
 	ReleaseModel();
+
+	//Release the boundingBox collision data.
+	ReleaseBoundingBox();
 
 	return;
 }
@@ -405,13 +418,14 @@ void ModelClass::ReleaseTexture()
 Method:		LoadModel
 
 Summary:	Loads the Model data from a .txt file containing the vertex
-			data of the model.
+				data of the model.
+			Calculate the min and max points of the model.
 
 Args:		char* filename
 				a filepath to the .txt file containing the model's
 				vertex data.
 
-Modifies:	[m_vertexCount, m_indexCount, m_model].
+Modifies:	[m_vertexCount, m_indexCount, m_model, m_min, m_max].
 
 Returns:	bool
 				was the loading of the ModelType data succesful.
@@ -461,16 +475,47 @@ bool ModelClass::LoadModel(char* filename)
 	fin.get(input);
 	fin.get(input);
 
+	//Store temporary min and maxes for each point.
+	float minx = INFINITY;
+	float miny = INFINITY;
+	float minz = INFINITY;
+	float maxx = -INFINITY;
+	float maxy = -INFINITY;
+	float maxz = -INFINITY;
+
 	// Read in the vertex data.
 	for(i=0; i<m_vertexCount; i++)
 	{
 		fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
 		fin >> m_model[i].tu >> m_model[i].tv;
 		fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
+
+		//Update the min and maxes.
+		///x
+		if (m_model[i].x < minx)
+			minx = m_model[i].x;
+		else if (m_model[i].x > maxx)
+			maxx = m_model[i].x;
+
+		///y
+		if (m_model[i].y < miny)
+			miny = m_model[i].y;
+		else if (m_model[i].y > maxy)
+			maxy = m_model[i].y;
+
+		///z
+		if (m_model[i].z < minz)
+			minz = m_model[i].z;
+		else if (m_model[i].z > maxz)
+			maxz = m_model[i].z;
 	}
 
 	// Close the model file.
 	fin.close();
+
+	//Initialize the min and max using the data provided.
+	m_min = new XMFLOAT3(minx, miny, minz);
+	m_max = new XMFLOAT3(maxx, maxy, maxz);
 
 	return true;
 }
@@ -479,9 +524,9 @@ bool ModelClass::LoadModel(char* filename)
 Method:		ReleaseModel
 
 Summary:	Properly releases and de-points the ModelType data used by
-			this model.
+			this model and the min and max points.
 
-Modifies:	[m_model].
+Modifies:	[m_model, m_min, m_max].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::ReleaseModel()
 {
@@ -491,5 +536,57 @@ void ModelClass::ReleaseModel()
 		m_model = 0;
 	}
 
+	if (m_min)
+	{
+		delete m_min;
+		m_min = 0;
+	}
+
+	if (m_max)
+	{
+		delete m_max;
+		m_max = 0;
+	}
+
 	return;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		SetupBoundingBox
+
+Summary:	Sets up the bounding box attached to this ModelClass object
+				using the precalculated min and max points.
+
+Modifies:	[m_AABB].
+
+Returns:	bool
+				was the creation of the bounding box successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool ModelClass::SetupBoundingBox()
+{
+	//Create a new BoundingBox.
+	m_AABB = new BoundingBox();
+
+	//Create the bounding box using the stored max and min points.
+	BoundingBox::CreateFromPoints(*m_AABB, XMLoadFloat3(m_min), XMLoadFloat3(m_max));
+
+	//The operation passed.
+	return true;
+
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ReleaseBoundingBox
+
+Summary:	Deletes and de-points the bounding box pointer.
+
+Modifies:	[m_AABB].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void ModelClass::ReleaseBoundingBox()
+{
+	if (m_AABB)
+	{
+		delete m_AABB;
+		m_AABB = 0;
+	}
 }

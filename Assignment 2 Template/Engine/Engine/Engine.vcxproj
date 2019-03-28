@@ -22,6 +22,7 @@
     <ClInclude Include="fireshaderclass.h" />
     <ClInclude Include="FontClassA.h" />
     <ClInclude Include="FontShaderClassA.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="fireshaderclass.cpp" />
     <ClCompile Include="FontClassA.cpp" />
     <ClCompile Include="FontShaderClassA.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
@@ -110,7 +112,7 @@
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\u1661665\Downloads\Week_8\Week8\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;C:\Users\u1661665\Downloads\S2A2\Assignment 2 Template\Engine\Engine\FW1Font\sourceCode;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>

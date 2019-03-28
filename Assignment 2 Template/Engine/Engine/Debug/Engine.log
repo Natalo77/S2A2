@@ -1,7 +1,4 @@
-﻿  CollisionClass.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(306): warning C4101: 'mtranslateMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(307): warning C4101: 'worldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(307): warning C4101: 'viewMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(307): warning C4101: 'inverseWorldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(307): warning C4101: 'translateMatrix': unreferenced local variable
-  Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe
+﻿  graphicsclass.cpp
+c:\users\u1661665\downloads\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(119): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+c:\users\u1661665\downloads\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(175): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+  Engine.vcxproj -> C:\Users\u1661665\Downloads\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

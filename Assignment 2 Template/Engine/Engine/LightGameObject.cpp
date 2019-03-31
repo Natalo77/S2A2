@@ -105,10 +105,10 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool LightGameObject::Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 	XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
 {
-	this->m_baseModel->Render(device);
+	GetModel()->Render(device);
 	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
-	return shaderManager->RenderLightShader(device, this->m_baseModel->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix, 
-		this->m_baseModel->GetTexture(),
+	return shaderManager->RenderLightShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix, 
+		GetModel()->GetTexture(),
 		m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 }

@@ -65,6 +65,15 @@ Methods:	==================== PURE VIRTUAL ====================
 				Called by SetTransform() and AddTransform() to update
 				the bounding box data according to the dhange in rotation.
 
+			XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
+				uses a reference to an initial world matrix to produce a resultant
+				world matrix using the scaling, rotation and transformation data
+				of this model.
+
+			ModelClass* GetModel()
+				Returns a pointer to the Model Used by this GameObject.
+				Hide this function in derivations for use with other model types.
+
 Members:	==================== PROTECTED ====================
 			ModelClass* m_baseModel
 				a pointer to the baseModel data used for this GameObject.
@@ -112,10 +121,14 @@ protected:
 	void UpdateTransform(float prevX, float prevY, float prevZ);
 
 	XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix);
+
+	ModelClass* GetModel();
 	
 
 protected:
 	ModelClass * m_baseModel;
+
+
 	BoundingBox* m_AABB;
 
 	XMFLOAT3* m_transform;

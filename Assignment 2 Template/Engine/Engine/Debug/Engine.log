@@ -1,6 +1,18 @@
-﻿  graphicsclass.cpp
+﻿  TextureGameObject.cpp
+  LightGameObject.cpp
+  FireShaderGameObject.cpp
+  Generating Code...
+  Compiling...
+  systemclass.cpp
+  main.cpp
+  graphicsclass.cpp
 e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(125): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
 e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(181): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-  FireShaderGameObject.cpp
+  GameObject.cpp
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(305): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(328): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(330): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(352): warning C4316: 'DirectX::XMMATRIX': object allocated on the heap may not be aligned 16
+  BumpMapGameObject.cpp
   Generating Code...
   Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

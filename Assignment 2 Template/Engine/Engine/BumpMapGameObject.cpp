@@ -22,7 +22,7 @@ Returns:	BumpMapGameObject
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpMapGameObject::BumpMapGameObject()
 {
-	m_baseBumpModel = 0;
+	m_baseModel = 0;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -47,16 +47,15 @@ Args:		ModelClass* baseModel
 				a pointer to a modelClass object to use as this
 				Gameobject's reference.
 
-Modifies:	[see BumpMapGameObject(), m_baseModel, m_AABB].
+Modifies:	[ m_baseModel, m_AABB].
 
 Returns:	BumpMapGameObject
 				the newly created BumpMapGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpMapGameObject::BumpMapGameObject(BumpModelClass* baseModel)
 {
-	BumpMapGameObject();
-	this->m_baseBumpModel = baseModel;
-	this->m_AABB = m_baseBumpModel->GetAABB();
+	this->m_baseModel = baseModel;
+	this->m_AABB = m_baseModel->GetAABB();
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -77,16 +76,15 @@ Args:		ModelClass* baseModel
 				a pointer to the CameraClass object that this
 				BumpMapGameObject should use when rendering.
 
-Modifies:	[see BumpMapGameObject(), m_baseModel, m_AABB, m_Light, m_Camera].
+Modifies:	[m_baseModel, m_AABB, m_Light, m_Camera].
 
 Returns:	BumpMapGameObject
 				the newly created BumpMapGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpMapGameObject::BumpMapGameObject(BumpModelClass* baseModel, LightClass* light)
 {
-	BumpMapGameObject();
-	this->m_baseBumpModel = baseModel;
-	this->m_AABB = m_baseBumpModel->GetAABB();
+	this->m_baseModel = baseModel;
+	this->m_AABB = m_baseModel->GetAABB();
 	this->m_Light = light;
 }
 
@@ -105,10 +103,10 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool BumpMapGameObject::Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 	XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
 {
-	this->m_baseBumpModel->Render(device);
+	GetModel()->Render(device);
 	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
-	return shaderManager->RenderBumpMapShader(device, this->m_baseBumpModel->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
-		this->m_baseBumpModel->GetColorTexture(), this->m_baseBumpModel->GetNormalMapTexture(), m_Light->GetDirection(),
+	return shaderManager->RenderBumpMapShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
+		GetModel()->GetColorTexture(), GetModel()->GetNormalMapTexture(), m_Light->GetDirection(),
 		m_Light->GetDiffuseColor());
 }
 
@@ -126,5 +124,20 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpMapGameObject::SetLight(LightClass* light)
 {
 	this->m_Light = light;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetModel
+
+Summary:	A utility function to return a pointer to the baseModel used
+			by this gameObject.
+
+Modifies:	BumpModelClass*
+				a pointer to the Modeltype class object being used by this
+				gameObject as its base model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+BumpModelClass * BumpMapGameObject::GetModel()
+{
+	return this->m_baseModel;
 }
 

@@ -359,3 +359,18 @@ XMMATRIX * GameObject::CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
 	return worldMatrix;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetModel
+
+Summary:	A utility function to return a pointer to the bae model
+			used by this gameobject.
+
+Returns:	ModelClass*
+				a pointer to a modelClass object being used as the
+				base model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+ModelClass * GameObject::GetModel()
+{
+	return this->m_baseModel;
+}
+

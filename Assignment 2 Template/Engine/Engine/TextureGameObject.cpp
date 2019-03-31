@@ -73,8 +73,8 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool TextureGameObject::Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 	XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
 {
-	this->m_baseModel->Render(device);
+	GetModel()->Render(device);
 	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
-	return shaderManager->RenderTextureShader(device, this->m_baseModel->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
-		this->m_baseModel->GetTexture());
+	return shaderManager->RenderTextureShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
+		GetModel()->GetTexture());
 }

@@ -22,7 +22,7 @@ Returns:	FireShaderGameObject
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 FireShaderGameObject::FireShaderGameObject()
 {
-	m_baseFireModel = 0;
+	m_baseModel = 0;
 	
 }
 
@@ -58,8 +58,8 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 FireShaderGameObject::FireShaderGameObject(FireModelClass* baseModel)
 {
 	FireShaderGameObject();
-	this->m_baseFireModel = baseModel;
-	this->m_AABB = m_baseFireModel->GetAABB();
+	this->m_baseModel = baseModel;
+	this->m_AABB = m_baseModel->GetAABB();
 	frameTime = 0.0f;
 
 	scrollSpeeds = new XMFLOAT3(1.3f, 2.1f, 2.3f);
@@ -93,10 +93,10 @@ bool FireShaderGameObject::Render(ShaderManagerClass* shaderManager, ID3D11Devic
 		frameTime = 0.0f;
 	}
 
-	this->m_baseFireModel->Render(device);
+	GetModel()->Render(device);
 	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
-	return shaderManager->RenderFireShader(device, this->m_baseFireModel->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
-		this->m_baseFireModel->GetTexture1(), this->m_baseFireModel->GetTexture2(), this->m_baseFireModel->GetTexture3(), frameTime, *scrollSpeeds,
+	return shaderManager->RenderFireShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
+		GetModel()->GetTexture1(), GetModel()->GetTexture2(), GetModel()->GetTexture3(), frameTime, *scrollSpeeds,
 		*scales, *distortion1, *distortion2, *distortion3, distortionScale, distortionBias);
 }
 
@@ -127,5 +127,20 @@ void FireShaderGameObject::SetParameters(XMFLOAT3* scrollSpeeds, XMFLOAT3* scale
 	this->distortion3 = distortion3;
 	this->distortionBias = distortionBias;
 	this->distortionScale = distortionScale;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetModel
+
+Summary:	A utility function to return a pointer to the FireModelClass
+			object being used as the baseModel by this gameObject.
+
+Returns:	FireModelClass*
+				a pointer to a FireModelClass object being used as
+				the baseModel for this class.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+FireModelClass * FireShaderGameObject::GetModel()
+{
+	return this->m_baseModel;
 }
 

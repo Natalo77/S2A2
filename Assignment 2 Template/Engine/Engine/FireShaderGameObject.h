@@ -35,6 +35,11 @@ Methods:	==================== PUBLIC ====================
 			SetParameters(...)
 				Use to set the internal parameters of the fire shader.
 
+			==================== PRIVATE ====================
+			GetModel()
+				A utility function to return a reference to the baseModel
+				used by this GameObject.
+
 Members:	==================== PRIVATE ====================
 			FireModelClass* m_baseFireModel
 				a pointer to a fireModelClass that is used as the base model
@@ -66,7 +71,10 @@ public:
 		XMFLOAT2* distortion2, XMFLOAT2* distortion3, float distortionScale, float distortionBias);
 
 private:
-	FireModelClass* m_baseFireModel;
+	FireModelClass* GetModel();
+
+private:
+	FireModelClass* m_baseModel;
 
 	float frameTime;
 	XMFLOAT3* scrollSpeeds;

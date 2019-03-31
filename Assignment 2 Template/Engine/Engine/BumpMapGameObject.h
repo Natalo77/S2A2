@@ -40,6 +40,10 @@ Methods:	==================== PUBLIC ====================
 			SetLight(LightClass*)
 				Used to change the light being used by the BumpMapGameObject.
 
+			==================== PRIVATE ====================
+			BumpModelClass* GetModel()
+				Used to return a pointer to the baseModel used by this GameObject.
+
 Members:	==================== PRIVATE ====================
 			LightClass* m_Light
 				the light to be queried by this BumpMapGameObject's render function
@@ -56,10 +60,14 @@ public:
 		XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix) override;
 
 	void SetLight(LightClass* light);
+
+private:
+	BumpModelClass* GetModel();
+	
 private:
 	LightClass* m_Light;
 
-	BumpModelClass* m_baseBumpModel;
+	BumpModelClass* m_baseModel;
 
 };
 

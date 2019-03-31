@@ -42,6 +42,12 @@ GraphicsClass::GraphicsClass()
 	m_CollisionObject = 0;
 
 	m_IntersectTestCube = 0;
+
+	m_GameObjectTestCube = 0;
+	m_LightGameObjectTestCube = 0;
+	m_BumpMapGameObjectTestCube = 0;
+	m_FireShaderGameObjectTestCube = 0;
+	
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -327,6 +333,62 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		return false;
 	}
 	
+	//Testing Gameobject 30.03.2019
+	ModelClass* testCube = new ModelClass();
+	result = testCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/blue.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Failed to initialize GameoOject", L"ERROR", MB_OK);
+		return false;
+	}
+	m_GameObjectTestCube = new TextureGameObject(testCube);
+	m_GameObjectTestCube->setTransform(5.0f, 1.0f, 1.0f);
+	m_GameObjectTestCube->setRotation(0.0f, 45.0f, 0.0f);
+	m_GameObjectTestCube->setScale(2.0f, 2.0f, 1.0f);
+
+	//Testing LightGameObject 30.03.2019
+	ModelClass* testCubeLight = new ModelClass();
+	result = testCubeLight->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/blue.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Failed to initialize LightGameObject", L"ERROR", MB_OK);
+		return false;
+	}
+	m_LightGameObjectTestCube = new LightGameObject(testCubeLight, m_Light, m_Camera);
+	m_LightGameObjectTestCube->setTransform(5.0f, 5.0f, 0.0f);
+	m_LightGameObjectTestCube->setRotation(45.0f, 0.0f, 0.0f);
+	m_LightGameObjectTestCube->setScale(1.0f, 0.5f, 1.0f);
+
+	
+	//Testing BumpMapGameObject 30.03.2019
+	BumpModelClass* testCubeBump = new BumpModelClass();
+	result = testCubeBump->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
+		L"../Engine/data/normal.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Failed to initialize BumpGameObject", L"ERROR", MB_OK);
+		return false;
+	}
+	m_BumpMapGameObjectTestCube = new BumpMapGameObject(testCubeBump, m_Light);
+	m_BumpMapGameObjectTestCube->setTransform(0.0f, 0.0f, -5.0f);
+	m_BumpMapGameObjectTestCube->setRotation(45.0f, 0.0f, 0.0f);
+	m_BumpMapGameObjectTestCube->setScale(1.0f, 1.0f, 1.0f);
+	
+	//Testing FireShaderGameObject 31.03.2019
+	FireModelClass* testCubeFire = new FireModelClass();
+	result = testCubeFire->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/fire01.dds", //square or cube
+		L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Failed to initialize the firecube", L"ERROR", MB_OK);
+		return false;
+	}
+	m_FireShaderGameObjectTestCube = new FireShaderGameObject(testCubeFire);
+	m_FireShaderGameObjectTestCube->setTransform(0.0f, 7.5f, 0.0f);
+	m_FireShaderGameObjectTestCube->setRotation(0.0f, 0.0f, 45.0f);
+	m_FireShaderGameObjectTestCube->setScale(1.0f, 2.0f, 1.0f);
+
+	
 
 	// Initialize that the user has not clicked on the screen to try an intersection test yet.
 	m_beginCheck = false;
@@ -471,6 +533,32 @@ void GraphicsClass::Shutdown()
 		m_IntersectTestCube->Shutdown();
 		delete m_IntersectTestCube;
 		m_IntersectTestCube = 0;
+	}
+
+	//30.03 test gameobject
+	if (m_GameObjectTestCube)
+	{
+		m_GameObjectTestCube->~TextureGameObject();
+		delete m_GameObjectTestCube;
+		m_GameObjectTestCube = 0;
+	}
+	if (m_LightGameObjectTestCube)
+	{
+		m_LightGameObjectTestCube->~LightGameObject();
+		delete m_LightGameObjectTestCube;
+		m_LightGameObjectTestCube = 0;
+	}
+	if (m_BumpMapGameObjectTestCube)
+	{
+		m_BumpMapGameObjectTestCube->~BumpMapGameObject();
+		delete m_BumpMapGameObjectTestCube;
+		m_BumpMapGameObjectTestCube = 0;
+	}
+	if (m_FireShaderGameObjectTestCube)
+	{
+		m_FireShaderGameObjectTestCube->~FireShaderGameObject();
+		delete m_FireShaderGameObjectTestCube;
+		m_FireShaderGameObjectTestCube = 0;
 	}
 
 	return;
@@ -734,6 +822,28 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
+	//Turn on alpha blending for the fire transparency
+	m_D3D->TurnOnAlphaBlending();
+
+	//GameObject test 30.03
+	m_D3D->GetWorldMatrix(worldMatrix);
+	result = m_GameObjectTestCube->Render(m_ShaderManager, m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+		return false;
+	m_D3D->GetWorldMatrix(worldMatrix);
+	result = m_LightGameObjectTestCube->Render(m_ShaderManager, m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+		return false;
+	m_D3D->GetWorldMatrix(worldMatrix);
+	result = m_BumpMapGameObjectTestCube->Render(m_ShaderManager, m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+		return false;
+	m_D3D->GetWorldMatrix(worldMatrix);
+	result = m_FireShaderGameObjectTestCube->Render(m_ShaderManager, m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+		return false;
+
+
 	// Setup the rotation and translation of the second model.
 	m_D3D->GetWorldMatrix(worldMatrix);
 
@@ -800,6 +910,9 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
+
+
+
 
 
 	// Turn on alpha blending.

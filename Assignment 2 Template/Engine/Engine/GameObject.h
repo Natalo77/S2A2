@@ -8,6 +8,7 @@
 //					User Defined Headers.
 //======================================================
 #include "modelclass.h"
+#include "shadermanagerclass.h"
 
 
 //======================================================
@@ -23,7 +24,14 @@ Class:		GameObject
 Summary:	A Class designed for use as a prefab like structure, with properties
 			to draw, rotate, etc. and keep track of changing collision data.
 
-Methods:	==================== PUBLIC ====================
+Methods:	==================== PURE VIRTUAL ====================
+			Render()
+				A method that must be implemented to render the object
+				using whatever shader is needed.
+				The given parameters are used by every Render Method regardless
+				of shader.
+
+			==================== PUBLIC ====================
 			GameObject()
 				The default constructor for a gameObject, should not be used
 				unless reserving space for a later changed gameObject.
@@ -46,7 +54,7 @@ Methods:	==================== PUBLIC ====================
 			AddTransform(float x, float y, float z)
 				Use to add to the transform data of the gameObject at runtime.
 
-			==================== PRIVATE ====================
+			==================== PROTECTED ====================
 			UpdateScale(float prevX, float prevY, float prevZ)
 				Called by SetScale() to change the Boundingbox data
 				according to the change in scale.
@@ -57,7 +65,7 @@ Methods:	==================== PUBLIC ====================
 				Called by SetTransform() and AddTransform() to update
 				the bounding box data according to the dhange in rotation.
 
-Members:	==================== PRIVATE ====================
+Members:	==================== PROTECTED ====================
 			ModelClass* m_baseModel
 				a pointer to the baseModel data used for this GameObject.
 			BoundingBox* m_AABB
@@ -72,9 +80,18 @@ Members:	==================== PRIVATE ====================
 			XMFLOAT3* m_rotation
 				an XMFLOAT3 keeping track of the current rotation of
 				the gameObject.
+
+			XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
+				A class specific utility function to calculate the
+				resultant worldMatrix from an initial, using the
+				data stored about this object.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class GameObject
 {
+public:
+	virtual bool Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device, 
+		XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix) = 0;
+
 public:
 	GameObject();
 	~GameObject();
@@ -87,13 +104,17 @@ public:
 	bool addRotation(float x, float y, float z);
 	bool addTransform(float x, float y, float z);
 
-private:
+	
+
+protected:
 	void UpdateScale(float prevX, float prevY, float prevZ);
 	void UpdateRotation(float prevX, float prevY, float prevZ);
 	void UpdateTransform(float prevX, float prevY, float prevZ);
+
+	XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix);
 	
 
-private:
+protected:
 	ModelClass * m_baseModel;
 	BoundingBox* m_AABB;
 

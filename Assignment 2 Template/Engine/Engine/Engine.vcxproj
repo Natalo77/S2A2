@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapClassA.h" />
+    <ClInclude Include="BumpMapGameObject.h" />
     <ClInclude Include="bumpmapshaderclass.h" />
     <ClInclude Include="bumpmodelclass.h" />
     <ClInclude Include="cameraclass.h" />
@@ -20,12 +21,14 @@
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="firemodelclass.h" />
     <ClInclude Include="fireshaderclass.h" />
+    <ClInclude Include="FireShaderGameObject.h" />
     <ClInclude Include="FontClassA.h" />
     <ClInclude Include="FontShaderClassA.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
+    <ClInclude Include="LightGameObject.h" />
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="positionclass.h" />
@@ -33,11 +36,13 @@
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="TextClassA.h" />
     <ClInclude Include="textureclass.h" />
+    <ClInclude Include="TextureGameObject.h" />
     <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="timerclass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapClassA.cpp" />
+    <ClCompile Include="BumpMapGameObject.cpp" />
     <ClCompile Include="bumpmapshaderclass.cpp" />
     <ClCompile Include="bumpmodelclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
@@ -46,12 +51,14 @@
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="firemodelclass.cpp" />
     <ClCompile Include="fireshaderclass.cpp" />
+    <ClCompile Include="FireShaderGameObject.cpp" />
     <ClCompile Include="FontClassA.cpp" />
     <ClCompile Include="FontShaderClassA.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
+    <ClCompile Include="LightGameObject.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
@@ -60,6 +67,7 @@
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="TextClassA.cpp" />
     <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="TextureGameObject.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="timerclass.cpp" />
   </ItemGroup>

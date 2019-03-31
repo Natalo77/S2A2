@@ -76,8 +76,8 @@ Args:		ID3D11Device*  device.
 
 Modifies:	[none].
 
-Returns:	MYRETURNTYPE
-				Short description of meaning of the return type values.
+Returns:	bool
+				was the initialization of all subparts successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
 {
@@ -123,9 +123,6 @@ Summary:	================= CALL BEFORE DELETION =================
 			this ModelClass object.
 
 Modifies:	[none].
-
-Returns:	MYRETURNTYPE
-				Short description of meaning of the return type values.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void ModelClass::Shutdown()
 {

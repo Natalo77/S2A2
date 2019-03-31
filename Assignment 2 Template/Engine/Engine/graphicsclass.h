@@ -21,6 +21,10 @@
 #include "BitmapClassA.h"
 #include "CollisionClass.h"
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/FW1Precompiled.h"
+#include "TextureGameObject.h"
+#include "LightGameObject.h"
+#include "BumpMapGameObject.h"
+#include "FireShaderGameObject.h"
 
 //==============================================
 //	  Global Constants/Program parameters 
@@ -151,6 +155,11 @@ private:
 	bool m_beginCheck;
 
 	ModelClass* m_IntersectTestCube;
+
+	TextureGameObject* m_GameObjectTestCube;
+	LightGameObject* m_LightGameObjectTestCube;
+	BumpMapGameObject* m_BumpMapGameObjectTestCube;
+	FireShaderGameObject* m_FireShaderGameObjectTestCube;
 
 	
 

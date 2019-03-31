@@ -1,9 +1,26 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: bumpmodelclass.cpp
-////////////////////////////////////////////////////////////////////////////////
+//================================================
+//		  Filename: bumpmodelclass.cpp
+//================================================
+
+
+//================================================
+//			  User Defined Headers.
+//================================================
 #include "bumpmodelclass.h"
 
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		BumpModelClass
+
+Summary:	Creates a new BumpModelClass object.
+			points all initial pointer objects to zero.
+
+Modifies:	[m_vertexBuffer, m_indexBuffer, m_model, m_ColorTexture, 
+			 m_NormalMapTexture, m_AABB, m_min, m_max].
+
+Returns:	BumpModelClass
+				The newly created bumpModelClass object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpModelClass::BumpModelClass()
 {
 	m_vertexBuffer = 0;
@@ -11,19 +28,63 @@ BumpModelClass::BumpModelClass()
 	m_model = 0;
 	m_ColorTexture = 0;
 	m_NormalMapTexture = 0;
+
+	m_AABB = 0;
+	m_min = 0;
+	m_max = 0;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		BumpModelClass
 
+Summary:	The reference constructor for a BumpModelClass object.
+
+Args:		const BumpModelClass& other
+				a reference to a BumpModelClass object to create this
+				one in the image of.
+
+Modifies:	[none].
+
+Returns:	BumpModelClass
+				The newly created bumpModelClass object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpModelClass::BumpModelClass(const BumpModelClass& other)
 {
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		~BumpModelClass
 
+Summary:	The default deconstructor for a BumpModelClass object.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpModelClass::~BumpModelClass()
 {
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Initialize()
 
+Summary:	Sets up all member variables and objects of this BumpModelClass
+			object.
+			Call after creation to set the object up for use.
+
+Args:		ID3D11Device* device
+				the device that this BumpModelClass object is being created
+				for
+			char* modelFilename
+				a filepath to the model file to be used for this model.
+			WCHAR* textureFilename1
+				a filepath to the colour texture to be used for this model.
+			WCHAR* textureFilename2
+				a filepath to the normal map texture to be used for this model.
+
+Modifies:	[none].
+
+Returns:	bool
+				whether the initialization of all the submembers was successful
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool BumpModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename1, WCHAR* textureFilename2)
 {
 	bool result;
@@ -38,6 +99,11 @@ bool BumpModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR
 
 	// Calculate the tangent and binormal vectors for the model.
 	CalculateModelVectors();
+
+	//Setup the boundingbox.
+	result = SetupBoundingBox();
+	if (!result)
+		return false;
 
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
@@ -56,7 +122,15 @@ bool BumpModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Shutdown
 
+Summary:	Releases and frees up memory used by this BumpModelClass
+			object.
+			Call before deletion to ensure memory is freed correctly.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::Shutdown()
 {
 	// Release the model textures.
@@ -68,10 +142,23 @@ void BumpModelClass::Shutdown()
 	// Release the model data.
 	ReleaseModel();
 
+	//Release the boundingbox collision data.
+	ReleaseBoundingBox();
+
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Render
 
+Summary:	Puts the vertex and index buffers on the graphics pipeline
+			to prepare them for drawing.
+
+Args:		ID3D11DeviceContext* deviceContext
+				the deviceContext that the model will be rendered to.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::Render(ID3D11DeviceContext* deviceContext)
 {
 	// Put the vertex and index buffers on the graphics pipeline to prepare them for drawing.
@@ -80,25 +167,79 @@ void BumpModelClass::Render(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetIndexCount
 
+Summary:	Returns the number of indices in this model.
+
+Returns:	int
+				Representing the number of indices in the model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 int BumpModelClass::GetIndexCount()
 {
 	return m_indexCount;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetColorTexture()
 
+Summary:	Returns the ColorTexture used by this Model as a
+			ShaderResourceView
+
+Returns:	ID3D11ShaderResourceView*
+				a ShaderResourceView containing the colour texture
+				of this model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 ID3D11ShaderResourceView* BumpModelClass::GetColorTexture()
 {
 	return m_ColorTexture->GetTexture();
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetNormalMapTexture()
 
+Summary:	Returns the NormalMapTexture used by this Model as a
+			ShaderResourceView
+
+Returns:	ID3D11ShaderResourceView*
+				a ShaderResourceView containing the normal map texture
+				of this model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 ID3D11ShaderResourceView* BumpModelClass::GetNormalMapTexture()
 {
 	return m_NormalMapTexture->GetTexture();
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetAABB
 
+Summary:	Returns a pointer to the boundingbox used to represent the
+			collision data of this base model.
+
+Returns:	BoundingBox*
+				A pointer to the bounding box being used for this model.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+BoundingBox * BumpModelClass::GetAABB()
+{
+	return this->m_AABB;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		InitializeBuffers
+
+Summary:	Uses the ModelType data stored by this class to setup and
+			create vertex & index buffers for this model.
+
+Args:		ID3D11Device* device
+				A pointer to the Device object to create the buffers
+				with.
+
+Modifies:	[m_vertexBuffer, m_indexBuffer].
+
+Returns:	bool
+				whether or not the initialization of the buffers
+				with the ModelData was successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool BumpModelClass::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
@@ -185,7 +326,14 @@ bool BumpModelClass::InitializeBuffers(ID3D11Device* device)
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ShutdownBuffers
 
+Summary:	releases and de-points both the index and vertex buffer to
+			free them from memory.
+
+Modifies:	[m_vertexBuffer, m_indexBuffer].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::ShutdownBuffers()
 {
 	// Release the index buffer.
@@ -205,7 +353,17 @@ void BumpModelClass::ShutdownBuffers()
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		RenderBuffers
 
+Summary:	Used to activate the index and vertex buffers so that they
+			will be rendered by the deviceContext.
+
+Args:		ID3D11DeviceContext* deviceContext
+				The device context to prepare the buffers for rendering on.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
 	unsigned int stride;
@@ -228,7 +386,27 @@ void BumpModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		LoadTextures
 
+Summary:	Creates and initializes 2 textureclass objects for the model
+			using the specified texture and normal maps.
+
+Args:		ID3D11Device* device.
+				a pointer to the device object to be used for the texture
+				initialization.
+			WCHAR* filename1
+				the filepath to the ARGB8 .dds file to be used for the
+				creation of the texture for the textureClass.
+			WCHAR* filename2
+				the filepath to the ARGB8 .dds file to be used for the
+				creation of the normalmap texture for the second TextureClass
+
+Modifies:	[m_ColorTexture, m_NormalMapTexture].
+
+Returns:	bool
+				was the texture loading successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool BumpModelClass::LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR* filename2)
 {
 	bool result;
@@ -265,7 +443,14 @@ bool BumpModelClass::LoadTextures(ID3D11Device* device, WCHAR* filename1, WCHAR*
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ReleaseTextures
 
+Summary:	Properly de-points and releases the 2 textureClass objects
+			used by this Model.
+
+Modifies:	[m_ColorTexture, m_NormalMapTexture].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::ReleaseTextures()
 {
 	// Release the texture objects.
@@ -286,7 +471,22 @@ void BumpModelClass::ReleaseTextures()
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		LoadModel
 
+Summary:	Loads the Model data from a .txt file containing the vertex
+				data of the model.
+			Calculates the min and max points of the model.
+
+Args:		char* filename
+				a filepath to the .txt file containing the model's
+				vertex data.
+
+Modifies:	[m_vertexCount, m_indexCount, m_model, m_min, m_max].
+
+Returns:	bool
+				was the loading of the ModelType data succesful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool BumpModelClass::LoadModel(char* filename)
 {
 	ifstream fin;
@@ -330,21 +530,59 @@ bool BumpModelClass::LoadModel(char* filename)
 	fin.get(input);
 	fin.get(input);
 
+	//Store temporary min and maxes for each point.
+	float minx = INFINITY;
+	float miny = INFINITY;
+	float minz = INFINITY;
+	float maxx = -INFINITY;
+	float maxy = -INFINITY;
+	float maxz = -INFINITY;
+
 	// Read in the vertex data.
 	for(i=0; i<m_vertexCount; i++)
 	{
 		fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
 		fin >> m_model[i].tu >> m_model[i].tv;
 		fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
+
+		//Update the min and maxes.
+		///x
+		if (m_model[i].x < minx)
+			minx = m_model[i].x;
+		else if (m_model[i].x > maxx)
+			maxx = m_model[i].x;
+
+		///y
+		if (m_model[i].y < miny)
+			miny = m_model[i].y;
+		else if (m_model[i].y > maxy)
+			maxy = m_model[i].y;
+
+		///z
+		if (m_model[i].z < minz)
+			minz = m_model[i].z;
+		else if (m_model[i].z > maxz)
+			maxz = m_model[i].z;
 	}
 
 	// Close the model file.
 	fin.close();
 
+	//Initialize the min and max using the data provided.
+	m_min = new XMFLOAT3(minx, miny, minz);
+	m_max = new XMFLOAT3(maxx, maxy, maxz);
+
 	return true;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ReleaseModel
 
+Summary:	Properly releases and de-points the ModelType data used by
+			this model and the min and max points.
+
+Modifies:	[m_model, m_min, m_max].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::ReleaseModel()
 {
 	if(m_model)
@@ -353,10 +591,29 @@ void BumpModelClass::ReleaseModel()
 		m_model = 0;
 	}
 
+	if (m_min)
+	{
+		delete m_min;
+		m_min = 0;
+	}
+
+	if (m_max)
+	{
+		delete m_max;
+		m_max = 0;
+	}
+
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		CalculateModelVectors
 
+Summary:	Uses the existing vertex normal data to calculate a normal
+			for each face of the mesh. (Tris)
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::CalculateModelVectors()
 {
 	int faceCount, i, index;
@@ -433,7 +690,25 @@ void BumpModelClass::CalculateModelVectors()
 	return;
 }
 
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		CalculateTangentBinormal
 
+Summary:	Calculate a resultant tangent and Binormal to the three
+			specified TempVertexTypes and store the result in
+			tangent and bionormal.
+
+Args:		TempVertexType vertex1, vertex2, vertex3
+				the three vertices comprising a triangle within
+				the model mesh.
+			VectorType& tangent
+				A reference to the vectorType struct instance to store
+				the result tangent in.
+			VectorType& binormal
+				A reference to the vectorType struct instance to store
+				the result binormal in.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void BumpModelClass::CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3,
 										  VectorType& tangent, VectorType& binormal)
 {
@@ -488,4 +763,43 @@ void BumpModelClass::CalculateTangentBinormal(TempVertexType vertex1, TempVertex
 	binormal.z = binormal.z / length;
 
 	return;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		SetupBoundingBox
+
+Summary:	Sets up the bounding box attached to this ModelClass object
+				using the precalculated min and max points.
+
+Modifies:	[m_AABB].
+
+Returns:	bool
+				was the creation of the bounding box successful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool BumpModelClass::SetupBoundingBox()
+{
+	//Create a new BoundingBox.
+	m_AABB = new BoundingBox();
+
+	//Create the bounding box using the stored max and min points.
+	BoundingBox::CreateFromPoints(*m_AABB, XMLoadFloat3(m_min), XMLoadFloat3(m_max));
+
+	//The operation passed.
+	return true;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ReleaseBoundingBox
+
+Summary:	Deletes and de-points the bounding box pointer.
+
+Modifies:	[m_AABB].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void BumpModelClass::ReleaseBoundingBox()
+{
+	if (m_AABB)
+	{
+		delete m_AABB;
+		m_AABB = 0;
+	}
 }

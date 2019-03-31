@@ -31,17 +31,12 @@ GameObject::GameObject()
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
 Method:		~GameObject
 
-Modifies:	[m_baseModel, m_AABB, m_transform, m_scale].
+Modifies:	[none].
 
 Summary:	The default deconstructor for a gameobject
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GameObject::~GameObject()
 {
-	delete m_baseModel;
-	delete m_AABB;
-	delete m_transform;
-	delete m_scale;
-	delete m_rotation;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -305,8 +300,12 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GameObject::UpdateRotation(float prevX, float prevY, float prevZ)
 {
 	XMVECTOR rotDiff;
-	rotDiff = XMVectorSet(m_rotation->x - prevX, m_rotation->y - prevY, m_rotation->z - prevZ, 0.0f);
-	m_AABB->Transform(*m_AABB, 1.0f, rotDiff, XMVectorSplatSignMask());
+	rotDiff = XMVectorSet(m_rotation->x - prevX, m_rotation->y - prevY, m_rotation->z - prevZ, 1.0f);
+	rotDiff = XMQuaternionRotationRollPitchYawFromVector(rotDiff);
+	XMVECTOR* vector = new XMVECTOR();
+	*vector = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	
+	m_AABB->Transform(*m_AABB, 1.0f, rotDiff, *vector);
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -326,8 +325,37 @@ Modifies:	[m_AABB].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GameObject::UpdateTransform(float prevX, float prevY, float prevZ)
 {
-	XMVECTOR transDiff;
-	transDiff = XMVectorSet(m_transform->x - prevX, m_transform->y - prevY, m_transform->z - prevZ, 0.0f);
-	m_AABB->Transform(*m_AABB, 1.0f, XMVectorSplatSignMask(), transDiff);
+	XMVECTOR* transDiff = new XMVECTOR();
+	*transDiff = XMVectorSet(m_transform->x - prevX, m_transform->y - prevY, m_transform->z - prevZ, 1.0f);
+	XMVECTOR* vector = new XMVECTOR();
+	*vector = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	*vector = XMQuaternionRotationRollPitchYawFromVector(*vector);
+	m_AABB->Transform(*m_AABB, 1.0f, *vector, *transDiff);
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		CalcWorldMatrix
+
+Summary:	Uses all data about this object to construct a resultant
+			world matrix for this object.
+
+Args:		XMMATRIX &initialWorldMatrix
+				an Initial world matrix to be copied and used for
+				the resultant calculation.
+
+Modifies:	[none].
+
+Returns:	XMMATRIX* a pointer to the calculated XMMATRIX object.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+XMMATRIX * GameObject::CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
+{
+	XMMATRIX* worldMatrix = new XMMATRIX(initialWorldMatrix);
+
+	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixScaling(m_scale->x, m_scale->y, m_scale->z));
+	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixTranslation(m_transform->x, m_transform->y, m_transform->z));
+	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixRotationRollPitchYaw(m_rotation->x, m_rotation->y, m_rotation->z));
+	
+
+	return worldMatrix;
 }
 

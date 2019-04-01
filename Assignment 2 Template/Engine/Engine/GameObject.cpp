@@ -352,8 +352,9 @@ XMMATRIX * GameObject::CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
 	XMMATRIX* worldMatrix = new XMMATRIX(initialWorldMatrix);
 
 	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixScaling(m_scale->x, m_scale->y, m_scale->z));
-	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixTranslation(m_transform->x, m_transform->y, m_transform->z));
 	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixRotationRollPitchYaw(m_rotation->x, m_rotation->y, m_rotation->z));
+	*worldMatrix = XMMatrixMultiply(*worldMatrix, XMMatrixTranslation(m_transform->x, m_transform->y, m_transform->z));
+	
 	
 
 	return worldMatrix;

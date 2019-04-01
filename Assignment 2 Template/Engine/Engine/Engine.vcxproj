@@ -25,6 +25,7 @@
     <ClInclude Include="FontClassA.h" />
     <ClInclude Include="FontShaderClassA.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="lightclass.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="FontClassA.cpp" />
     <ClCompile Include="FontShaderClassA.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="lightclass.cpp" />

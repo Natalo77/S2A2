@@ -17,7 +17,7 @@ Summary:	Default constructor for a GraphicsClass object.
 Modifies:	[m_Input, m_D3D, m_Timer, m_ShaderManager, m_Light, m_Position,
 			 m_Camera, m_Model1, m_Model2, m_Model3, m_model4, m_Model,
 			 m_Text, m_Bitmap, m_CollisionObject, m_IntersectTestCube,
-			 m_renderingList].
+			 m_renderingList, m_GameObjectManager].
 
 Returns:	GraphicsClass
 				the new GraphicsClass object.
@@ -31,23 +31,12 @@ GraphicsClass::GraphicsClass()
 	m_Light = 0;
 	m_Position = 0;
 	m_Camera = 0;
-	m_Model2 = 0;
-	m_Model3 = 0;
-	m_Model4 = 0;
 
 	m_Text = 0;
 	m_Bitmap = 0;
 
 	m_CollisionObject = 0;
-
-	m_IntersectTestCube = 0;
-
-	m_GameObjectTestCube = 0;
-	m_LightGameObjectTestCube = 0;
-	m_BumpMapGameObjectTestCube = 0;
-	m_FireShaderGameObjectTestCube = 0;
-
-	renderingList = new std::vector<GameObject*>();
+	m_GameObjectManager = new GameObjectManager();
 	
 }
 
@@ -109,12 +98,6 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the input object.  The input object will be used to handle reading the keyboard and mouse input from the user.
 	m_Input = new InputClass;
-	if (!m_Input)
-	{
-		return false;
-	}
-
-	// Initialize the input object.
 	result = m_Input->Initialize(hinstance, hwnd, screenWidth, screenHeight);
 	if (!result)
 	{
@@ -124,14 +107,8 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
-	if(!m_D3D)
-	{
-		return false;
-	}
-
-	// Initialize the Direct3D object.
 	result = m_D3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, FULL_SCREEN, SCREEN_DEPTH, SCREEN_NEAR);
-	if(!result)
+	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize Direct3D.", L"Error", MB_OK);
 		return false;
@@ -139,14 +116,8 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the shader manager object.
 	m_ShaderManager = new ShaderManagerClass;
-	if(!m_ShaderManager)
-	{
-		return false;
-	}
-
-	// Initialize the shader manager object.
 	result = m_ShaderManager->Initialize(m_D3D->GetDevice(), hwnd);
-	if(!result)
+	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the shader manager object.", L"Error", MB_OK);
 		return false;
@@ -154,12 +125,6 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the timer object.
 	m_Timer = new TimerClass;
-	if (!m_Timer)
-	{
-		return false;
-	}
-
-	// Initialize the timer object.
 	result = m_Timer->Initialize();
 	if (!result)
 	{
@@ -169,34 +134,15 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the position object.
 	m_Position = new PositionClass;
-	if (!m_Position)
-	{
-		return false;
-	}
-
-	// Set the initial position and rotation of the viewer.
 	m_Position->SetPosition(0.0f, 0.0f, -10.0f);
 	m_Position->SetRotation(0.0f, 0.0f, 0.0f);
 
 	// Create the camera object.
 	m_Camera = new CameraClass;
-	if(!m_Camera)
-	{
-		return false;
-	}
-
-	// Set the initial position of the camera.
-	//m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 	m_Camera->GetBaseViewMatrix(baseViewMatrix);
 
 	// Create the light object.
 	m_Light = new LightClass;
-	if(!m_Light)
-	{
-		return false;
-	}
-
-	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
@@ -205,12 +151,6 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the text object.
 	m_Text = new TextClassA;
-	if (!m_Text)
-	{
-		return false;
-	}
-
-	// Initialize the text object.
 	result = m_Text->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), hwnd);
 	if (!result)
 	{
@@ -220,12 +160,6 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Create the bitmap object.
 	m_Bitmap = new BitmapClassA;
-	if (!m_Bitmap)
-	{
-		return false;
-	}
-
-	// Initialize the bitmap object.
 	result = m_Bitmap->Initialize(m_D3D->GetDevice(), screenWidth, screenHeight, L"../Engine/data/mouse.dds", 32, 32);
 	if (!result)
 	{
@@ -235,20 +169,14 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	//Create the collision class object.
 	m_CollisionObject = new CollisionClass;
-	if (!m_CollisionObject)
-	{
-		return false;
-	}
-
-	//Initialize the collision class object.
 	result = m_CollisionObject->Initialize(m_D3D, m_Camera);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Failed to initialize CollisionClass object", L"ERROR", MB_OK);
 		return false;
 	}
-	
-	//Testing Gameobject 30.03.2019
+
+	//Initialize a blue cube
 	ModelClass* testCube = new ModelClass();
 	result = testCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/blue.dds");
 	if (!result)
@@ -256,129 +184,84 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		MessageBox(hwnd, L"Failed to initialize GameoOject", L"ERROR", MB_OK);
 		return false;
 	}
-	m_GameObjectTestCube = new TextureGameObject(testCube);
-	m_GameObjectTestCube->setTransform(5.0f, 1.0f, 1.0f);
-	m_GameObjectTestCube->setRotation(0.0f, 45.0f, 0.0f);
-	m_GameObjectTestCube->setScale(2.0f, 2.0f, 1.0f);
 
-	//Testing LightGameObject 30.03.2019
-	ModelClass* testCubeLight = new ModelClass();
-	result = testCubeLight->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/blue.dds");
-	if (!result)
+	//Create and add objects to the GameObject manager.
 	{
-		MessageBox(hwnd, L"Failed to initialize LightGameObject", L"ERROR", MB_OK);
-		return false;
-	}
-	m_LightGameObjectTestCube = new LightGameObject(testCubeLight, m_Light, m_Camera);
-	m_LightGameObjectTestCube->setTransform(5.0f, 5.0f, 0.0f);
-	m_LightGameObjectTestCube->setRotation(45.0f, 0.0f, 0.0f);
-	m_LightGameObjectTestCube->setScale(1.0f, 0.5f, 1.0f);
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new TextureGameObject(testCube), new XMFLOAT3(5.0f, 1.0f, 1.0f),
+			new XMFLOAT3(0.0f, 45.0f, 0.0f), new XMFLOAT3(2.0f, 2.0f, 1.0f));
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new LightGameObject(testCube, m_Light, m_Camera),
+			new XMFLOAT3(5.0f, 5.0f, 0.0f), new XMFLOAT3(45.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 0.5, 1.0f));
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new LightGameObject(testCube, m_Light, m_Camera),
+			new XMFLOAT3(-5.0f, 1.0f, 5.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-	
-	//Testing BumpMapGameObject 30.03.2019
-	BumpModelClass* testCubeBump = new BumpModelClass();
-	result = testCubeBump->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
-		L"../Engine/data/normal.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Failed to initialize BumpGameObject", L"ERROR", MB_OK);
-		return false;
-	}
-	m_BumpMapGameObjectTestCube = new BumpMapGameObject(testCubeBump, m_Light);
-	m_BumpMapGameObjectTestCube->setTransform(0.0f, 0.0f, -5.0f);
-	m_BumpMapGameObjectTestCube->setRotation(45.0f, 0.0f, 0.0f);
-	m_BumpMapGameObjectTestCube->setScale(1.0f, 1.0f, 1.0f);
-	
-	//Testing FireShaderGameObject 31.03.2019
-	FireModelClass* testCubeFire = new FireModelClass();
-	result = testCubeFire->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/fire01.dds", //square or cube
-		L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Failed to initialize the firecube", L"ERROR", MB_OK);
-		return false;
-	}
-	m_FireShaderGameObjectTestCube = new FireShaderGameObject(testCubeFire);
-	m_FireShaderGameObjectTestCube->setTransform(0.0f, 7.5f, 0.0f);
-	m_FireShaderGameObjectTestCube->setRotation(0.0f, 0.0f, 45.0f);
-	m_FireShaderGameObjectTestCube->setScale(1.0f, 2.0f, 1.0f);
 
-	//Create the test intersection cube.
-	m_IntersectTestCube = new ModelClass();
-	//Initialize the cube.
-	result = m_IntersectTestCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/blue.dds");
-	if (!m_IntersectTestCube)
-		return false;
-	LightGameObject* intersectTestCube = new LightGameObject(m_IntersectTestCube, m_Light, m_Camera);
-	intersectTestCube->setTransform(-5.0f, 1.0f, 5.0f);
+		//Testing BumpMapGameObject 30.03.2019
+		BumpModelClass* testCubeBump = new BumpModelClass();
+		result = testCubeBump->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
+			L"../Engine/data/normal.dds");
+		if (!result)
+		{
+			MessageBox(hwnd, L"Failed to initialize BumpGameObject", L"ERROR", MB_OK);
+			return false;
+		}
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new BumpMapGameObject(testCubeBump, m_Light),
+			new XMFLOAT3(0.0f, 0.0f, -5.0f), new XMFLOAT3(45.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
+
+		//Testing FireShaderGameObject 31.03.2019
+		FireModelClass* testCubeFire = new FireModelClass();
+		result = testCubeFire->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/fire01.dds", //square or cube
+			L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
+		if (!result)
+		{
+			MessageBox(hwnd, L"Failed to initialize the firecube", L"ERROR", MB_OK);
+			return false;
+		}
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new FireShaderGameObject(testCubeFire),
+			new XMFLOAT3(0.0f, 7.5f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 45.0f), new XMFLOAT3(1.0f, 2.0f, 1.0f));
+
+		// Create the fourth fire model object.
+		FireModelClass* m_Model4 = new FireModelClass();
+		result = m_Model4->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/fire01.dds", //square or cube
+			L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
+		if (!result)
+		{
+			MessageBox(hwnd, L"Could not initialize the fourth model object.", L"Error", MB_OK);
+			return false;
+		}
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new FireShaderGameObject(m_Model4),
+			new XMFLOAT3(0.0f, 2.0f, -1.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(0.03f, 0.03f, 0.03f));
+	}
 
 	// Create the second model object.
-	m_Model2 = new ModelClass;
-	if (!m_Model2)
-		return false;
-	// Initialize the second model object.
-	result = m_Model2->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/metal.dds");
+	ModelClass* m_MetalNinja = new ModelClass;
+	result = m_MetalNinja->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/metal.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the second model object.", L"Error", MB_OK);
 		return false;
 	}
-	LightGameObject* metalNinja = new LightGameObject(m_Model2, m_Light, m_Camera);
+	metalNinja = new LightGameObject(m_MetalNinja, m_Light, m_Camera);
 	metalNinja->setScale(0.03f, 0.03f, 0.03f);
 	metalNinja->setTransform(0.0f, -2.0f, 0.0f);
+	m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_DYNAMIC, metalNinja,
+		new XMFLOAT3(0.0f, -2.0f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(0.03f, 0.03f, 0.03f));
 
 	// Create the third bump model object for models with normal maps and related vectors.
-	m_Model3 = new BumpModelClass;
-	if (!m_Model3)
-		return false;
+	BumpModelClass* m_StoneCube = new BumpModelClass();
 	// Initialize the bump model object.
-	result = m_Model3->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
+	result = m_StoneCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
 		L"../Engine/data/normal.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the third model object.", L"Error", MB_OK);
 		return false;
 	}
-	BumpMapGameObject* bumpCube = new BumpMapGameObject(m_Model3, m_Light);
-	bumpCube->setTransform(3.5f, 0.0f, 0.0f);
-
-	// Create the fourth fire model object.
-	m_Model4 = new FireModelClass;
-	if (!m_Model4)
-		return false;
-	result = m_Model4->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/fire01.dds", //square or cube
-		L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the fourth model object.", L"Error", MB_OK);
-		return false;
-	}
-	FireShaderGameObject* FireNinja = new FireShaderGameObject(m_Model4);
-	FireNinja->setScale(0.03f, 0.03f, 0.03f);
-	FireNinja->setTransform(0.0f, 2.0f, -1.0f);
-	
-
-	
-	//Push objects back onto the rendering List.
-	
-	renderingList->push_back(FireNinja);
-	renderingList->push_back(intersectTestCube);
-	renderingList->push_back(m_GameObjectTestCube);
-	renderingList->push_back(m_BumpMapGameObjectTestCube);
-	renderingList->push_back(m_LightGameObjectTestCube);
-	renderingList->push_back(m_FireShaderGameObjectTestCube);
-	renderingList->push_back(bumpCube);
-	renderingList->push_back(metalNinja);
-
-	
+	bumpCube = new BumpMapGameObject(m_StoneCube, m_Light);
+	m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_DYNAMIC, bumpCube,
+		new XMFLOAT3(3.5f, 0.0f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	// Initialize that the user has not clicked on the screen to try an intersection test yet.
 	m_beginCheck = false;
-
-
-
-
-
 
 	return true;
 }
@@ -396,26 +279,6 @@ Modifies:	[m_Model1, m_Model2, m_Model3, m_Model4, m_Light, m_Camera,
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GraphicsClass::Shutdown()
 {
-	if(m_Model2)
-	{
-		m_Model2->Shutdown();
-		delete m_Model2;
-		m_Model2 = 0;
-	}
-
-	if(m_Model3)
-	{
-		m_Model3->Shutdown();
-		delete m_Model3;
-		m_Model3 = 0;
-	}
-
-	if (m_Model4)
-	{
-		m_Model4->Shutdown();
-		delete m_Model4;
-		m_Model4 = 0;
-	}
 
 	// Release the light object.
 	if(m_Light)
@@ -493,43 +356,11 @@ void GraphicsClass::Shutdown()
 		m_CollisionObject = 0;
 	}
 
-	//release the intersection test cube.
-	if (m_IntersectTestCube)
-	{
-		m_IntersectTestCube->Shutdown();
-		delete m_IntersectTestCube;
-		m_IntersectTestCube = 0;
-	}
 
-	//30.03 test gameobject
-	if (m_GameObjectTestCube)
+	if (m_GameObjectManager)
 	{
-		m_GameObjectTestCube->~TextureGameObject();
-		delete m_GameObjectTestCube;
-		m_GameObjectTestCube = 0;
-	}
-	if (m_LightGameObjectTestCube)
-	{
-		m_LightGameObjectTestCube->~LightGameObject();
-		delete m_LightGameObjectTestCube;
-		m_LightGameObjectTestCube = 0;
-	}
-	if (m_BumpMapGameObjectTestCube)
-	{
-		m_BumpMapGameObjectTestCube->~BumpMapGameObject();
-		delete m_BumpMapGameObjectTestCube;
-		m_BumpMapGameObjectTestCube = 0;
-	}
-	if (m_FireShaderGameObjectTestCube)
-	{
-		m_FireShaderGameObjectTestCube->~FireShaderGameObject();
-		delete m_FireShaderGameObjectTestCube;
-		m_FireShaderGameObjectTestCube = 0;
-	}
-	if (renderingList)
-	{
-		delete renderingList;
-		renderingList = 0;
+		delete m_GameObjectManager;
+		m_GameObjectManager = 0;
 	}
 
 	return;
@@ -654,10 +485,10 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 			//else 
 				
 			
-			if(m_CollisionObject->TestCubeIntersect(mouseX, mouseY, m_IntersectTestCube->GetAABB()))
-				SetIntersectionText(true);
-			else
-				SetIntersectionText(false);
+			//if(m_CollisionObject->TestCubeIntersect(mouseX, mouseY, m_IntersectTestCube->GetAABB()))
+			//	SetIntersectionText(true);
+			//else
+			//	SetIntersectionText(false);
 		}
 	}
 
@@ -703,23 +534,18 @@ bool GraphicsClass::Render()
 	m_D3D->GetOrthoMatrix(orthoMatrix);
 
 	//Dynamic object alteration.
-	renderingList->back()->setRotation(0.0f, rotation, 0.0f);
-	renderingList->at(renderingList->size() - 2)->setRotation(rotation / 3.0f, 0.0f, 0.0f);
+	GameObject* metalNinjaRef = m_GameObjectManager->SearchFor(GameObjectManager::OBJECTTYPE_DYNAMIC, metalNinja);
+	if (metalNinjaRef != nullptr)
+		metalNinjaRef->setRotation(0.0f, rotation, 0.0f);
+	GameObject* bumpCubeRef = m_GameObjectManager->SearchFor(GameObjectManager::OBJECTTYPE_DYNAMIC, bumpCube);
+	if (bumpCubeRef != nullptr)
+		bumpCubeRef->setRotation(rotation / 3.0f, 0.0f, 0.0f);
 
 	//Turn on alpha blending
 	m_D3D->TurnOnAlphaBlending();
 
-	//Rendering Loop test 31.03
-	for (std::vector<GameObject*>::iterator iter = renderingList->begin();
-		iter != renderingList->end();
-		iter++)
-	{
-		m_D3D->GetWorldMatrix(worldMatrix);
-		GameObject* obj = *iter;
-		result = obj->Render(m_ShaderManager, m_D3D->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
-		if (!result)
-			return false;
-	}
+	//GameObjectManager testing 01.04.2019
+	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, viewMatrix, projectionMatrix);
 
 	// Get the location of the mouse from the input object and the ortho matrix.
 	m_Input->GetMouseLocation(mouseX, mouseY);

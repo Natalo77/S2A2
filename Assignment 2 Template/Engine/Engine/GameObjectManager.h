@@ -67,7 +67,7 @@ public:
 
 	GameObject* SearchFor(ObjectType objectType, GameObject* object);
 
-	void Render(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
+	bool Render(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
 
 private:
 	std::vector<GameObject*>* GetList(ObjectType listType);

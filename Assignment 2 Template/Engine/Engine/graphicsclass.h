@@ -25,6 +25,7 @@
 #include "LightGameObject.h"
 #include "BumpMapGameObject.h"
 #include "FireShaderGameObject.h"
+#include "GameObjectManager.h"
 
 //==============================================
 //	  Global Constants/Program parameters 
@@ -148,27 +149,20 @@ private:
 	PositionClass* m_Position;
 	CameraClass* m_Camera;
 	LightClass* m_Light;
-
-	ModelClass* m_Model2;
-	BumpModelClass* m_Model3;
-
-	FireModelClass* m_Model4;
-
 	CollisionClass* m_CollisionObject;
+	GameObjectManager* m_GameObjectManager;
+
+	LightGameObject* metalNinja;
+	BumpMapGameObject* bumpCube;
+
+
+	
 
 	TextClassA* m_Text;
 	BitmapClassA* m_Bitmap;
 	bool m_beginCheck;
 
-	ModelClass* m_IntersectTestCube;
-
-	TextureGameObject* m_GameObjectTestCube;
-	LightGameObject* m_LightGameObjectTestCube;
-	BumpMapGameObject* m_BumpMapGameObjectTestCube;
-	FireShaderGameObject* m_FireShaderGameObjectTestCube;
-
-
-	std::vector<GameObject*>* renderingList;
+	
 
 	
 

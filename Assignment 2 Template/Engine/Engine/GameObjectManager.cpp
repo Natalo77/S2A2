@@ -124,27 +124,41 @@ Args:		ShaderManagerClass* shaderManager
 				of the current camera.
 
 Modifies:	[none].
+
+Returns:	bool	
+				was the rendering of every object successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-void GameObjectManager::Render(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
+bool GameObjectManager::Render(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
 {
 	XMMATRIX worldMatrix;
+	bool result = true;
 
-	for (std::vector<GameObject*>::iterator iter = staticList->begin();
-		iter != staticList->end();
-		iter++)
+	if (staticList->size() != 0)
 	{
-		GameObject* a = *iter;
-		d3d->GetWorldMatrix(worldMatrix);
-		a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+		for (std::vector<GameObject*>::iterator iter = staticList->begin();
+			iter != staticList->end();
+			iter++)
+		{
+			GameObject* a = *iter;
+			d3d->GetWorldMatrix(worldMatrix);
+			result = a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+			if (!result)
+				return false;
+		}
 	}
 
-	for (std::vector<GameObject*>::iterator iter = dynamicList->begin();
-		iter != dynamicList->end();
-		iter++)
+	if (dynamicList->size() != 0)
 	{
-		GameObject* a = *iter;
-		d3d->GetWorldMatrix(worldMatrix);
-		a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+		for (std::vector<GameObject*>::iterator iter = dynamicList->begin();
+			iter != dynamicList->end();
+			iter++)
+		{
+			GameObject* a = *iter;
+			d3d->GetWorldMatrix(worldMatrix);
+			result = a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+			if (!result)
+				return false;
+		}
 	}
 }
 

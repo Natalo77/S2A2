@@ -30,9 +30,20 @@ Method:		~GameObjectManager
 
 Summary:	The default deconstructor for a GameObjectManager object.
 
-Modifies:	[staticList, dynamicList].
+Modifies:	[none].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GameObjectManager::~GameObjectManager()
+{
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Shutdown()
+
+Summary:	Call before deletion to ensure memory is freed.
+
+Modifies:	[staticList, dynamicList].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void GameObjectManager::Shutdown()
 {
 	delete staticList;
 	delete dynamicList;
@@ -128,7 +139,7 @@ Modifies:	[none].
 Returns:	bool	
 				was the rendering of every object successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool GameObjectManager::Render(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
+bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
 {
 	XMMATRIX worldMatrix;
 	bool result = true;

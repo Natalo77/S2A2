@@ -62,12 +62,14 @@ public:
 	GameObjectManager();
 	~GameObjectManager();
 
+	void Shutdown();
+
 	void AddItem(ObjectType objectType, GameObject* object);
 	void AddItem(ObjectType objectType, GameObject* object, XMFLOAT3* transform, XMFLOAT3* rotation, XMFLOAT3* scaling);
 
 	GameObject* SearchFor(ObjectType objectType, GameObject* object);
 
-	bool Render(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
+	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
 
 private:
 	std::vector<GameObject*>* GetList(ObjectType listType);

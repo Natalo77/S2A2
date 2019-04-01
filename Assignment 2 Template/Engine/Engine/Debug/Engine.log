@@ -1,38 +1,13 @@
 ﻿  graphicsclass.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(115): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(171): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(592): warning C4101: 'worldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(592): warning C4101: 'translateMatrix': unreferenced local variable
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(109): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(141): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(528): warning C4101: 'worldMatrix': unreferenced local variable
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(528): warning C4101: 'translateMatrix': unreferenced local variable
+  GameObjectManager.cpp
   Generating Code...
-  Compiling...
-  systemclass.cpp
-  Generating Code...
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(202): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(174): warning C4715: 'GameObjectManager::RenderAll': not all control paths return a value
   Skipping... (no relevant changes detected)
+  systemclass.cpp
   main.cpp
-BitmapClassA.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
-     Creating library E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.lib and object E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exp
-TextLibA.lib(CFW1ColorRGBA.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1ColorRGBA.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1ColorRGBAInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1ColorRGBAInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1DWriteRenderTarget.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1DWriteRenderTarget.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1DWriteRenderTargetInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1DWriteRenderTargetInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1Factory.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1Factory.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1FactoryInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1FactoryInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1FontWrapper.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1FontWrapper.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1FontWrapperInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1FontWrapperInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphAtlas.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphAtlas.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphAtlasInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphAtlasInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphProvider.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphProvider.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphProviderInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphProviderInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphRenderStates.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphRenderStates.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphRenderStatesInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphRenderStatesInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphSheet.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphSheet.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphSheetInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphSheetInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphVertexDrawer.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphVertexDrawer.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1GlyphVertexDrawerInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1GlyphVertexDrawerInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1StateSaver.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1StateSaver.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1TextGeometry.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1TextGeometry.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1TextGeometryInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1TextGeometryInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1TextRenderer.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1TextRenderer.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(CFW1TextRendererInterface.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(CFW1TextRendererInterface.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
-TextLibA.lib(FW1FontWrapper.obj) : warning LNK4099: PDB 'TextLibA.pdb' was not found with 'TextLibA.lib(FW1FontWrapper.obj)' or at 'E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\TextLibA.pdb'; linking object as if no debug info
   Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

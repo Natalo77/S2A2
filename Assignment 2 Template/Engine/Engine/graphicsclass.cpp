@@ -359,8 +359,20 @@ void GraphicsClass::Shutdown()
 
 	if (m_GameObjectManager)
 	{
+		m_GameObjectManager->Shutdown();
 		delete m_GameObjectManager;
 		m_GameObjectManager = 0;
+	}
+
+	if (metalNinja)
+	{
+		delete metalNinja;
+		metalNinja = 0;
+	}
+	if (bumpCube)
+	{
+		delete bumpCube;
+		bumpCube = 0;
 	}
 
 	return;

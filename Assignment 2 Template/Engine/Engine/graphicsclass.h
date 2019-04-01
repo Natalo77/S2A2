@@ -112,6 +112,14 @@ Members:	==================== PRIVATE ====================
 			ModelClass* m_IntersectTestCube
 				A model object within the scene.
 				Used to test a cube for AABB intersection.
+
+			TextureGameObject, LightGameObject, BumpMapGameObject, FireShaderGameObject
+				Used for testing the 4 types of GameObject.
+
+			std::vector<GameObject*> renderingList.
+				Used by the rendering loop.
+				Items should be added to this to be rendered.
+				The render function uses this to render every item.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class GraphicsClass
 {
@@ -141,7 +149,6 @@ private:
 	CameraClass* m_Camera;
 	LightClass* m_Light;
 
-	ModelClass* m_Model1;
 	ModelClass* m_Model2;
 	BumpModelClass* m_Model3;
 
@@ -149,7 +156,6 @@ private:
 
 	CollisionClass* m_CollisionObject;
 
-	ModelClass* m_Model;
 	TextClassA* m_Text;
 	BitmapClassA* m_Bitmap;
 	bool m_beginCheck;
@@ -160,6 +166,9 @@ private:
 	LightGameObject* m_LightGameObjectTestCube;
 	BumpMapGameObject* m_BumpMapGameObjectTestCube;
 	FireShaderGameObject* m_FireShaderGameObjectTestCube;
+
+
+	std::vector<GameObject*>* renderingList;
 
 	
 

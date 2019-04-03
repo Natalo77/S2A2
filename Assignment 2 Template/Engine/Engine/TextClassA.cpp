@@ -6,6 +6,7 @@
 //					   User Defined Headers.
 //================================================================
 #include "TextClassA.h"
+#include "GameObject.h"
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/CFW1Factory.h"
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/CFW1FontWrapper.h"
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/FW1FontWrapper.h"
@@ -349,20 +350,40 @@ Modifies:	[m_sentence1].
 Returns:	bool
 				representing whether or not the sentence was updated successfully.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool TextClassA::SetIntersection(bool intersection, ID3D11DeviceContext* deviceContext)
+bool TextClassA::SetIntersection(bool intersection, ID3D11DeviceContext* deviceContext, GameObject* collided)
 {
 	char intersectionString[32];
 	bool result;
 
+	std::string string = "";
+
 
 	if (intersection)
 	{
-		strcpy_s(intersectionString, "Intersection: Yes");
+		string += "Intersection: Yes:";
+		if (collided != nullptr)
+		{
+			string += collided->GetPosition()->x;
+			string += ", ";
+			string += collided->GetPosition()->y;
+			string += ", ";
+			string += collided->GetPosition()->z;
+		}
+		strcpy_s(intersectionString, string.c_str());
 		result = UpdateSentence(m_sentence1, intersectionString, 0.0f, 1.0f, 0.0f, deviceContext);
 	}
 	else
 	{
-		strcpy_s(intersectionString, "Intersection: No");
+		string += "Intersection: No:";
+		if (collided != nullptr)
+		{
+			string += collided->GetPosition()->x;
+			string += ", ";
+			string += collided->GetPosition()->y;
+			string += ", ";
+			string += collided->GetPosition()->z;
+		}
+		strcpy_s(intersectionString, string.c_str());
 		result = UpdateSentence(m_sentence1, intersectionString, 1.0f, 0.0f, 0.0f, deviceContext);
 	}
 

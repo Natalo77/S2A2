@@ -1,13 +1,7 @@
-﻿  graphicsclass.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(109): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(141): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(528): warning C4101: 'worldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(528): warning C4101: 'translateMatrix': unreferenced local variable
-  GameObjectManager.cpp
-  Generating Code...
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(202): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(174): warning C4715: 'GameObjectManager::RenderAll': not all control paths return a value
-  Skipping... (no relevant changes detected)
-  systemclass.cpp
-  main.cpp
+﻿  GameObject.cpp
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(77): warning C4316: 'DirectX::XMMATRIX': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(370): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(393): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(395): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobject.cpp(420): warning C4316: 'DirectX::XMMATRIX': object allocated on the heap may not be aligned 16
   Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

@@ -61,6 +61,67 @@ ModelClass::~ModelClass()
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
 Method:		Initialize
 
+Summary:	An overload of Initialize that uses a boundingbox to create
+			a model (using the center and extents of the boundingbox).
+
+Args:		ID3D11Device* device
+				a pointer to the ID3D11Device object that should be used
+				to load the boundingBoxModel texture with.
+			BoundingBox* AABB
+				a pointer to the bounding box which contains the data
+				with which to query for the points of the bounding box.
+
+Modifies:	[none].
+
+Returns:	bool
+				was the initialization of all the subparts successful?
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool ModelClass::Initialize(ID3D11Device* device, BoundingBox* AABB)
+{
+	bool result;
+
+	//Calculate all 8 points of the bounding box.
+	XMFLOAT3 p1{ AABB->Center.x + AABB->Extents.x, AABB->Center.y + AABB->Extents.y, AABB->Center.z + AABB->Extents.z };
+	XMFLOAT3 p2{ AABB->Center.x + AABB->Extents.x, AABB->Center.y + AABB->Extents.y, AABB->Center.z - AABB->Extents.z };
+	XMFLOAT3 p3{ AABB->Center.x + AABB->Extents.x, AABB->Center.y - AABB->Extents.y, AABB->Center.z + AABB->Extents.z };
+	XMFLOAT3 p4{ AABB->Center.x - AABB->Extents.x, AABB->Center.y + AABB->Extents.y, AABB->Center.z + AABB->Extents.z };
+	XMFLOAT3 p5{ AABB->Center.x + AABB->Extents.x, AABB->Center.y - AABB->Extents.y, AABB->Center.z - AABB->Extents.z };
+	XMFLOAT3 p6{ AABB->Center.x - AABB->Extents.x, AABB->Center.y - AABB->Extents.y, AABB->Center.z + AABB->Extents.z };
+	XMFLOAT3 p7{ AABB->Center.x - AABB->Extents.x, AABB->Center.y + AABB->Extents.y, AABB->Center.z - AABB->Extents.z };
+	XMFLOAT3 p8{ AABB->Center.x - AABB->Extents.x, AABB->Center.y - AABB->Extents.y, AABB->Center.z - AABB->Extents.z };
+
+	//push them back onto a vector.
+	std::vector<XMFLOAT3*>* list = new std::vector<XMFLOAT3*>();
+	list->push_back(&p7);
+	list->push_back(&p4);
+	list->push_back(&p1);
+	list->push_back(&p2);
+	list->push_back(&p8);
+	list->push_back(&p5);
+	list->push_back(&p3);
+	list->push_back(&p6);
+
+	//Load the model using the calculated points.
+	result = LoadModel(list);
+	if (!result)
+		return false;
+
+	//Initialize the vertex and index buffers.
+	result = InitializeBuffers(device);
+	if (!result)
+		return false;
+
+	//Initialize the texture
+	result = LoadTexture(device, L"../Engine/Data/blue.dds");
+	if (!result)
+		return false;
+
+	return true;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Initialize
+
 Summary:	================= CALL AFTER CREATION =================
 			Performs all the required setup on a newly created ModelClass
 			object.
@@ -527,6 +588,55 @@ bool ModelClass::LoadModel(char* filename)
 	m_min = new XMFLOAT3(minx, miny, minz);
 	m_max = new XMFLOAT3(maxx, maxy, maxz);
 
+	return true;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		LoadModel
+
+Summary:	Creates an array of ModelType structs to represent the model
+			using the data passed in by a list of float3s.
+
+Args:		vector<XMFLOAT3*>* list
+				a pointer to a list of XMFLOAT3s representing a list of vertices
+				to create the model data with.
+
+Modifies:	[m_vertexCount, m_indexCount, m_model].
+
+Returns:	bool
+				was the loading of the ModelType data succesful.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool ModelClass::LoadModel(std::vector<XMFLOAT3*>* list)
+{
+	//the number of vertices is the size of the list.
+	m_vertexCount = list->size();
+
+	//The number of indices is the same as the number of vertices.
+	m_indexCount = list->size();
+
+	// Create the model using the vertex count that was read in.
+	m_model = new ModelType[m_vertexCount];
+	if (!m_model)
+	{
+		return false;
+	}
+
+	//Setup each of the ModelType structs.
+	for (int i = 0; i < m_vertexCount; i++)
+	{
+		m_model[i].x = list->at(i)->x;
+		m_model[i].y = list->at(i)->y;
+		m_model[i].z = list->at(i)->z;
+
+		m_model[i].nx = 1.0f;
+		m_model[i].ny = 1.0f;
+		m_model[i].nz = 1.0f;
+
+		m_model[i].tu = 1.0f;
+		m_model[i].tv = 1.0f;
+	}
+
+	//If this point was reached, the model was created successfully.
 	return true;
 }
 

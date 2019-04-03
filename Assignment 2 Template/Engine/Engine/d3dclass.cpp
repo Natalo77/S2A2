@@ -228,6 +228,8 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	
+
 	// Release pointer to the back buffer as we no longer need it.
 	backBufferPtr->Release();
 	backBufferPtr = 0;
@@ -322,6 +324,25 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	// Create the rasterizer state from the description we just filled out.
 	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterState);
 	if(FAILED(result))
+	{
+		return false;
+	}
+
+	//Setup a wireframe rasterizer state.
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	wireframeDesc.AntialiasedLineEnable = false;
+	wireframeDesc.CullMode = D3D11_CULL_NONE;
+	wireframeDesc.DepthBias = 0;
+	wireframeDesc.DepthBiasClamp = 0.0f;
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.FrontCounterClockwise = false;
+	wireframeDesc.MultisampleEnable = false;
+	wireframeDesc.ScissorEnable = false;
+	wireframeDesc.SlopeScaledDepthBias = 0.0f;
+
+	//Create a rasterizer state for the wireframe descriptor.
+	result = m_device->CreateRasterizerState(&wireframeDesc, &m_wireframeState);
+	if (FAILED(result))
 	{
 		return false;
 	}
@@ -534,4 +555,14 @@ void D3DClass::TurnOffAlphaBlending()
 	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 
 	return;
+}
+
+void D3DClass::TurnOnWireframe()
+{
+	m_deviceContext->RSSetState(m_wireframeState);
+}
+
+void D3DClass::TurnOffWireframe()
+{
+	m_deviceContext->RSSetState(m_rasterState);
 }

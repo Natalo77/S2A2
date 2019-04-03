@@ -54,6 +54,9 @@ public:
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
 
+	void TurnOnWireframe();
+	void TurnOffWireframe();
+
 	//14.03
 	float m_screenWidth;
 	float m_screenHeight;
@@ -72,6 +75,7 @@ private:
 	ID3D11DepthStencilState* m_depthStencilState;
 	ID3D11DepthStencilView* m_depthStencilView;
 	ID3D11RasterizerState* m_rasterState;
+	ID3D11RasterizerState* m_wireframeState;
 
 	XMMATRIX m_projectionMatrix;
 	XMMATRIX m_worldMatrix;

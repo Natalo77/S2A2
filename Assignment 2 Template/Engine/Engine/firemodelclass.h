@@ -175,6 +175,7 @@ private:
 
 	BoundingBox* m_AABB;
 
+public:
 	XMFLOAT3* m_min;
 	XMFLOAT3* m_max;
 };

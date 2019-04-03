@@ -12,6 +12,7 @@
 #include <DirectXMath.h> 
 #include <DirectXCollision.h>
 #include <fstream>
+#include <vector>
 
 
 //===========================================
@@ -46,6 +47,8 @@ Methods:	==================== PUBLIC ====================
 			~ModelClass();
 				Deconstructor.
 
+			Initialize(ID3D11Device* BoundingBox*)
+				Call after creating to set up a ModelClass using a boundingBox.
 			Initialize(ID3D11Device*, char*, WCHAR*);
 				Call after creating to setup Model Class for use.
 			Shutdown();
@@ -80,6 +83,9 @@ Methods:	==================== PUBLIC ====================
 				Called by Initialize() to create and initialize a ModelType array for
 				the vertex data of the specified model. Also calculates the min and max
 				points of the model.
+			LoadModel(vector<XMFLOAT3*>*)
+				Called by Initialize(...BoundingBox*) to create and initialize a ModelType
+				array for the vertex data of the specified model.
 			ReleaseModel()
 				Called by Shutdown() to release the ModelType data and the min and max
 				points from memory.
@@ -139,6 +145,7 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
+	bool Initialize(ID3D11Device*, BoundingBox*);
 	bool Initialize(ID3D11Device*, char*, WCHAR*);
 	void Shutdown();
 
@@ -158,7 +165,10 @@ private:
 	void ReleaseTexture();
 
 	bool LoadModel(char*);
+	bool LoadModel(std::vector<XMFLOAT3*>*);
 	void ReleaseModel();
+
+	
 
 	bool SetupBoundingBox();
 	void ReleaseBoundingBox();
@@ -176,8 +186,10 @@ private:
 
 	BoundingBox* m_AABB;
 
+public:
 	XMFLOAT3* m_min;
 	XMFLOAT3* m_max;
+
 };
 
 #endif

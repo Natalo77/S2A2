@@ -15,14 +15,13 @@ Method:		BumpMapGameObject
 Summary:	The Default Constructor for a BumpMapGameObject.
 			Simply uses the default constructor for its parent GameObject
 
-Modifies:	[see GameObject(), m_baseBumpModel].
+Modifies:	[see GameObject()].
 
 Returns:	BumpMapGameObject
 				the newly created BumpMapGameObject object.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpMapGameObject::BumpMapGameObject()
 {
-	m_baseModel = 0;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -47,15 +46,14 @@ Args:		ModelClass* baseModel
 				a pointer to a modelClass object to use as this
 				Gameobject's reference.
 
-Modifies:	[ m_baseModel, m_AABB].
+Modifies:	[none].
 
 Returns:	BumpMapGameObject
 				the newly created BumpMapGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpMapGameObject::BumpMapGameObject(BumpModelClass* baseModel)
 {
-	this->m_baseModel = baseModel;
-	this->m_AABB = m_baseModel->GetAABB();
+	Setup(baseModel);
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -72,19 +70,15 @@ Args:		ModelClass* baseModel
 			LightClass* light
 				a pointer to the LightClass object that this
 				BumpMapGameObject should use when rendering.
-			CameraClass* camera
-				a pointer to the CameraClass object that this
-				BumpMapGameObject should use when rendering.
 
-Modifies:	[m_baseModel, m_AABB, m_Light, m_Camera].
+Modifies:	[m_Light].
 
 Returns:	BumpMapGameObject
 				the newly created BumpMapGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpMapGameObject::BumpMapGameObject(BumpModelClass* baseModel, LightClass* light)
 {
-	this->m_baseModel = baseModel;
-	this->m_AABB = m_baseModel->GetAABB();
+	Setup(baseModel);
 	this->m_Light = light;
 }
 
@@ -92,10 +86,10 @@ BumpMapGameObject::BumpMapGameObject(BumpModelClass* baseModel, LightClass* ligh
 Method:		Render
 
 Summary:	The implementation of render from GameObject.
-			uses the textureshader within the passed in shadermanager
-			to render the object to the screen.
+			Uses the textureshader within the passed in shadermanager
+				to render the object to the screen.
 
-Modifies:	[see GameObject.Render()].
+Modifies:	[none].
 
 Returns:	bool
 				was the rendering successful or not?
@@ -103,8 +97,13 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool BumpMapGameObject::Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 	XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
 {
+	//Render the model to the device.
 	GetModel()->Render(device);
-	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
+
+	//Calculate the worldMatrix based off this GameObject's transform data.
+	XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
+
+	//Use the shaderManager's bumpMap shader to render this object.
 	return shaderManager->RenderBumpMapShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
 		GetModel()->GetColorTexture(), GetModel()->GetNormalMapTexture(), m_Light->GetDirection(),
 		m_Light->GetDiffuseColor());
@@ -132,12 +131,36 @@ Method:		GetModel
 Summary:	A utility function to return a pointer to the baseModel used
 			by this gameObject.
 
-Modifies:	BumpModelClass*
+Returns:	BumpModelClass*
 				a pointer to the Modeltype class object being used by this
 				gameObject as its base model.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 BumpModelClass * BumpMapGameObject::GetModel()
 {
 	return this->m_baseModel;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Setup
+
+Summary:	A hiding-override of Setup from GameObject.h
+			Performs the same functions of setting up the model, however
+			uses a BumpModelClass object instead.
+
+Args:		BumpModelClass* baseModel
+				a pointer to a BumpModelClass object to setup this
+				gameObject with.
+
+Modifies:	[m_baseModel, m_min, m_max, m_transform, m_scale, m_rotation].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void BumpMapGameObject::Setup(BumpModelClass * baseModel)
+{
+	m_baseModel = baseModel;
+	m_min = new XMFLOAT3(m_baseModel->m_min->x, m_baseModel->m_min->y, m_baseModel->m_min->z);
+	m_max = new XMFLOAT3(m_baseModel->m_max->x, m_baseModel->m_max->y, m_baseModel->m_max->z);
+	BoundingBox::CreateFromPoints(*m_AABB, XMLoadFloat3(m_min), XMLoadFloat3(m_max));
+	m_transform = new XMFLOAT3(0, 0, 0);
+	m_scale = new XMFLOAT3(1, 1, 1);
+	m_rotation = new XMFLOAT3(0, 0, 0);
 }
 

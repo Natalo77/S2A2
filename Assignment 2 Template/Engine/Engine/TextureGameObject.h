@@ -22,6 +22,10 @@ Methods:	==================== PUBLIC ====================
 				The default constructor of a TextureGameObject.
 			~TextureGameObject()
 				The default deconstructor of a TextureGameObject.
+			TextureGameObject(ModelClass*)
+				The preferred constructor of a TextureGameObject. Constructs the
+				gameObject using the ModelClass pointer as the base Model for
+				this gameobject.
 
 			Render
 				Implementation of Render from GameObject, call to

@@ -19,11 +19,11 @@ Summary:	A Class designed for use as a prefab like structure, with properties
 			This specific Class uses an Animated Fire shader alongside the texture shader.
 
 Methods:	==================== PUBLIC ====================
-			FireShaderGameObject()
+			1. FireShaderGameObject()
 				The default constructor of a FireShaderGameObject.
 			~FireShaderGameObject()
 				The default deconstructor of a FireShaderGameObject.
-			FireShaderGameObject(FireModelClass* baseModel)
+			2. FireShaderGameObject(FireModelClass* baseModel)
 				Preferred vonstructor for a FireShaderGameObject that sets the base model
 				for the object.
 
@@ -38,7 +38,14 @@ Methods:	==================== PUBLIC ====================
 			==================== PRIVATE ====================
 			GetModel()
 				A utility function to return a reference to the baseModel
-				used by this GameObject.
+					used by this GameObject.
+				Used by the Render function to get data about the model.
+
+			Setup(FireModelClass*)
+				A hide-override of the Setup function in GameObject that
+					performs the same function but uses a FireModelClass instead.
+				Used by constrctor 2 to setup the GameObject and its
+					collision data.
 
 Members:	==================== PRIVATE ====================
 			FireModelClass* m_baseFireModel
@@ -46,16 +53,17 @@ Members:	==================== PRIVATE ====================
 				for this FireShaderGameObject.
 			
 			float frameTime
-
+				A float representing the current time of the fire animation.
 			XMFLOAT3* scrollSpeeds
-
+				An XMFLOAT3 used by the fire animation.
 			XMFLOAT3* scales
-
+				An XMFLOAT3 used by the fire animation.
 			XMFLOAT2* distortion1, distortion2, distortion3
-
+				XMFLOAT2s used by the fire animation.
 			float distortionScale.
-
+				a float used by the fire animation.
 			float distortionBias.
+				a float used by the fire animation.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class FireShaderGameObject : public GameObject
 {
@@ -72,6 +80,8 @@ public:
 
 private:
 	FireModelClass* GetModel();
+
+	void Setup(FireModelClass* baseModel);
 
 private:
 	FireModelClass* m_baseModel;

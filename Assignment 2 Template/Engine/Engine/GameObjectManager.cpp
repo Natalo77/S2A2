@@ -84,6 +84,8 @@ Args:		ObjectType objectType
 			XMFLOAT3* transform, rotation, scaling
 				XMFLOAT3s representing the transformation, rotation
 				and scaling of the GameObject, respectively.
+
+Modifies:	[none].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GameObjectManager::AddItem(ObjectType objectType, GameObject* object, XMFLOAT3* transform, XMFLOAT3* rotation, XMFLOAT3* scaling)
 {
@@ -121,6 +123,7 @@ GameObject* GameObjectManager::SearchFor(ObjectType objectType, GameObject* obje
 Method:		Render
 
 Summary:	Use to render all objects within the scope of the GameObjectManager.
+			Renders them with their AABBs right now as well.
 
 Args:		ShaderManagerClass* shaderManager
 				a pointer to the ShaderManagerClass object that is being
@@ -139,36 +142,57 @@ Modifies:	[none].
 Returns:	bool	
 				was the rendering of every object successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
+bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
 {
+	//Temporary storage for the worldMatrix.
 	XMMATRIX worldMatrix;
 	bool result = true;
 
+	//If there is at least one element in the staticList.
 	if (staticList->size() != 0)
 	{
+		//Iterate through the list.
 		for (std::vector<GameObject*>::iterator iter = staticList->begin();
 			iter != staticList->end();
 			iter++)
 		{
+			//Dereference the iterator.
 			GameObject* a = *iter;
+
+			//Obtain the worldMatrix from the D3Dclass.
 			d3d->GetWorldMatrix(worldMatrix);
+
+			//Render the model.
 			result = a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
 			if (!result)
 				return false;
+
+			//Render the model's AABB.
+			a->RenderAABB(shaderManager, d3d, cam);
 		}
 	}
 
+	//If the dynamicList has at least one item,
 	if (dynamicList->size() != 0)
 	{
+		//Iterate through the list,
 		for (std::vector<GameObject*>::iterator iter = dynamicList->begin();
 			iter != dynamicList->end();
 			iter++)
 		{
+			//Dereference the iterator.
 			GameObject* a = *iter;
+
+			//Get the worldMatrix using the D3D class.
 			d3d->GetWorldMatrix(worldMatrix);
+
+			//Render the model
 			result = a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
 			if (!result)
 				return false;
+
+			//Render the model's AABB.
+			a->RenderAABB(shaderManager, d3d, cam);
 		}
 	}
 }
@@ -219,14 +243,19 @@ Returns:	GameObject*
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GameObject* GameObjectManager::Search(std::vector<GameObject*>* list, GameObject* object)
 {
+	//iterate through the given list.
 	for (std::vector<GameObject*>::iterator iter = list->begin();
 		iter != list->end();
 		iter++)
 	{
+		//Dereference the iterator.
 		GameObject* comp = *iter;
+
+		//If the search and current are equal, return the iterator(dereferenced).
 		if (comp == object)
 			return *iter;
 	}
-
+	
+	//If this point is reached then the search-for element was not found.
 	return nullptr;
 }

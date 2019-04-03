@@ -68,7 +68,7 @@ Methods:	==================== PUBLIC ====================
 			Render()
 				Called by Frame() to render every object.
 
-			SetIntersectionText(bool intersection)
+			SetIntersectionText(bool intersection, GameObject* collided)
 				Called by HandleMovementInput() to handle intersection testing.
 
 Members:	==================== PRIVATE ====================
@@ -86,22 +86,16 @@ Members:	==================== PRIVATE ====================
 				An object to control the user's camera.
 			LightClass* m_Light
 				An Light object to be placed within the scene.
-
-			ModelClass* m_Model1
-				A model object within the scene.
-			ModelClass* m_Model2
-				A model object within the scene.
-			BumpModelClass* m_Model3
-				A model object within the scene.
-			FireModelClass* m_Model4
-				A model object within the scene.
-
 			CollisionClass* m_CollisionObject.
 				A utility object for various forms of collision checking.
+			GameObjectManager* m_GameObjectManager
+				A utility object to manage and keep track of all the objects in the scene.
 
-			ModelClass* m_Model
-				A model object within the scene.
-			
+			LightGameObject* metalNinja
+				a pointer to a dynamic object within the scene.
+			BumpMapGameObject* bumpCube
+				a pointer to the rotating cube within the scene.
+
 			TextClassA* m_Text
 				An object to keep track of all the text on the screen.
 			BitmapClassA* m_Bitmap
@@ -109,18 +103,6 @@ Members:	==================== PRIVATE ====================
 			
 			bool m_beginCheck
 				A 'global' variable to handle mouse testing.
-
-			ModelClass* m_IntersectTestCube
-				A model object within the scene.
-				Used to test a cube for AABB intersection.
-
-			TextureGameObject, LightGameObject, BumpMapGameObject, FireShaderGameObject
-				Used for testing the 4 types of GameObject.
-
-			std::vector<GameObject*> renderingList.
-				Used by the rendering loop.
-				Items should be added to this to be rendered.
-				The render function uses this to render every item.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class GraphicsClass
 {
@@ -134,12 +116,10 @@ public:
 	bool Frame();
 
 private:
-	//bool Render(float);
-	//Xu
 	bool HandleMovementInput(float);
 	bool Render();
 
-	void SetIntersectionText(bool intersection);
+	void SetIntersectionText(bool intersection, GameObject* collided);
 
 private:
 	InputClass* m_Input;
@@ -154,9 +134,6 @@ private:
 
 	LightGameObject* metalNinja;
 	BumpMapGameObject* bumpCube;
-
-
-	
 
 	TextClassA* m_Text;
 	BitmapClassA* m_Bitmap;

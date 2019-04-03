@@ -15,8 +15,7 @@ Method:		GraphicsClass
 Summary:	Default constructor for a GraphicsClass object.
 
 Modifies:	[m_Input, m_D3D, m_Timer, m_ShaderManager, m_Light, m_Position,
-			 m_Camera, m_Model1, m_Model2, m_Model3, m_model4, m_Model,
-			 m_Text, m_Bitmap, m_CollisionObject, m_IntersectTestCube,
+			 m_Camera, m_Text, m_Bitmap, m_CollisionObject,
 			 m_renderingList, m_GameObjectManager].
 
 Returns:	GraphicsClass
@@ -84,9 +83,9 @@ Args:		HINSTANCE hinstance
 				the screenHeight in pixels.
 
 Modifies:	[m_Input, m_D3D, m_ShaderManager, m_Timer, m_Position,
-			 m_Camera, m_Light, m_Model1, m_Model2, m_Model3, m_Model4,
-			 m_Model, m_Text, m_Bitmap, m_IntersectTestCube,
-			 m_CollisionObject, m_beginCheck].
+			 m_Camera, m_Light, m_Text, m_Bitmap,
+			 m_CollisionObject, m_GameObjectManager, m_beginCheck,
+			 metalNinja, bumpCube].
 
 Returns:	bool
 				was the initialization of all member variables successful.
@@ -187,15 +186,15 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	//Create and add objects to the GameObject manager.
 	{
-		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new TextureGameObject(testCube), new XMFLOAT3(5.0f, 1.0f, 1.0f),
-			new XMFLOAT3(0.0f, 45.0f, 0.0f), new XMFLOAT3(2.0f, 2.0f, 1.0f));
+		//Add 3 new Objects to the gameObjectManager.
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new TextureGameObject(testCube), 
+			new XMFLOAT3(5.0f, 1.0f, 1.0f), new XMFLOAT3(0.0f, 45.0f, 0.0f), new XMFLOAT3(2.0f, 2.0f, 1.0f));
 		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new LightGameObject(testCube, m_Light, m_Camera),
 			new XMFLOAT3(5.0f, 5.0f, 0.0f), new XMFLOAT3(45.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 0.5, 1.0f));
 		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new LightGameObject(testCube, m_Light, m_Camera),
 			new XMFLOAT3(-5.0f, 1.0f, 5.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-
-		//Testing BumpMapGameObject 30.03.2019
+		//Create and add a bumpmap cube to the gameobjectmanager.
 		BumpModelClass* testCubeBump = new BumpModelClass();
 		result = testCubeBump->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
 			L"../Engine/data/normal.dds");
@@ -207,7 +206,7 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new BumpMapGameObject(testCubeBump, m_Light),
 			new XMFLOAT3(0.0f, 0.0f, -5.0f), new XMFLOAT3(45.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-		//Testing FireShaderGameObject 31.03.2019
+		//Create and add a fire animation ninja head to the gameObjectManager.
 		FireModelClass* testCubeFire = new FireModelClass();
 		result = testCubeFire->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/fire01.dds", //square or cube
 			L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
@@ -219,7 +218,7 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new FireShaderGameObject(testCubeFire),
 			new XMFLOAT3(0.0f, 7.5f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 45.0f), new XMFLOAT3(1.0f, 2.0f, 1.0f));
 
-		// Create the fourth fire model object.
+		//Create and add a firemodel cube to the gameObjectManager.
 		FireModelClass* m_Model4 = new FireModelClass();
 		result = m_Model4->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/fire01.dds", //square or cube
 			L"../Engine/data/noise01.dds", L"../Engine/data/alpha01.dds");
@@ -230,35 +229,32 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		}
 		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_STATIC, new FireShaderGameObject(m_Model4),
 			new XMFLOAT3(0.0f, 2.0f, -1.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(0.03f, 0.03f, 0.03f));
-	}
 
-	// Create the second model object.
-	ModelClass* m_MetalNinja = new ModelClass;
-	result = m_MetalNinja->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/metal.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the second model object.", L"Error", MB_OK);
-		return false;
-	}
-	metalNinja = new LightGameObject(m_MetalNinja, m_Light, m_Camera);
-	metalNinja->setScale(0.03f, 0.03f, 0.03f);
-	metalNinja->setTransform(0.0f, -2.0f, 0.0f);
-	m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_DYNAMIC, metalNinja,
-		new XMFLOAT3(0.0f, -2.0f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(0.03f, 0.03f, 0.03f));
+		//Create and add a metal ninja head to the gameObjectManager.
+		ModelClass* m_MetalNinja = new ModelClass;
+		result = m_MetalNinja->Initialize(m_D3D->GetDevice(), "../Engine/data/new-ninjaHead.txt", L"../Engine/data/metal.dds");
+		if (!result)
+		{
+			MessageBox(hwnd, L"Could not initialize the second model object.", L"Error", MB_OK);
+			return false;
+		}
+		metalNinja = new LightGameObject(m_MetalNinja, m_Light, m_Camera);
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_DYNAMIC, metalNinja,
+			new XMFLOAT3(0.0f, -2.0f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(0.03f, 0.03f, 0.03f));
 
-	// Create the third bump model object for models with normal maps and related vectors.
-	BumpModelClass* m_StoneCube = new BumpModelClass();
-	// Initialize the bump model object.
-	result = m_StoneCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
-		L"../Engine/data/normal.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the third model object.", L"Error", MB_OK);
-		return false;
+		//Create and add a stone cube to the gameObjectManager.
+		BumpModelClass* m_StoneCube = new BumpModelClass();
+		result = m_StoneCube->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/stone.dds",
+			L"../Engine/data/normal.dds");
+		if (!result)
+		{
+			MessageBox(hwnd, L"Could not initialize the third model object.", L"Error", MB_OK);
+			return false;
+		}
+		bumpCube = new BumpMapGameObject(m_StoneCube, m_Light);
+		m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_DYNAMIC, bumpCube,
+			new XMFLOAT3(3.5f, 0.0f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
 	}
-	bumpCube = new BumpMapGameObject(m_StoneCube, m_Light);
-	m_GameObjectManager->AddItem(GameObjectManager::OBJECTTYPE_DYNAMIC, bumpCube,
-		new XMFLOAT3(3.5f, 0.0f, 0.0f), new XMFLOAT3(0.0f, 0.0f, 0.0f), new XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	// Initialize that the user has not clicked on the screen to try an intersection test yet.
 	m_beginCheck = false;
@@ -272,10 +268,10 @@ Method:		Shutdown
 Summary:	Releases and depoints all member variables of the
 			GraphicsClass object.
 
-Modifies:	[m_Model1, m_Model2, m_Model3, m_Model4, m_Light, m_Camera,
+Modifies:	[m_Light, m_Camera,
 			 m_Position, m_ShaderManager, m_Timer, m_D3D,
-			 m_Input, m_Bitmap, m_Text, m_Model, m_CollisionObject
-			 m_IntersectTestCube].
+			 m_Input, m_Bitmap, m_Text, m_CollisionObject
+			 m_GameObjectManager, metalNinja, bumpCube].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GraphicsClass::Shutdown()
 {
@@ -491,16 +487,17 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 		if (m_beginCheck == false)
 		{
 			m_beginCheck = true;
+
+			//Get the mouse location on the screen.
 			m_Input->GetMouseLocation(mouseX, mouseY);
-			//if (m_CollisionObject->TestIntersection(mouseX, mouseY))
-			//	SetIntersectionText(true);
-			//else 
 				
-			
-			//if(m_CollisionObject->TestCubeIntersect(mouseX, mouseY, m_IntersectTestCube->GetAABB()))
-			//	SetIntersectionText(true);
-			//else
-			//	SetIntersectionText(false);
+			//Begin a ray checking loop.
+			GameObject* collidedWith = m_CollisionObject->CollisionTestLoop(mouseX, mouseY, m_GameObjectManager, XMLoadFloat3(&m_Camera->GetPosition()));
+			if (collidedWith != nullptr)
+				SetIntersectionText(true, collidedWith);
+			else
+				SetIntersectionText(false, collidedWith);
+
 		}
 	}
 
@@ -517,6 +514,9 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 Method:		Render
 
 Summary:	Translates and renders each model.
+			Requests the gameObjectManager to render all models it is
+			concerned by, then renders models the GraphicsClass is
+			responsible for.
 
 Modifies:	[m_D3D].
 
@@ -556,8 +556,8 @@ bool GraphicsClass::Render()
 	//Turn on alpha blending
 	m_D3D->TurnOnAlphaBlending();
 
-	//GameObjectManager testing 01.04.2019
-	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, viewMatrix, projectionMatrix);
+	//Use the gameObjectManager to render all the objects it holds.
+	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, m_Camera, viewMatrix, projectionMatrix);
 
 	// Get the location of the mouse from the input object and the ortho matrix.
 	m_Input->GetMouseLocation(mouseX, mouseY);
@@ -570,6 +570,7 @@ bool GraphicsClass::Render()
 	result = m_ShaderManager->RenderTextureShader(m_D3D->GetDeviceContext(), m_Bitmap->GetIndexCount(), XMMatrixIdentity(), XMMatrixIdentity(), orthoMatrix, m_Bitmap->GetTexture());
 	if (!result)
 		return false;
+
 	// Render the text strings.
 	result = m_Text->Render(m_D3D->GetDeviceContext());
 	if (!result)
@@ -592,10 +593,12 @@ Summary:	Used to set the intersection test of the sphere-ray
 
 Args:		bool intersection
 				was there an intersection or not?
+			GameObject* collided
+				a pointer to the GameObject that was collided with.
 
 Modifies:	[m_Text].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-void GraphicsClass::SetIntersectionText(bool intersection)
+void GraphicsClass::SetIntersectionText(bool intersection, GameObject* collided)
 {
-	m_Text->SetIntersection(intersection, m_D3D->GetDeviceContext());
+	m_Text->SetIntersection(intersection, m_D3D->GetDeviceContext(), collided);
 }

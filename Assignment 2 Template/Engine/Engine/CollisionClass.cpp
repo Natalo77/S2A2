@@ -1,31 +1,23 @@
+//=============================================================
+//				  Filename: CollisionClass.cpp
+//=============================================================
+
+
+//=============================================================
+//					  User defined headers.
+//=============================================================
 #include "CollisionClass.h"
 
-
-/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
-Method:		CollisionClass
-
-Summary:	Short summary of purpose and content of MyMethodOne.
-				Short summary of purpose and content of MyMethodOne.
-
-Args:		MYTYPE MyArgOne
-				Short description of argument MyArgOne.
-			MYTYPE MyArgTwo
-				Short description of argument MyArgTwo.
-
-Modifies:	[list of member data variables modified by this method].
-
-Returns:	MYRETURNTYPE
-				Short description of meaning of the return type values.
-M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
 Method:		CollisionClass::CollisionClass
 
 Summary:	Default constructor for a Collision Class.
 
-Modifies:	[m_D3D].
+Modifies:	[m_D3D, m_Camera].
 
-Returns:	A new CollisionClass Object.
+Returns:	CollisionClass
+				A new CollisionClass Object.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 CollisionClass::CollisionClass()
 {
@@ -41,11 +33,12 @@ Method:		CollisionClass
 
 Summary:	A reference constructor for a CollisionClass Object.
 
-Args:		const CollisionClass&
+Args:		const CollisionClass& other
 				a reference to a CollisionClass object to create this
 				object from.
 
-Returns:	A CollisionClass object with the data stored at PARAM other.
+Returns:	CollisionClass
+				A CollisionClass object with the data stored at PARAM other.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 CollisionClass::CollisionClass(const CollisionClass & other)
 {
@@ -91,7 +84,7 @@ Method:		Shutdown
 Summary:	Cleans up all dynamic memory used and closes off all
 				member variables of this CollisionClass Object.
 
-Modifies:	[Currently Nothing].
+Modifies:	[m_D3D, m_Camera].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void CollisionClass::Shutdown()
 {
@@ -103,7 +96,7 @@ void CollisionClass::Shutdown()
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
-Method:		TestIntersection
+Method:		TestRaySphereIntersect
 
 Summary:	Begins the process of testing whether or not a ray at mousex
 				and mouseY intersects with a sphere.
@@ -117,7 +110,7 @@ Returns:	bool
 				represents whether or not the ray collided with the specific 
 				collision method used and the ray shot.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool CollisionClass::TestIntersection(int mouseX, int mouseY)
+bool CollisionClass::TestRaySphereIntersect(int mouseX, int mouseY)
 {
 	XMFLOAT3 rayOrigin, rayDirection;
 	bool intersect;
@@ -134,7 +127,7 @@ bool CollisionClass::TestIntersection(int mouseX, int mouseY)
 
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
-Method:		TestIntersection
+Method:		TestRaySphereIntersect
 
 Summary:	Begins the process of testing whether or not a ray at mousex
 				and mouseY intersects with the specified BoundingBox
@@ -149,7 +142,7 @@ Args:		int mouseX
 Returns:	bool
 				represents whether or not the ray collided with the bounding box
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool CollisionClass::TestCubeIntersect(int mouseX, int mouseY, BoundingBox* AABB)
+bool CollisionClass::TestRayAABBIntersect(int mouseX, int mouseY, BoundingBox* AABB)
 {
 	XMFLOAT3 rayOrigin, rayDirection;
 	bool intersect;
@@ -166,6 +159,69 @@ bool CollisionClass::TestCubeIntersect(int mouseX, int mouseY, BoundingBox* AABB
 	intersect = rayAABBIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), AABB);
 
 	return intersect;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		CollisionTestLoop
+
+Summary:	Tests for a ray collision intersection by a ray at mouseX
+			and mouseY with all objects concerned by the GameObjectManager
+
+Args:		int mouseX
+				the x co-ordinate on the screen that the ray is shot into.
+			int mouseY
+				the y co-ordinate on the screen that the ray is shot into.
+			GameObjectManager* objManager.
+				a pointer to a gameObjectManager containing all the objects
+				for testing ray collision against.
+			FXMVECTOR FXMcamPosition
+				an XMVECTOR storing the current world space position of
+				the camera.
+
+Returns:	GameObject*
+				a pointer to the closest GameObject collided with.
+				nullptr if nothing was collided with.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+GameObject * CollisionClass::CollisionTestLoop(int mouseX, int mouseY, GameObjectManager * objManager, FXMVECTOR FXMcamPosition)
+{
+	//Calculate and store the ray information from the mouseX and mouseY
+	XMFLOAT3 rayOrigin, rayDirection;
+	GetRay(rayOrigin, rayDirection, mouseX, mouseY);
+
+	//Create a temporary list of objects collided with.
+	std::vector<GameObject*>* collidedList = new std::vector<GameObject*>();
+
+	//For both lists in the GameObjectManager - Check for a collision with the AABB, if so - push it onto the collidedlist vector.
+	for (std::vector<GameObject*>::iterator iter = objManager->GetList(GameObjectManager::OBJECTTYPE_DYNAMIC)->begin();
+		iter != objManager->GetList(GameObjectManager::OBJECTTYPE_DYNAMIC)->end();
+		iter++)
+	{
+		GameObject* obj = *iter;
+		if (rayAABBIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), obj->GetAABB()))
+			collidedList->push_back(obj);
+	}
+	for (std::vector<GameObject*>::iterator iter = objManager->GetList(GameObjectManager::OBJECTTYPE_STATIC)->begin();
+		iter != objManager->GetList(GameObjectManager::OBJECTTYPE_STATIC)->end();
+		iter++)
+	{
+		GameObject* obj = *iter;
+		if (rayAABBIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), obj->GetAABB()))
+			collidedList->push_back(obj);
+	}
+
+
+	//If the list is not 0 length
+	if (collidedList->size() > 0)
+	{
+		//Sort the collided list by distance from the camera.
+		Sort(collidedList, FXMcamPosition);
+
+		//Return the first 
+		return collidedList->at(0);
+	}
+
+	//If this point is reached then nothing was collided with.
+	return nullptr;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -334,23 +390,14 @@ void CollisionClass::GetRay(XMFLOAT3 &originOut, XMFLOAT3 &directionOut, int mou
 
 	// Get the world matrix and translate to the location of the sphere.
 	m_D3D->GetWorldMatrix(mworldMatrix);
-	//mtranslateMatrix = XMMatrixTranslation(-5.0f, 1.0f, 5.0f);
-	//mworldMatrix = XMMatrixMultiply(mworldMatrix, mtranslateMatrix);
 
 	// Now get the inverse of the translated world matrix.
 	XMVECTOR worldDeterminant = XMMatrixDeterminant(mworldMatrix);
 	minverseWorldMatrix = XMMatrixInverse(&worldDeterminant, mworldMatrix);
-
-
-	// Now transform the ray origin and the ray direction from view space to world space.
-	//D3DXVec3TransformCoord(&rayOrigin, &origin, &inverseWorldMatrix);
-
 	XMStoreFloat3(&originOut, XMVector3TransformCoord(XMLoadFloat3(&origin), minverseWorldMatrix));
-	//D3DXVec3TransformNormal(&rayDirection, &direction, &inverseWorldMatrix);
 	XMStoreFloat3(&directionOut, XMVector3TransformNormal(XMLoadFloat3(&direction), minverseWorldMatrix));
 
 	// Normalize the ray direction.
-	//D3DXVec3Normalize(&rayDirection, &rayDirection);
 	XMStoreFloat3(&directionOut, XMVector3Normalize(XMLoadFloat3(&directionOut)));
 
 	return;

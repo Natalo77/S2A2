@@ -46,16 +46,14 @@ Args:		ModelClass* baseModel
 				a pointer to a modelClass object to use as this
 				Gameobject's reference.
 
-Modifies:	[see LightGameObject(), m_baseModel, m_AABB].
+Modifies:	[none].
 
 Returns:	LightGameObject
 				the newly created LightGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 LightGameObject::LightGameObject(ModelClass* baseModel)
 {
-	LightGameObject();
-	this->m_baseModel = baseModel;
-	this->m_AABB = m_baseModel->GetAABB();
+	Setup(baseModel);
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -76,16 +74,14 @@ Args:		ModelClass* baseModel
 				a pointer to the CameraClass object that this
 				LightGameObject should use when rendering.
 
-Modifies:	[see LightGameObject(), m_baseModel, m_AABB, m_Light, m_Camera].
+Modifies:	[m_Light, m_Camera].
 
 Returns:	LightGameObject
 				the newly created LightGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 LightGameObject::LightGameObject(ModelClass* baseModel, LightClass* light, CameraClass* camera)
 {
-	LightGameObject();
-	this->m_baseModel = baseModel;
-	this->m_AABB = m_baseModel->GetAABB();
+	Setup(baseModel);
 	this->m_Light = light;
 	this->m_Camera = camera;
 }
@@ -94,7 +90,7 @@ LightGameObject::LightGameObject(ModelClass* baseModel, LightClass* light, Camer
 Method:		Render
 
 Summary:	The implementation of render from GameObject.
-			uses the textureshader within the passed in shadermanager
+			uses the lightshader within the passed in shadermanager
 			to render the object to the screen.
 
 Modifies:	[see GameObject.Render()].
@@ -105,8 +101,13 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool LightGameObject::Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 	XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
 {
+	//Render the model to the deviceContext.
 	GetModel()->Render(device);
+
+	//Calculate the worldMatrix of the model.
 	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
+
+	//Render the model using the LightShader.
 	return shaderManager->RenderLightShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix, 
 		GetModel()->GetTexture(),
 		m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),

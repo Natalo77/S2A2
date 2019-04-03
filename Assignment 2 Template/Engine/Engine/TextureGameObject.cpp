@@ -46,16 +46,14 @@ Args:		ModelClass* baseModel
 				a pointer to a modelClass object to use as this
 				Gameobject's reference.
 
-Modifies:	[see TextureGameObject(), m_baseModel, m_AABB].
+Modifies:	[none].
 
 Returns:	TextureGameObject
 				the newly created textureGameObject.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 TextureGameObject::TextureGameObject(ModelClass* baseModel)
 {
-	TextureGameObject();
-	this->m_baseModel = baseModel;
-	this->m_AABB = m_baseModel->GetAABB();
+	Setup(baseModel);
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -73,8 +71,13 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 bool TextureGameObject::Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 	XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix)
 {
+	//Render the model to the deviceContext.
 	GetModel()->Render(device);
+
+	//Calculate the worldMatrix of the Model.
 	const XMMATRIX* newWorldMatrix = this->CalcWorldMatrix(worldMatrix);
+
+	//Render the model using the textureshader.
 	return shaderManager->RenderTextureShader(device, GetModel()->GetIndexCount(), *newWorldMatrix, viewMatrix, projectionMatrix,
 		GetModel()->GetTexture());
 }

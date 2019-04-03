@@ -13,6 +13,13 @@
 //===================================================
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/FW1Precompiled.h"
 
+
+//====================================================
+//					Forward declarations
+//====================================================
+class GameObject;
+
+
 //===================================================
 //					Class Declaration.
 //===================================================
@@ -72,7 +79,8 @@ public:
 	void Shutdown();
 
 	bool Render(ID3D11DeviceContext*);
-	bool SetIntersection(bool, ID3D11DeviceContext*);
+	bool SetIntersection(bool, ID3D11DeviceContext*, GameObject*);
+
 
 private:
 	bool InitializeSentence(SentenceType**);

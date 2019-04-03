@@ -39,11 +39,11 @@ Methods:	==================== PUBLIC ====================
 
 			void Render()
 				Use to render all the objects within the scope of the GameObjectManager.
-
-			==================== PRIVATE ====================
+			
 			std::vector<GameObject*>* GetList
 				Use to return the appropriate list according to the object type passed in.
 
+			==================== PRIVATE ====================
 			GameObject* Search
 				Use to search for the specified gameObject in the specified List.
 
@@ -69,11 +69,11 @@ public:
 
 	GameObject* SearchFor(ObjectType objectType, GameObject* object);
 
-	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
+	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
 
-private:
 	std::vector<GameObject*>* GetList(ObjectType listType);
 
+private:
 	GameObject* Search(std::vector<GameObject*>* list, GameObject* object);
 
 private:

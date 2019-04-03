@@ -5,10 +5,23 @@
 
 
 //======================================================
+//					Include Guards.
+//======================================================
+#ifndef _GAMEOBJECT_GUARD
+#define _GAMEOBJECT_GUARD
+
+//======================================================
 //					User Defined Headers.
 //======================================================
 #include "modelclass.h"
 #include "shadermanagerclass.h"
+
+
+//======================================================
+//					Forward declarations
+//======================================================
+class D3DClass;
+class CameraClass;
 
 
 //======================================================
@@ -32,13 +45,13 @@ Methods:	==================== PURE VIRTUAL ====================
 				of shader.
 
 			==================== PUBLIC ====================
-			GameObject()
+			1. GameObject()
 				The default constructor for a gameObject, should not be used
 				unless reserving space for a later changed gameObject.
 			~GameObject()
 				The default constructor for a gameObject. Deletes both
 				member variable pointers.
-			GameObject(ModelClass* baseModel)
+			2. GameObject(ModelClass* baseModel)
 				The preferred constructor for a GameObject. Creates the
 				GameObject using references to the model data.
 
@@ -54,7 +67,21 @@ Methods:	==================== PURE VIRTUAL ====================
 			AddTransform(float x, float y, float z)
 				Use to add to the transform data of the gameObject at runtime.
 
+			GetAABB()
+				Use to get a pointer to the AABB being used by this GameObject.
+			RenderAABB(ShaderManagerClass*, D3DClass*, CameraClass*)
+				Use to render this GameObjects BoundingBox to the specified
+				D3D's device context.
+
+			GetPosition()
+				Use to get a pointer to the XMFLOAT3 this GameObject uses to
+				store its position in world space.
+
 			==================== PROTECTED ====================
+
+			=====================================================================
+			==================== DEPRECATED =====================================
+			=====================================================================
 			UpdateScale(float prevX, float prevY, float prevZ)
 				Called by SetScale() to change the Boundingbox data
 				according to the change in scale.
@@ -64,15 +91,25 @@ Methods:	==================== PURE VIRTUAL ====================
 			UpdateTransform(float prevX, float prevY, float prevZ)
 				Called by SetTransform() and AddTransform() to update
 				the bounding box data according to the dhange in rotation.
+			=====================================================================
+			==================== DEPRECATED =====================================
+			=====================================================================
 
 			XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
-				uses a reference to an initial world matrix to produce a resultant
-				world matrix using the scaling, rotation and transformation data
-				of this model.
+				Uses a reference to an initial world matrix to produce a resultant
+					world matrix using the scaling, rotation and transformation data
+					of this model.
+				Used by Render during the positioning stage.
 
 			ModelClass* GetModel()
 				Returns a pointer to the Model Used by this GameObject.
 				Hide this function in derivations for use with other model types.
+				Used by Render() to get data about the model.
+
+			void Setup(ModelClass*)
+				Used by constructor 2 to perform basic setup on the gameObject.
+				Hide-Override this function in derived classes for use with other
+					Model Types.
 
 Members:	==================== PROTECTED ====================
 			ModelClass* m_baseModel
@@ -90,17 +127,18 @@ Members:	==================== PROTECTED ====================
 				an XMFLOAT3 keeping track of the current rotation of
 				the gameObject.
 
-			XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix)
-				A class specific utility function to calculate the
-				resultant worldMatrix from an initial, using the
-				data stored about this object.
+			XMFLOAT3* m_min
+				an XMFLOAT3 object to represent the minimum point of
+				this gameObject's base model.
+			XMFLOAT3* m_max
+				an XMFLOAT3 object to represent the maximum point of
+				this gameOBject's base model.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class GameObject
 {
 public:
-	virtual bool Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device, 
+	virtual bool Render(ShaderManagerClass* shaderManager, ID3D11DeviceContext* device,
 		XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix) = 0;
-
 public:
 	GameObject();
 	~GameObject();
@@ -113,6 +151,11 @@ public:
 	bool addRotation(float x, float y, float z);
 	bool addTransform(float x, float y, float z);
 
+	BoundingBox* GetAABB();
+	void RenderAABB(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam);
+
+	XMFLOAT3* GetPosition();
+
 	
 
 protected:
@@ -123,16 +166,22 @@ protected:
 	XMMATRIX* CalcWorldMatrix(XMMATRIX &initialWorldMatrix);
 
 	ModelClass* GetModel();
-	
+
+	void Setup(ModelClass* baseModel);
 
 protected:
 	ModelClass * m_baseModel;
-
 
 	BoundingBox* m_AABB;
 
 	XMFLOAT3* m_transform;
 	XMFLOAT3* m_scale;
 	XMFLOAT3* m_rotation;
+
+protected:
+	XMFLOAT3* m_min;
+	XMFLOAT3* m_max;
 };
+
+#endif
 

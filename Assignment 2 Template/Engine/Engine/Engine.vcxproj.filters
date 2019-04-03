@@ -130,7 +130,7 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="GameObjectManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,7 +222,7 @@
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="GameObjectManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,5 +257,6 @@
     <None Include="..\..\..\dx11src47\source\font.vs">
       <Filter>Shader Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

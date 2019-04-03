@@ -89,7 +89,6 @@ bool BumpModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR
 {
 	bool result;
 
-
 	// Load in the model data,
 	result = LoadModel(modelFilename);
 	if(!result)

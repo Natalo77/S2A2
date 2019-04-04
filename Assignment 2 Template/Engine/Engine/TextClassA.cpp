@@ -12,6 +12,12 @@
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/FW1FontWrapper.h"
 #include "FW1Font/sourceCode/FW1FontWrapper/Source/FW1Precompiled.h"
 
+
+//================================================================
+//						  Library Headers.
+//================================================================
+#include <sstream>
+
 //================================================================
 //						Library Definitions
 //================================================================
@@ -96,7 +102,7 @@ bool TextClassA::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 	}
 
 	// Now update the sentence vertex buffer with the new string information.
-	result = UpdateSentence(m_sentence1, "Intersection: No", 1.0f, 0.0f, 0.0f, deviceContext);
+	result = UpdateSentence(m_sentence1, "Score = 0", 1.0f, 0.0f, 0.0f, deviceContext);
 	if (!result)
 	{
 		return false;
@@ -202,7 +208,10 @@ bool TextClassA::InitializeSentence(SentenceType** sentence)
 	}
 
 	//initial sentence
-	(*sentence)->sentence = (L"Intersection: No");
+	(*sentence)->sentence = (L"Score = 0");
+
+	//initial score = 0.
+	(*sentence)->score = 0;
 
 	return true;
 }
@@ -338,11 +347,14 @@ Method:		SetIntersection
 
 Summary:	Changes the intersection text depending on the value of param intersection
 			Intended to be used from outside of this class as an interfacing method
+			adds the scoreToAdd if intersection, subtracts otherwise
 
 Args:		bool intersection
 				Whether or not an intersection has been recorded.
 			ID3D11DeviceContext* deviceContext
 				A pointer to the device context that recorded the intersection.
+			float scoreToAdd
+				the score to add or subtract from the total score.
 
 
 Modifies:	[m_sentence1].
@@ -350,39 +362,33 @@ Modifies:	[m_sentence1].
 Returns:	bool
 				representing whether or not the sentence was updated successfully.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool TextClassA::SetIntersection(bool intersection, ID3D11DeviceContext* deviceContext, GameObject* collided)
+bool TextClassA::SetIntersection(bool intersection, ID3D11DeviceContext* deviceContext, float scoreToAdd)
 {
 	char intersectionString[32];
 	bool result;
 
-	std::string string = "";
+	
+
+	std::string string = "Score = ";
 
 
 	if (intersection)
 	{
-		string += "Intersection: Yes:";
-		if (collided != nullptr)
-		{
-			string += collided->GetPosition()->x;
-			string += ", ";
-			string += collided->GetPosition()->y;
-			string += ", ";
-			string += collided->GetPosition()->z;
-		}
+		m_sentence1->score += scoreToAdd;
+		std::ostringstream ss;
+		ss << m_sentence1->score;
+		std::string s(ss.str());
+		string += s;
 		strcpy_s(intersectionString, string.c_str());
 		result = UpdateSentence(m_sentence1, intersectionString, 0.0f, 1.0f, 0.0f, deviceContext);
 	}
 	else
 	{
-		string += "Intersection: No:";
-		if (collided != nullptr)
-		{
-			string += collided->GetPosition()->x;
-			string += ", ";
-			string += collided->GetPosition()->y;
-			string += ", ";
-			string += collided->GetPosition()->z;
-		}
+		m_sentence1->score -= scoreToAdd;
+		std::ostringstream ss;
+		ss << m_sentence1->score;
+		std::string s(ss.str());
+		string += s;
 		strcpy_s(intersectionString, string.c_str());
 		result = UpdateSentence(m_sentence1, intersectionString, 1.0f, 0.0f, 0.0f, deviceContext);
 	}

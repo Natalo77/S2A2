@@ -522,9 +522,13 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 			//Begin a ray checking loop.
 			GameObject* collidedWith = m_CollisionObject->CollisionTestLoop(mouseX, mouseY, m_GameObjectManager, XMLoadFloat3(&m_Camera->GetPosition()));
 			if (collidedWith != nullptr)
-				SetIntersectionText(true, collidedWith);
+			{
+				SetIntersectionText(true, 1);
+				m_GameObjectManager->Delete(collidedWith);
+			}
 			else
-				SetIntersectionText(false, collidedWith);
+				SetIntersectionText(false, 1);
+
 
 		}
 	}
@@ -601,7 +605,7 @@ bool GraphicsClass::Render()
 	m_D3D->TurnOnAlphaBlending();
 
 	//Use the gameObjectManager to render all the objects it holds.
-	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, m_Camera, viewMatrix, projectionMatrix, m_Timer->GetTime());
+	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, m_Camera, viewMatrix, projectionMatrix, m_Text);
 
 	// Get the location of the mouse from the input object and the ortho matrix.
 	m_Input->GetMouseLocation(mouseX, mouseY);
@@ -642,9 +646,9 @@ Args:		bool intersection
 
 Modifies:	[m_Text].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-void GraphicsClass::SetIntersectionText(bool intersection, GameObject* collided)
+void GraphicsClass::SetIntersectionText(bool intersection, float scoreToAdd)
 {
-	m_Text->SetIntersection(intersection, m_D3D->GetDeviceContext(), collided);
+	m_Text->SetIntersection(intersection, m_D3D->GetDeviceContext(), scoreToAdd);
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M

@@ -46,6 +46,8 @@ Methods:	==================== PUBLIC ====================
 
 			GameObject* SearchFor
 				Use to check a specified gameObject exists within the GameObjectManager.
+			void Delete(GameObject*)
+				Use to delete the specified gameObject from consideration by the GameObjectManager.
 
 			void RenderAll(...)
 				Use to render all the objects within the scope of the GameObjectManager.
@@ -64,7 +66,7 @@ Methods:	==================== PUBLIC ====================
 				Use to remove any projectiles further away from the origin than the max distance
 				specified in GameObjectManager.cpp
 
-			void AABBCollisionLoop
+			void AABBCollisionLoop(...)
 				Used by RenderAll() to do collision testing with the objects in the scene every frame.
 
 Members:	==================== PRIVATE ====================
@@ -93,8 +95,9 @@ public:
 	void AddProjectile(ProjectileObject* projectile, XMFLOAT3* position, XMFLOAT3* rotation);
 
 	GameObject* SearchFor(ObjectType objectType, GameObject* object);
+	void Delete(GameObject* obj);
 
-	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
+	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, TextClassA* text);
 
 	std::vector<GameObject*>* GetList(ObjectType listType);
 	vector<ProjectileObject*>* GetProjectileList();
@@ -102,9 +105,9 @@ public:
 private:
 	GameObject* Search(std::vector<GameObject*>* list, GameObject* object);
 
-	void CullProjectiles();
+	void CullProjectiles(TextClassA* text, D3DClass* d3d);
 
-	void AABBCollisionLoop();
+	void AABBCollisionLoop(TextClassA* text, D3DClass* d3d);
 
 private:
 	std::vector<GameObject*>* m_StaticList;

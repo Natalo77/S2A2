@@ -68,8 +68,9 @@ Methods:	==================== PUBLIC ====================
 			Render()
 				Called by Frame() to render every object.
 
-			SetIntersectionText(bool intersection, GameObject* collided)
-				Called by HandleMovementInput() to handle intersection testing.
+			SetIntersectionText(bool intersection, float scoreToAdd)
+				Called by HandleMovementInput() to process the result of intersection testing
+				and add score to be displayed.
 
 			ShootProjectile()
 				Called by HandleMovementInput() to handle shooting a projectile.
@@ -125,7 +126,7 @@ private:
 	bool HandleMovementInput(float);
 	bool Render();
 
-	void SetIntersectionText(bool intersection, GameObject* collided);
+	void SetIntersectionText(bool intersection, float scoreToAdd);
 
 	void ShootProjectile();
 

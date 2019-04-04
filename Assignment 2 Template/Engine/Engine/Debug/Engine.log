@@ -1,9 +1,21 @@
-﻿  GameObjectManager.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(159): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(191): warning C4316: '__m128': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(394): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(491): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(498): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(505): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(297): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
+﻿  graphicsclass.cpp
+e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(162): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(194): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(115): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(147): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(576): warning C4101: 'worldMatrix': unreferenced local variable
+e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(576): warning C4101: 'translateMatrix': unreferenced local variable
+  GameObjectManager.cpp
+e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(162): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(194): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(437): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(547): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(554): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(563): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(340): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
+  Skipping... (no relevant changes detected)
+  systemclass.cpp
+  main.cpp
+  CollisionClass.cpp
   Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

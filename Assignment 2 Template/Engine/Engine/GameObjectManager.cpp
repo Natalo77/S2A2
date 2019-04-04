@@ -157,6 +157,49 @@ GameObject* GameObjectManager::SearchFor(ObjectType objectType, GameObject* obje
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Delete
+
+Summary:	Attempts to find the gameobject within the lists maintained
+			by the GameObjectManager. 
+			If it finds it, delete it.
+
+Args:		GameObject* obj
+				the obj to search for.
+
+Modifies:	[m_StaticList, m_DynamicList].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void GameObjectManager::Delete(GameObject * obj)
+{
+	//Iterate through the dynamic list.
+	for (vector<GameObject*>::iterator iter = m_DynamicList->begin();
+		iter != m_DynamicList->end();
+		iter++)
+	{
+		//if the object is found.
+		if (obj == *iter)
+		{
+			//erase it and end the process.
+			m_DynamicList->erase(iter);
+			return;
+		}
+	}
+
+	//Iterate through the static list.
+	for (vector<GameObject*>::iterator iter = m_StaticList->begin();
+		iter != m_StaticList->end();
+		iter++)
+	{
+		//if the object is found.
+		if (obj == *iter)
+		{
+			//erase it and end the process
+			m_StaticList->erase(iter);
+			return;
+		}
+	}
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
 Method:		Render
 
 Summary:	Use to render all objects within the scope of the GameObjectManager.
@@ -181,7 +224,7 @@ Modifies:	[none].
 Returns:	bool	
 				was the rendering of every object successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
+bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, TextClassA* text)
 {
 	//Temporary storage for the worldMatrix.
 	XMMATRIX worldMatrix;
@@ -239,7 +282,7 @@ bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d
 	if (m_BulletList->size() != 0)
 	{
 		//Cull the projectileList for any projectiles too far away.
-		CullProjectiles();
+		CullProjectiles(text, d3d);
 
 		//Iterate through the list.
 		for (vector<ProjectileObject*>::iterator iter = m_BulletList->begin();
@@ -266,7 +309,7 @@ bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d
 	}
 
 	//Perform collision Loop here for all AABBs
-	AABBCollisionLoop();
+	AABBCollisionLoop(text, d3d);
 
 	return true;
 }
@@ -356,7 +399,7 @@ Summary:	Uses the MAX_PROJECTILE_DISTANCE_FROM_00 to look through the
 
 Modifies:	[m_BulletList].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-void GameObjectManager::CullProjectiles()
+void GameObjectManager::CullProjectiles(TextClassA* text, D3DClass* d3d)
 {
 	//Storage for the indices that need to be removed from the list.
 	vector<int> indices;
@@ -398,6 +441,7 @@ void GameObjectManager::CullProjectiles()
 		//. increment by the index number.
 		//. x naturally equals no. entries removed already.
 		m_BulletList->erase(m_BulletList->begin() + indices.at(x) - x);
+		text->SetIntersection(false, d3d->GetDeviceContext(), 3);
 	}
 }
 
@@ -407,9 +451,14 @@ Method:		AABBCollisionLoop
 Summary:	Checks every projectile against every static and dynamic
 			object for collision and handles this appropriately.
 
+Args		TextClassA* text
+				a reference to the score sentence
+			D3DClass* d3d
+				a reference to the d3d class
+
 Modifies:	[m_BulletList, m_StaticList, m_DynamicList].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-void GameObjectManager::AABBCollisionLoop()
+void GameObjectManager::AABBCollisionLoop(TextClassA* text, D3DClass* d3d)
 {
 	//Keep a list of projectile, dynamic and static indices to cull.
 	vector<int> projInd, dynInd, statInd;
@@ -506,6 +555,8 @@ void GameObjectManager::AABBCollisionLoop()
 	{
 		//Erase the entry at the specified index, adjusted for the number of entries removed already.
 		m_DynamicList->erase(m_DynamicList->begin() + dynInd.at(x) - x);
+
+		text->SetIntersection(true, d3d->GetDeviceContext(), 3);
 	}
 
 	//For each element in the indexes to remove.
@@ -513,6 +564,8 @@ void GameObjectManager::AABBCollisionLoop()
 	{
 		//Erase the entry at the specified index, adjusted for the number of entries removed already.
 		m_StaticList->erase(m_StaticList->begin() + statInd.at(x) - x);
+
+		text->SetIntersection(true, d3d->GetDeviceContext(), 3);
 	}
 
 }

@@ -46,9 +46,9 @@ Methods:	================== PUBLIC ==================
 			Render(ID3D11DeviceContext*)
 				CALL EVERY FRAME:
 					Renders the current sentence object to the DeviceContext.
-			SetIntersection(bool, ID3D11DeviceContext*)
+			SetIntersection(bool, ID3D11DeviceContext*, float)
 				CALL WHEN INTERSECTION STATUS CHANGES:
-					Changes the sentence appropriately to reflect the bool(intersection) passed in.
+					Changes the sentence appropriately to reflect the float passed in.
 
 			================== PRIVATE ==================
 			InitializeSentence(SentenceType**)
@@ -67,6 +67,7 @@ private:
 	{
 		float red, green, blue;
 		WCHAR* sentence;
+		float score;
 	};
 
 
@@ -79,7 +80,7 @@ public:
 	void Shutdown();
 
 	bool Render(ID3D11DeviceContext*);
-	bool SetIntersection(bool, ID3D11DeviceContext*, GameObject*);
+	bool SetIntersection(bool, ID3D11DeviceContext*, float scoreToAdd);
 
 
 private:

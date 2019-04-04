@@ -1,26 +1,4 @@
-﻿  graphicsclass.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(157): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(189): warning C4316: '__m128': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(115): warning C4316: 'D3DClass': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(147): warning C4316: 'CameraClass': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(572): warning C4101: 'worldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\graphicsclass.cpp(572): warning C4101: 'translateMatrix': unreferenced local variable
-  cameraclass.cpp
-  CollisionClass.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(157): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(189): warning C4316: '__m128': object allocated on the heap may not be aligned 16
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(429): warning C4101: 'mtranslateMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(430): warning C4101: 'worldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(430): warning C4101: 'viewMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(430): warning C4101: 'inverseWorldMatrix': unreferenced local variable
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.cpp(430): warning C4101: 'translateMatrix': unreferenced local variable
-  Generating Code...
-  Compiling...
-  systemclass.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(157): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(189): warning C4316: '__m128': object allocated on the heap may not be aligned 16
-  main.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(157): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(189): warning C4316: '__m128': object allocated on the heap may not be aligned 16
-  Generating Code...
+﻿  GameObjectManager.cpp
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(366): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(288): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
   Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

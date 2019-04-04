@@ -92,6 +92,8 @@ public:
 private:
 	GameObject* Search(std::vector<GameObject*>* list, GameObject* object);
 
+	void CullProjectiles();
+
 private:
 	std::vector<GameObject*>* m_StaticList;
 	std::vector<GameObject*>* m_DynamicList;

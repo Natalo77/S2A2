@@ -4,6 +4,11 @@
 
 
 //===============================================
+//					Constants
+//===============================================
+const int MAX_PROJECTILE_DISTANCE_FROM_00 = 1000;
+
+//===============================================
 //			   User Defined Headers.
 //===============================================
 #include "GameObjectManager.h"
@@ -232,6 +237,9 @@ bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d
 	//If the bullet list has at least one item.
 	if (m_BulletList->size() != 0)
 	{
+		//Cull the projectileList for any projectiles too far away.
+		CullProjectiles();
+
 		//Iterate through the list.
 		for (vector<ProjectileObject*>::iterator iter = m_BulletList->begin();
 			iter != m_BulletList->end();
@@ -333,4 +341,58 @@ GameObject* GameObjectManager::Search(std::vector<GameObject*>* list, GameObject
 	
 	//If this point is reached then the search-for element was not found.
 	return nullptr;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		CullProjectiles.
+
+Summary:	Uses the MAX_PROJECTILE_DISTANCE_FROM_00 to look through the
+			bulletList and destroy any particles deemed to be over the
+			max distance away.
+
+Modifies:	[m_BulletList].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void GameObjectManager::CullProjectiles()
+{
+	//Storage for the indices that need to be removed from the list.
+	vector<int> indices;
+
+	//i = the current index.
+	int i = 0;
+
+	//Iterate over the projectile list.
+	for (vector<ProjectileObject*>::iterator iter = m_BulletList->begin();
+		iter != m_BulletList->end();
+		iter++)
+	{
+		//Dereference the iterator.
+		ProjectileObject* a = *iter;
+
+		//Create an XMVECTOR to store the position of the object.
+		XMVECTOR position;
+		position = XMVectorSet(a->GetPosition()->x, a->GetPosition()->y, a->GetPosition()->z, 1.0f);
+
+		//Use the position vector to store the length of the vector est.
+		position = XMVector3LengthEst(position);
+
+		//If the length by estimate is greater than the maximum length from the origin.
+		if (XMVectorGetByIndex(position, 0) > MAX_PROJECTILE_DISTANCE_FROM_00)
+		{
+			//Push the index number onto the indices vector,
+			indices.push_back(i);
+		}
+
+		//Increment the index being looked at.
+		i++;
+	}
+
+	//For each element in the indexes to remove.
+	for (int x = 0; x < indices.size(); x++)
+	{
+		//Erase the entry at the specified index, adjusted for the number of entries removed already.
+		//. start of list = begin()
+		//. increment by the index number.
+		//. x naturally equals no. entries removed already.
+		m_BulletList->erase(m_BulletList->begin() + indices.at(x) - x);
+	}
 }

@@ -35,10 +35,14 @@ public:
 	void RenderReflection(float);
 	void GetReflectionViewMatrix(XMMATRIX&);
 
+	XMFLOAT3* GetLookAt();
+
 private:
 	float m_positionX, m_positionY, m_positionZ;
 	float m_rotationX, m_rotationY, m_rotationZ;
 	XMMATRIX m_viewMatrix, m_baseViewMatrix, m_reflectionViewMatrix;
+
+	XMFLOAT3* m_LookAt;
 };
 
 #endif

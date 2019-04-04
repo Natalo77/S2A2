@@ -7,6 +7,7 @@
 //					  User defined headers.
 //=============================================================
 #include "CollisionClass.h"
+#include "ProjectileObject.h"
 
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -191,7 +192,7 @@ GameObject * CollisionClass::CollisionTestLoop(int mouseX, int mouseY, GameObjec
 	//Create a temporary list of objects collided with.
 	std::vector<GameObject*>* collidedList = new std::vector<GameObject*>();
 
-	//For both lists in the GameObjectManager - Check for a collision with the AABB, if so - push it onto the collidedlist vector.
+	//For all lists in the GameObjectManager - Check for a collision with the AABB, if so - push it onto the collidedlist vector.
 	for (std::vector<GameObject*>::iterator iter = objManager->GetList(GameObjectManager::OBJECTTYPE_DYNAMIC)->begin();
 		iter != objManager->GetList(GameObjectManager::OBJECTTYPE_DYNAMIC)->end();
 		iter++)
@@ -202,6 +203,14 @@ GameObject * CollisionClass::CollisionTestLoop(int mouseX, int mouseY, GameObjec
 	}
 	for (std::vector<GameObject*>::iterator iter = objManager->GetList(GameObjectManager::OBJECTTYPE_STATIC)->begin();
 		iter != objManager->GetList(GameObjectManager::OBJECTTYPE_STATIC)->end();
+		iter++)
+	{
+		GameObject* obj = *iter;
+		if (rayAABBIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), obj->GetAABB()))
+			collidedList->push_back(obj);
+	}
+	for (std::vector<ProjectileObject*>::iterator iter = objManager->GetProjectileList()->begin();
+		iter != objManager->GetProjectileList()->end();
 		iter++)
 	{
 		GameObject* obj = *iter;
@@ -222,6 +231,64 @@ GameObject * CollisionClass::CollisionTestLoop(int mouseX, int mouseY, GameObjec
 
 	//If this point is reached then nothing was collided with.
 	return nullptr;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetRay
+
+Summary:	A static function to get and return a vector for a ray
+			from the position of cam in the direction of mousex,mouseY.
+
+Args:		D3DClass* d3d
+				a pointer to the D3DClass being used.
+			CameraClass* cam
+				a pointer to the Camera currently being used.
+			XMFLOAT3 &directionOut
+				a reference to an XMFLOAT3 to store the direction vector in.
+			int mouseX, mouseY
+				the position of the mouse on the screen.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void CollisionClass::GetRay(D3DClass* d3d, CameraClass* cam, XMFLOAT3 & directionOut, int mouseX, int mouseY)
+{
+	float pointX, pointY;
+	XMMATRIX mprojectionMatrix, mviewMatrix, minverseViewMatrix, mworldMatrix, minverseWorldMatrix;
+	XMFLOAT4X4 projectionMatrix, inverseViewMatrix;
+	XMFLOAT3 direction;
+
+	// Move the mouse cursor coordinates into the -1 to +1 range.
+	pointX = ((2.0f * (float)mouseX) / (float)d3d->m_screenWidth) - 1.0f;
+	pointY = (((2.0f * (float)mouseY) / (float)d3d->m_screenHeight) - 1.0f) * -1.0f;
+
+	// Adjust the points using the projection matrix to account for the aspect ratio of the viewport.
+	d3d->GetProjectionMatrix(mprojectionMatrix);
+	XMStoreFloat4x4(&projectionMatrix, mprojectionMatrix);
+	pointX = pointX / projectionMatrix._11;
+	pointY = pointY / projectionMatrix._22;
+
+	// Get the inverse of the view matrix.
+	cam->GetViewMatrix(mviewMatrix);
+	XMVECTOR viewDeterminant = XMMatrixDeterminant(mviewMatrix);
+	minverseViewMatrix = XMMatrixInverse(&viewDeterminant, mviewMatrix);
+
+	XMStoreFloat4x4(&inverseViewMatrix, minverseViewMatrix);
+
+	// Calculate the direction of the picking ray in view space.
+	direction.x = (pointX * inverseViewMatrix._11) + (pointY * inverseViewMatrix._21) + inverseViewMatrix._31;
+	direction.y = (pointX * inverseViewMatrix._12) + (pointY * inverseViewMatrix._22) + inverseViewMatrix._32;
+	direction.z = (pointX * inverseViewMatrix._13) + (pointY * inverseViewMatrix._23) + inverseViewMatrix._33;
+
+	// Get the world matrix
+	d3d->GetWorldMatrix(mworldMatrix);
+
+	// Now get the inverse of the translated world matrix.
+	XMVECTOR worldDeterminant = XMMatrixDeterminant(mworldMatrix);
+	minverseWorldMatrix = XMMatrixInverse(&worldDeterminant, mworldMatrix);
+	XMStoreFloat3(&directionOut, XMVector3TransformNormal(XMLoadFloat3(&direction), minverseWorldMatrix));
+
+	// Normalize the ray direction.
+	XMStoreFloat3(&directionOut, XMVector3Normalize(XMLoadFloat3(&directionOut)));
+
+	return;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M

@@ -71,6 +71,9 @@ Methods:	==================== PUBLIC ====================
 			SetIntersectionText(bool intersection, GameObject* collided)
 				Called by HandleMovementInput() to handle intersection testing.
 
+			ShootProjectile()
+				Called by HandleMovementInput() to handle shooting a projectile.
+
 Members:	==================== PRIVATE ====================
 			InputClass* m_Input
 				Used to handle all input for the GraphicsClass object.
@@ -95,6 +98,9 @@ Members:	==================== PRIVATE ====================
 				a pointer to a dynamic object within the scene.
 			BumpMapGameObject* bumpCube
 				a pointer to the rotating cube within the scene.
+
+			ModelClass* m_BulletModel
+				A pointer to a modelClass for the bullet the player can fire.
 
 			TextClassA* m_Text
 				An object to keep track of all the text on the screen.
@@ -121,6 +127,8 @@ private:
 
 	void SetIntersectionText(bool intersection, GameObject* collided);
 
+	void ShootProjectile();
+
 private:
 	InputClass* m_Input;
 	D3DClass* m_D3D;
@@ -135,9 +143,13 @@ private:
 	LightGameObject* metalNinja;
 	BumpMapGameObject* bumpCube;
 
+	ModelClass* m_BulletModel;
+
 	TextClassA* m_Text;
 	BitmapClassA* m_Bitmap;
+
 	bool m_beginCheck;
+	bool m_BeginSpawn;
 
 	
 

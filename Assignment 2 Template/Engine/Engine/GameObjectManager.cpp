@@ -7,6 +7,8 @@
 //			   User Defined Headers.
 //===============================================
 #include "GameObjectManager.h"
+#include "cameraclass.h"
+#include "ProjectileObject.h"
 
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -14,15 +16,16 @@ Method:		GameObjectManager()
 
 Summary:	The default constructor for a gameObjectManager object.
 
-Modifies:	[staticList, dynamicList].
+Modifies:	[m_StaticList, m_DynamicList, m_BulletList].
 
 Returns:	GameObjectManager
 				the newly created GameObjectManager object.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 GameObjectManager::GameObjectManager()
 {
-	staticList = new std::vector<GameObject*>();
-	dynamicList = new std::vector<GameObject*>();
+	m_StaticList = new std::vector<GameObject*>();
+	m_DynamicList = new std::vector<GameObject*>();
+	m_BulletList = new vector<ProjectileObject*>();
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -41,12 +44,13 @@ Method:		Shutdown()
 
 Summary:	Call before deletion to ensure memory is freed.
 
-Modifies:	[staticList, dynamicList].
+Modifies:	[m_StaticList, m_DynamicList, m_BulletList].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GameObjectManager::Shutdown()
 {
-	delete staticList;
-	delete dynamicList;
+	delete m_StaticList;
+	delete m_DynamicList;
+	delete m_BulletList;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -96,6 +100,33 @@ void GameObjectManager::AddItem(ObjectType objectType, GameObject* object, XMFLO
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		AddProjectile
+
+Summary:	Use to add a projectile into consideration by the GameObjectManager.
+			Gives the projectile basic sizing and location data.
+
+Args:		GameObject* projectile
+				a pointer to the gameObject to add.
+			XMFLOAT3* position
+				the x y z in world space to spawn the gameObject at.
+			XMFLOAT3* rotation
+				the x y z rotation in local space in radians to spawn
+				the gameObject at.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void GameObjectManager::AddProjectile(ProjectileObject * projectile, XMFLOAT3* position, XMFLOAT3* rotation)
+{
+	//Set initial properties of the projectile.
+	projectile->setTransform(position->x, position->y, position->z);
+	projectile->setScale(0.5f, 0.5f, 0.5f);
+	projectile->setRotation(rotation->x / 0.0174532925f, rotation->y / 0.0174532925f, rotation->z / 0.0174532925f);
+
+	//Push the reference to the projectile back onto the projectile list.
+	m_BulletList->push_back(projectile);
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
 Method:		SearchFor
 
 Summary:	Use to check that the specified gameObject of specified type
@@ -136,24 +167,26 @@ Args:		ShaderManagerClass* shaderManager
 			XMMATRIX &projectionMatrix
 				a reference to an XMMATRIX representing the projection
 				of the current camera.
+			float deltaTime
+				the time that has passed since the last frame.
 
 Modifies:	[none].
 
 Returns:	bool	
 				was the rendering of every object successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
+bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, float deltaTime)
 {
 	//Temporary storage for the worldMatrix.
 	XMMATRIX worldMatrix;
 	bool result = true;
 
-	//If there is at least one element in the staticList.
-	if (staticList->size() != 0)
+	//If there is at least one element in the m_StaticList.
+	if (m_StaticList->size() != 0)
 	{
 		//Iterate through the list.
-		for (std::vector<GameObject*>::iterator iter = staticList->begin();
-			iter != staticList->end();
+		for (std::vector<GameObject*>::iterator iter = m_StaticList->begin();
+			iter != m_StaticList->end();
 			iter++)
 		{
 			//Dereference the iterator.
@@ -172,12 +205,12 @@ bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d
 		}
 	}
 
-	//If the dynamicList has at least one item,
-	if (dynamicList->size() != 0)
+	//If the m_DynamicList has at least one item,
+	if (m_DynamicList->size() != 0)
 	{
 		//Iterate through the list,
-		for (std::vector<GameObject*>::iterator iter = dynamicList->begin();
-			iter != dynamicList->end();
+		for (std::vector<GameObject*>::iterator iter = m_DynamicList->begin();
+			iter != m_DynamicList->end();
 			iter++)
 		{
 			//Dereference the iterator.
@@ -195,6 +228,35 @@ bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d
 			a->RenderAABB(shaderManager, d3d, cam);
 		}
 	}
+
+	//If the bullet list has at least one item.
+	if (m_BulletList->size() != 0)
+	{
+		//Iterate through the list.
+		for (vector<ProjectileObject*>::iterator iter = m_BulletList->begin();
+			iter != m_BulletList->end();
+			iter++)
+		{
+			//Dereference the iterator.
+			ProjectileObject* a = *iter;
+
+			//Advance the projectileObjects.
+			a->Frame();
+
+			//Get the world matrix using the d3d class.
+			d3d->GetWorldMatrix(worldMatrix);
+
+			//render the model.
+			result = a->Render(shaderManager, d3d->GetDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+			if (!result)
+				return false;
+
+			//render the model's aabb
+			a->RenderAABB(shaderManager, d3d, cam);
+		}
+	}
+
+	return true;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -216,13 +278,26 @@ M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 std::vector<GameObject*>* GameObjectManager::GetList(ObjectType listType)
 {
 	if (listType == ObjectType::OBJECTTYPE_DYNAMIC)
-	{
-		return dynamicList;
-	}
+		return m_DynamicList;
 	else if (listType == ObjectType::OBJECTTYPE_STATIC)
-	{
-		return staticList;
-	}
+		return m_StaticList;
+	
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		GetProjectileList
+
+Summary:	Use to return a pointer to the List of projectiles currently
+			being considered by the gameObjectManager.
+
+Modifies:	[none].
+
+Returns:	vector<ProjectileObject*>*
+				a Pointer to the list managing all Projectile objects
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+vector<ProjectileObject*>* GameObjectManager::GetProjectileList()
+{
+	return m_BulletList;
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M

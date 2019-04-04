@@ -43,7 +43,7 @@ Methods:	==================== PUBLIC ====================
 			SetCamera(CameraClass*)
 				Used to change the Camera currently being used by the User.
 
-Members:	==================== PRIVATE ====================
+Members:	==================== PROTECTED ====================
 			LightClass* m_Light
 				the light to be queried by this LightGameObject's render function
 			CameraClass* m_Camera
@@ -64,7 +64,7 @@ public:
 
 	void SetCamera(CameraClass* camera);
 
-private:
+protected:
 	LightClass* m_Light;
 	CameraClass* m_Camera;
 

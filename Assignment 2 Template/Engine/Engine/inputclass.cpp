@@ -347,3 +347,12 @@ bool InputClass::IsLeftMouseButtonDown()
 
 	return false;
 }
+
+bool InputClass::IsRightMouseButtonDown()
+{
+	//Check if the right mouse button is current pressed.
+	if (m_mouseState.rgbButtons[1] & 0x80)
+		return true;
+
+	return false;
+}

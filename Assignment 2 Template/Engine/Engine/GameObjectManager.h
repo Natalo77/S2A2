@@ -12,6 +12,12 @@
 #include "d3dclass.h"
 
 
+//===============================================
+//				Forward declarations.
+//===============================================
+class ProjectileObject;
+
+
 /*C+C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C+++C
 Class:		GameObjectManager
 
@@ -34,10 +40,14 @@ Methods:	==================== PUBLIC ====================
 				An overload of AddItem to allow GameObjects to be added to the GameObjectManager
 				with an initial transform, rotation and scaling.
 
+			void AddProjectile(GameObject* projectile, XMFLOAT3* position, XMFLOAT3* rotation)
+				Use to add a projectile into consideration by the GameObjectManager
+				at the specified position and rotation(radians).
+
 			GameObject* SearchFor
 				Use to check a specified gameObject exists within the GameObjectManager.
 
-			void Render()
+			void RenderAll(...)
 				Use to render all the objects within the scope of the GameObjectManager.
 			
 			std::vector<GameObject*>* GetList
@@ -48,15 +58,18 @@ Methods:	==================== PUBLIC ====================
 				Use to search for the specified gameObject in the specified List.
 
 Members:	==================== PRIVATE ====================
-			vector<GameObject*>* staticList
+			vector<GameObject*>* m_StaticList
 				A list of all the static gameObjects being handled by the GameObjectManager.
-			vector<GameObject*>* dynamicList
+			vector<GameObject*>* m_DynamicList
 				A list of all the dynamic GameObjects being handled by the GameObjectManager.
+
+			vector<GameObject*>* m_BulletList
+				A list of all the projectiles currently in the scene.
 C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C---C-C*/
 class GameObjectManager
 {
 public:
-	enum ObjectType{OBJECTTYPE_STATIC, OBJECTTYPE_DYNAMIC};
+	enum ObjectType{OBJECTTYPE_STATIC, OBJECTTYPE_DYNAMIC, OBJECTTYPE_PROJECTILE};
 
 public:
 	GameObjectManager();
@@ -67,17 +80,22 @@ public:
 	void AddItem(ObjectType objectType, GameObject* object);
 	void AddItem(ObjectType objectType, GameObject* object, XMFLOAT3* transform, XMFLOAT3* rotation, XMFLOAT3* scaling);
 
+	void AddProjectile(ProjectileObject* projectile, XMFLOAT3* position, XMFLOAT3* rotation);
+
 	GameObject* SearchFor(ObjectType objectType, GameObject* object);
 
-	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
+	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, float deltaTime);
 
 	std::vector<GameObject*>* GetList(ObjectType listType);
+	vector<ProjectileObject*>* GetProjectileList();
 
 private:
 	GameObject* Search(std::vector<GameObject*>* list, GameObject* object);
 
 private:
-	std::vector<GameObject*>* staticList;
-	std::vector<GameObject*>* dynamicList;
+	std::vector<GameObject*>* m_StaticList;
+	std::vector<GameObject*>* m_DynamicList;
+
+	vector<ProjectileObject*>* m_BulletList;
 };
 

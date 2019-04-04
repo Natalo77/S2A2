@@ -13,6 +13,8 @@ CameraClass::CameraClass()
 	m_rotationX = 0.0f;
 	m_rotationY = 0.0f;
 	m_rotationZ = 0.0f;
+
+	m_LookAt = new XMFLOAT3(0.f, 0.f, 1.f);
 }
 
 
@@ -83,10 +85,14 @@ void CameraClass::Render()
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
 	lookAt = XMVector3TransformCoord(lookAt, rotationMatrix);
 
+	//Set the up vector.
 	up = XMVector3TransformCoord(up, rotationMatrix);
 
 	// Translate the rotated camera position to the location of the viewer.
 	lookAt = position + lookAt;
+
+	//Store the LookAt vector
+	XMStoreFloat3(m_LookAt, lookAt);
 
 	// Finally create the view matrix from the three updated vectors.
 	m_viewMatrix = XMMatrixLookAtLH(position, lookAt, up);
@@ -130,9 +136,6 @@ void CameraClass::GenerateBaseViewMatrix()
 	lookAt = XMVector3TransformCoord(lookAt, rotationMatrix);
 
 	up = XMVector3TransformCoord(up, rotationMatrix);
-
-	// Translate the rotated camera position to the location of the viewer.
-	lookAt = position + lookAt;
 
 	// Finally create the baseView matrix from the three updated vectors.
 	m_baseViewMatrix = XMMatrixLookAtLH(position, lookAt, up);
@@ -190,4 +193,29 @@ void CameraClass::GetReflectionViewMatrix(XMMATRIX& viewMatrix)
 {
 	viewMatrix = m_reflectionViewMatrix;
 	return;
+}
+
+XMFLOAT3 * CameraClass::GetLookAt()
+{
+	//Create a XMVECTOR with the rotation values in degrees.
+	XMVECTOR oldRotation;
+	oldRotation = XMVectorSet(-m_rotationX * 0.0174532925f, m_rotationY * 0.0174532925f, m_rotationZ * 0.0174532925f, 1.0f);
+
+	//Create an XMVECTOR for rotation as a quaternion using the oldRotation vector.
+	XMVECTOR rotation;
+	rotation = XMQuaternionRotationRollPitchYawFromVector(oldRotation);
+
+	//Set the initial forwards vector.
+	XMVECTOR forwards;
+	forwards = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
+
+	//Use the quaternion to rotate the forwards vector.
+	forwards = XMVector3Rotate(forwards, rotation);
+
+	//Initialize and store the look at float3
+	m_LookAt = new XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMStoreFloat3(m_LookAt, forwards);
+
+	//Return the address to the calculated look at vector.
+	return m_LookAt;
 }

@@ -33,6 +33,7 @@
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="positionclass.h" />
+    <ClInclude Include="ProjectileObject.h" />
     <ClInclude Include="shadermanagerclass.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="TextClassA.h" />
@@ -65,6 +66,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="positionclass.cpp" />
+    <ClCompile Include="ProjectileObject.cpp" />
     <ClCompile Include="shadermanagerclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="TextClassA.cpp" />

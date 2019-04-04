@@ -50,6 +50,9 @@ Methods:	==================== PUBLIC ====================
 				Use to test collision for a ray at mouseX, mouseY with every object concerned
 				by the GameObjectManager using the FXMcamPosition as the current position of the camera.
 
+			static void GetRay(XMFLOAT3 &directionOut, int mouseX, int mouseY)
+				Use to get the direction of a ray from the camera at mouseX and mouseY on the screen.
+
 			==================== PRIVATE ====================
 			getRay(XMFLOAT3 &originOut, XMFLOAT3 &directionOut, int mouseX, int mouseY)
 				Called by both TestRaySphereIntersect functions
@@ -94,6 +97,8 @@ public:
 	bool TestRayAABBIntersect(int mouseX, int mouseY, BoundingBox* AABB);
 
 	GameObject* CollisionTestLoop(int mouseX, int mouseY, GameObjectManager* objManager, FXMVECTOR FXMcamPosition);
+
+	static void GetRay(D3DClass* d3d, CameraClass* cam, XMFLOAT3 &directionOut, int mouseX, int mouseY);
 
 	
 

@@ -7,6 +7,7 @@
 //			   User Defined Headers
 //==============================================
 #include "graphicsclass.h"
+#include "ProjectileObject.h"
 
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -16,7 +17,8 @@ Summary:	Default constructor for a GraphicsClass object.
 
 Modifies:	[m_Input, m_D3D, m_Timer, m_ShaderManager, m_Light, m_Position,
 			 m_Camera, m_Text, m_Bitmap, m_CollisionObject,
-			 m_renderingList, m_GameObjectManager].
+			 m_renderingList, m_GameObjectManager, bumpCube, metalNinja,
+			 m_BulletModel].
 
 Returns:	GraphicsClass
 				the new GraphicsClass object.
@@ -33,6 +35,11 @@ GraphicsClass::GraphicsClass()
 
 	m_Text = 0;
 	m_Bitmap = 0;
+
+	bumpCube = 0;
+	metalNinja = 0;
+
+	m_BulletModel = 0;
 
 	m_CollisionObject = 0;
 	m_GameObjectManager = new GameObjectManager();
@@ -85,7 +92,7 @@ Args:		HINSTANCE hinstance
 Modifies:	[m_Input, m_D3D, m_ShaderManager, m_Timer, m_Position,
 			 m_Camera, m_Light, m_Text, m_Bitmap,
 			 m_CollisionObject, m_GameObjectManager, m_beginCheck,
-			 metalNinja, bumpCube].
+			 metalNinja, bumpCube, m_BulletModel, m_BeginSpawn].
 
 Returns:	bool
 				was the initialization of all member variables successful.
@@ -184,6 +191,15 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 		return false;
 	}
 
+	//Initialize the BulletModel.
+	m_BulletModel = new ModelClass();
+	result = m_BulletModel->Initialize(m_D3D->GetDevice(), "../Engine/data/sphere.txt", L"../Engine/data/bullet.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Failed to initialize bullet model", L"ERROR", MB_OK);
+		return false;
+	}
+
 	//Create and add objects to the GameObject manager.
 	{
 		//Add 3 new Objects to the gameObjectManager.
@@ -258,6 +274,7 @@ bool GraphicsClass::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, 
 
 	// Initialize that the user has not clicked on the screen to try an intersection test yet.
 	m_beginCheck = false;
+	m_BeginSpawn = false;
 
 	return true;
 }
@@ -271,7 +288,7 @@ Summary:	Releases and depoints all member variables of the
 Modifies:	[m_Light, m_Camera,
 			 m_Position, m_ShaderManager, m_Timer, m_D3D,
 			 m_Input, m_Bitmap, m_Text, m_CollisionObject
-			 m_GameObjectManager, metalNinja, bumpCube].
+			 m_GameObjectManager, metalNinja, bumpCube, m_BulletModel].
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
 void GraphicsClass::Shutdown()
 {
@@ -352,7 +369,7 @@ void GraphicsClass::Shutdown()
 		m_CollisionObject = 0;
 	}
 
-
+	//Release the GameOBjectManager
 	if (m_GameObjectManager)
 	{
 		m_GameObjectManager->Shutdown();
@@ -360,15 +377,26 @@ void GraphicsClass::Shutdown()
 		m_GameObjectManager = 0;
 	}
 
+	//Release the metalNinja gameObject.
 	if (metalNinja)
 	{
 		delete metalNinja;
 		metalNinja = 0;
 	}
+	
+	//Release the bumpCube gameObject.
 	if (bumpCube)
 	{
 		delete bumpCube;
 		bumpCube = 0;
+	}
+
+	//Release the BulletModel ModelClass*
+	if (m_BulletModel)
+	{
+		m_BulletModel->Shutdown();
+		delete m_BulletModel;
+		m_BulletModel = 0;
 	}
 
 	return;
@@ -433,7 +461,7 @@ Args:		float frameTime
 				the amount of time that has passed between the last frame
 				and this one.
 
-Modifies:	[m_Position, m_beginCheck].
+Modifies:	[m_Position, m_beginCheck, m_BeginSpawn].
 
 Returns:	bool
 				was all movement handled succesfully.
@@ -501,10 +529,26 @@ bool GraphicsClass::HandleMovementInput(float frameTime)
 		}
 	}
 
-	// Check if the left mouse button has been released.
+	//If the right Mouse button is pressed, shoot a projectile.
+	if (m_Input->IsRightMouseButtonDown() == true)
+	{
+		if (m_BeginSpawn == false)
+		{
+
+			m_BeginSpawn = true;
+
+			ShootProjectile();
+		}
+	}
+
+	// Check if the left/right mouse button has been released.
 	if (m_Input->IsLeftMouseButtonDown() == false)
 	{
 		m_beginCheck = false;
+	}
+	if (m_Input->IsRightMouseButtonDown() == false)
+	{
+		m_BeginSpawn = false;
 	}
 
 	return true;
@@ -557,7 +601,7 @@ bool GraphicsClass::Render()
 	m_D3D->TurnOnAlphaBlending();
 
 	//Use the gameObjectManager to render all the objects it holds.
-	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, m_Camera, viewMatrix, projectionMatrix);
+	m_GameObjectManager->RenderAll(m_ShaderManager, m_D3D, m_Camera, viewMatrix, projectionMatrix, m_Timer->GetTime());
 
 	// Get the location of the mouse from the input object and the ortho matrix.
 	m_Input->GetMouseLocation(mouseX, mouseY);
@@ -602,3 +646,26 @@ void GraphicsClass::SetIntersectionText(bool intersection, GameObject* collided)
 {
 	m_Text->SetIntersection(intersection, m_D3D->GetDeviceContext(), collided);
 }
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		ShootProjectile
+
+Summary:	Adds a new bullet LightGameObject to the gameObjetManager
+			at the position of the camera.
+
+Modifies:	[none].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void GraphicsClass::ShootProjectile()
+{
+	//Create an XMFLOAT3 for velocity and get the mouse co-ordinates.
+	XMFLOAT3 mouseRayVelocity;
+	int mouseX, mouseY;
+	m_Input->GetMouseLocation(mouseX, mouseY);
+
+	//Use the collision class to get a direction vector from the camera to the mouse co-ordinates.
+	CollisionClass::GetRay(m_D3D, m_Camera, mouseRayVelocity, mouseX, mouseY);
+
+	//Add a projectile into consideration by the gameObject using the calculated velocity.
+	m_GameObjectManager->AddProjectile(new ProjectileObject(m_BulletModel, m_Light, m_Camera, &mouseRayVelocity), &m_Camera->GetPosition(), &m_Camera->GetRotation());
+}
+

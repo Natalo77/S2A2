@@ -152,9 +152,9 @@ bool CollisionClass::TestRayAABBIntersect(int mouseX, int mouseY, BoundingBox* A
 	GetRay(rayOrigin, rayDirection, mouseX, mouseY);
 
 	//Translate the AABB.
-	AABB->Center.x = -5.0f;
-	AABB->Center.y = 1.0f;
-	AABB->Center.z = 5.0f;
+	//AABB->Center.x = -5.0f;
+	//AABB->Center.y = 1.0f;
+	//AABB->Center.z = 5.0f;
 
 	//Perform the ray AABB intersection test.
 	intersect = rayAABBIntersect(XMLoadFloat3(&rayOrigin), XMLoadFloat3(&rayDirection), AABB);
@@ -289,6 +289,23 @@ void CollisionClass::GetRay(D3DClass* d3d, CameraClass* cam, XMFLOAT3 & directio
 	XMStoreFloat3(&directionOut, XMVector3Normalize(XMLoadFloat3(&directionOut)));
 
 	return;
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		Intersects
+
+Summary:	A static method to interface with DirectXCollision.h to test
+			if a and b intersect.
+
+Args:		BoundingBox* a, b
+				pointers to the two bounding boxes to check intersection of.
+
+Returns:	bool
+				Whether or not the two bounding volumes intersect.
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+bool CollisionClass::Intersects(BoundingBox * a, BoundingBox * b)
+{
+	return a->Intersects(*b);
 }
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M

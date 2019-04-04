@@ -14,6 +14,7 @@ const int MAX_PROJECTILE_DISTANCE_FROM_00 = 1000;
 #include "GameObjectManager.h"
 #include "cameraclass.h"
 #include "ProjectileObject.h"
+#include "CollisionClass.h"
 
 
 /*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
@@ -166,21 +167,21 @@ Args:		ShaderManagerClass* shaderManager
 				used to render the models.
 			D3DClass* d3d
 				a pointer to the d3d class containing the device context.
+			CameraClass* cam
+				A pointer to the camera object being used.
 			XMMATRIX &viewMatrix
 				a reference to an XMMATRIX representing the view of the
 				current user.
 			XMMATRIX &projectionMatrix
 				a reference to an XMMATRIX representing the projection
 				of the current camera.
-			float deltaTime
-				the time that has passed since the last frame.
 
 Modifies:	[none].
 
 Returns:	bool	
 				was the rendering of every object successful.
 M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
-bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, float deltaTime)
+bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix)
 {
 	//Temporary storage for the worldMatrix.
 	XMMATRIX worldMatrix;
@@ -263,6 +264,9 @@ bool GameObjectManager::RenderAll(ShaderManagerClass* shaderManager, D3DClass* d
 			a->RenderAABB(shaderManager, d3d, cam);
 		}
 	}
+
+	//Perform collision Loop here for all AABBs
+	AABBCollisionLoop();
 
 	return true;
 }
@@ -395,4 +399,120 @@ void GameObjectManager::CullProjectiles()
 		//. x naturally equals no. entries removed already.
 		m_BulletList->erase(m_BulletList->begin() + indices.at(x) - x);
 	}
+}
+
+/*M+M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M+++M
+Method:		AABBCollisionLoop
+
+Summary:	Checks every projectile against every static and dynamic
+			object for collision and handles this appropriately.
+
+Modifies:	[m_BulletList, m_StaticList, m_DynamicList].
+M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M---M-M*/
+void GameObjectManager::AABBCollisionLoop()
+{
+	//Keep a list of projectile, dynamic and static indices to cull.
+	vector<int> projInd, dynInd, statInd;
+
+	//Keep track of the projectile, dynamic and static indices.
+	int projI = 0;
+	int dynI = 0;
+	int statI = 0;
+
+	//Iterate through each projectile.
+	for (vector<ProjectileObject*>::iterator iter = m_BulletList->begin();
+		iter != m_BulletList->end();
+		iter++)
+	{
+		//Dereference the iterator.
+		ProjectileObject* proj = *iter;
+
+		//Record no collision so far.
+		bool collisionFound = false;
+
+		//Reset the index stored to 0.
+		dynI = 0;
+		//Iterate through the dynamic list.
+		for (vector<GameObject*>::iterator dynIter = m_DynamicList->begin();
+			dynIter != m_DynamicList->end();
+			dynIter++)
+		{
+			//Dereference the iterator.
+			GameObject* b = *dynIter;
+
+			//If the two collide, record and break.
+			if (CollisionClass::Intersects(proj->GetAABB(), b->GetAABB()))
+			{
+				//A collision has been recored.
+				collisionFound = true;
+
+				//Push back the indices of the respective elements onto the deletion vectors.
+				projInd.push_back(projI);
+				dynInd.push_back(dynI);
+
+				//The loop no longer needs to be continued.
+				break;
+			}
+
+			//Increment the dynamicList index being looked at.
+			dynI++;
+		}
+
+		//If a collision has already been found, skip round the list again.
+		if (collisionFound)
+			continue;
+
+		//reset the index stored to 0.
+		statI = 0;
+		//Iterate through the static list.
+		for (vector<GameObject*>::iterator statIter = m_StaticList->begin();
+			statIter != m_StaticList->end();
+			statIter++)
+		{
+			//Dereference the iterator.
+			GameObject* b = *statIter;
+
+			//If the two collide, record and break.
+			if (CollisionClass::Intersects(proj->GetAABB(), b->GetAABB()))
+			{
+				//Push back the indices of the respective elements onto the deletion vectors.
+				projInd.push_back(projI);
+				statInd.push_back(statI);
+
+				//The loop no longer needs to be continued.
+				break;
+			}
+
+			//Incremement the staticList index being looked at.
+			statI++;
+		}
+
+		//Increment the projectileList index being looked at.
+		projI++;
+	}
+
+
+	//Perform destruction work on each of the lists.
+
+	//For each element in the projectiles indices to remove.
+	for (int x = 0; x < projInd.size(); x++)
+	{
+		//Erase the entry at the specified index, adjusted for the number of entries removed already.
+		m_BulletList->erase(m_BulletList->begin() + projInd.at(x) - x);
+	}
+
+	//For each element in the indexes to remove.
+	for (int x = 0; x < dynInd.size(); x++)
+	{
+		//Erase the entry at the specified index, adjusted for the number of entries removed already.
+		m_DynamicList->erase(m_DynamicList->begin() + dynInd.at(x) - x);
+	}
+
+	//For each element in the indexes to remove.
+	for (int x = 0; x < statInd.size(); x++)
+	{
+		//Erase the entry at the specified index, adjusted for the number of entries removed already.
+		m_StaticList->erase(m_StaticList->begin() + statInd.at(x) - x);
+	}
+
 }

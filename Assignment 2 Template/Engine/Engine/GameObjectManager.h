@@ -25,7 +25,7 @@ Summary:	A class to provide various functions for storing, managing
 			and accessing both static and dynamic gameobjects at run time.
 
 Enums:		==================== PUBLIC ====================
-			ObjectType {OBJECTTYPE_STATIC, ..._DYNAMIC}
+			ObjectType {OBJECTTYPE_STATIC, ..._DYNAMIC, ..._PROJECTILE}
 				an enum to clarify the type of object being dealt with.
 
 Methods:	==================== PUBLIC ====================
@@ -49,13 +49,23 @@ Methods:	==================== PUBLIC ====================
 
 			void RenderAll(...)
 				Use to render all the objects within the scope of the GameObjectManager.
+				Also runs collision testing.
 			
 			std::vector<GameObject*>* GetList
 				Use to return the appropriate list according to the object type passed in.
+			vector<ProjectileObject*>* GetProjectileList
+				Use to return the projectile list.
 
 			==================== PRIVATE ====================
 			GameObject* Search
 				Use to search for the specified gameObject in the specified List.
+
+			void CullProjectiles()
+				Use to remove any projectiles further away from the origin than the max distance
+				specified in GameObjectManager.cpp
+
+			void AABBCollisionLoop
+				Used by RenderAll() to do collision testing with the objects in the scene every frame.
 
 Members:	==================== PRIVATE ====================
 			vector<GameObject*>* m_StaticList
@@ -84,7 +94,7 @@ public:
 
 	GameObject* SearchFor(ObjectType objectType, GameObject* object);
 
-	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix, float deltaTime);
+	bool RenderAll(ShaderManagerClass* shaderManager, D3DClass* d3d, CameraClass* cam, XMMATRIX &viewMatrix, XMMATRIX &projectionMatrix);
 
 	std::vector<GameObject*>* GetList(ObjectType listType);
 	vector<ProjectileObject*>* GetProjectileList();
@@ -93,6 +103,8 @@ private:
 	GameObject* Search(std::vector<GameObject*>* list, GameObject* object);
 
 	void CullProjectiles();
+
+	void AABBCollisionLoop();
 
 private:
 	std::vector<GameObject*>* m_StaticList;

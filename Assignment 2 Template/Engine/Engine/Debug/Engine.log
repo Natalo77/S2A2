@@ -1,4 +1,9 @@
 ﻿  GameObjectManager.cpp
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(366): warning C4018: '<': signed/unsigned mismatch
-e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(288): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
+e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(159): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\collisionclass.h(191): warning C4316: '__m128': object allocated on the heap may not be aligned 16
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(394): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(491): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(498): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(505): warning C4018: '<': signed/unsigned mismatch
+e:\_programming\s2a2\assignment 2 template\engine\engine\gameobjectmanager.cpp(297): warning C4715: 'GameObjectManager::GetList': not all control paths return a value
   Engine.vcxproj -> E:\_PROGRAMMING\S2A2\Assignment 2 Template\Engine\Debug\Engine.exe

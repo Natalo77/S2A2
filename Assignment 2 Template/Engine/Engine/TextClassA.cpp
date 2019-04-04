@@ -112,7 +112,7 @@ bool TextClassA::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 	result = FW1CreateFactory(FW1_VERSION, &m_pFW1Factory);
 	if (FAILED(result))
 	{
-		MessageBox(hwnd, L"Fukd up the text object fam.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Failed to create the FW1 Factory.", L"Error", MB_OK);
 		return false;
 	}
 
@@ -120,7 +120,7 @@ bool TextClassA::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 	result = m_pFW1Factory->CreateFontWrapper(device, (LPCWSTR)("ARIAL"), &m_pFontWrapper);
 	if (FAILED(result))
 	{
-		MessageBox(hwnd, L"Fukd the font wrapper fam.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Failed to create the font wrapper.", L"Error", MB_OK);
 		return false;
 	}
 
